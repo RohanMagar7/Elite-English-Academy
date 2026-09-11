@@ -2,6 +2,8 @@
 "use client";
 
 import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 
 export default function AdmissionPage() {
@@ -51,106 +53,112 @@ export default function AdmissionPage() {
     }
 
     return (
-        <div className="min-h-screen bg-blue-50 flex justify-center p-8">
-            <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">
+        <>
+            <Navbar />
 
-                <h1 className="text-4xl font-bold text-blue-900 mb-2">
-                    Admission Enquiry
-                </h1>
+            <div className="min-h-screen bg-blue-50 flex justify-center p-8">
+                <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-8">
 
-                <p className="text-gray-600 mb-8">
-                    Elite English Academy • Admissions Open 2026
-                </p>
+                    <h1 className="text-4xl font-bold text-blue-900 mb-2">
+                        Admission Enquiry
+                    </h1>
 
-                <form onSubmit={submitForm} className="space-y-5">
+                    <p className="text-gray-600 mb-8">
+                        Elite English Academy • Admissions Open 2026
+                    </p>
 
-                    <input
-                        name="student_name"
-                        placeholder="Student Name"
-                        value={form.student_name}
-                        onChange={handleChange}
-                        className="w-full border p-3 rounded-lg text-black"
-                        required
-                    />
+                    <form onSubmit={submitForm} className="space-y-5">
 
-                    <input
-                        name="parent_name"
-                        placeholder="Parent Name"
-                        value={form.parent_name}
-                        onChange={handleChange}
-                        className="w-full border p-3 rounded-lg text-black"
-                    />
+                        <input
+                            name="student_name"
+                            placeholder="Student Name"
+                            value={form.student_name}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg text-black"
+                            required
+                        />
 
-                    <input
-                        name="phone"
-                        placeholder="Phone Number"
-                        value={form.phone}
-                        onChange={handleChange}
-                        className="w-full border p-3 rounded-lg text-black"
-                        required
-                    />
+                        <input
+                            name="parent_name"
+                            placeholder="Parent Name"
+                            value={form.parent_name}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg text-black"
+                        />
 
-                    <input
-                        name="email"
-                        type="email"
-                        placeholder="Email Address"
-                        value={form.email}
-                        onChange={handleChange}
-                        className="w-full border p-3 rounded-lg text-black"
-                    />
+                        <input
+                            name="phone"
+                            placeholder="Phone Number"
+                            value={form.phone}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg text-black"
+                            required
+                        />
 
-                    <select
-                        name="class_name"
-                        value={form.class_name}
-                        onChange={handleChange}
-                        className="w-full border p-3 rounded-lg text-black"
-                        required
-                    >
-                        <option value="">Select Class</option>
-                        <option>1st</option>
-                        <option>2nd</option>
-                        <option>3rd</option>
-                        <option>4th</option>
-                        <option>5th</option>
-                        <option>6th</option>
-                        <option>7th Scholarship</option>
-                        <option>8th</option>
-                        <option>9th</option>
-                        <option>10th</option>
-                    </select>
+                        <input
+                            name="email"
+                            type="email"
+                            placeholder="Email Address"
+                            value={form.email}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg text-black"
+                        />
 
-                    <select
-                        name="course"
-                        value={form.course}
-                        onChange={handleChange}
-                        className="w-full border p-3 rounded-lg text-black"
-                    >
-                        <option value="">Select Course</option>
-                        <option>English Speaking</option>
-                        <option>Personal Mentorship</option>
-                        <option>Scholarship Preparation</option>
-                        <option>English Teacher Training</option>
-                    </select>
+                        <select
+                            name="class_name"
+                            value={form.class_name}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg text-black"
+                            required
+                        >
+                            <option value="">Select Class</option>
+                            <option>1st</option>
+                            <option>2nd</option>
+                            <option>3rd</option>
+                            <option>4th</option>
+                            <option>5th</option>
+                            <option>6th</option>
+                            <option>7th Scholarship</option>
+                            <option>8th</option>
+                            <option>9th</option>
+                            <option>10th</option>
+                        </select>
 
-                    <textarea
-                        name="message"
-                        rows={4}
-                        placeholder="Message (Optional)"
-                        value={form.message}
-                        onChange={handleChange}
-                        className="w-full border p-3 rounded-lg text-black"
-                    />
+                        <select
+                            name="course"
+                            value={form.course}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg text-black"
+                        >
+                            <option value="">Select Course</option>
+                            <option>English Speaking</option>
+                            <option>Personal Mentorship</option>
+                            <option>Scholarship Preparation</option>
+                            <option>English Teacher Training</option>
+                        </select>
 
-                    <button
-                        disabled={loading}
-                        className="w-full bg-blue-900 text-white p-4 rounded-lg font-semibold hover:bg-blue-800"
-                    >
-                        {loading ? "Submitting..." : "Submit Enquiry"}
-                    </button>
+                        <textarea
+                            name="message"
+                            rows={4}
+                            placeholder="Message (Optional)"
+                            value={form.message}
+                            onChange={handleChange}
+                            className="w-full border p-3 rounded-lg text-black"
+                        />
 
-                </form>
+                        <button
+                            disabled={loading}
+                            className="w-full bg-blue-900 text-white p-4 rounded-lg font-semibold hover:bg-blue-800"
+                        >
+                            {loading ? "Submitting..." : "Submit Enquiry"}
+                        </button>
 
+                    </form>
+
+                </div>
             </div>
-        </div>
+
+            <Footer />
+        </>
     );
 }

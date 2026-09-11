@@ -1,4 +1,41 @@
-export default function Page() {
-    return <div>Admin - Add Testimonial</div>
+"use client";
+
+import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+
+export default function AddTestimonial() {
+    const [form, setForm] = useState({ name: "", message: "", course: "", avatar: "", is_active: true });
+    const [loading, setLoading] = useState(false);
+
+    function change(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+        const val = (e.target as HTMLInputElement).type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value;
+        setForm({ ...form, [e.target.name]: val });
+    }
+
+    async function submit(e: React.FormEvent) {
+        e.preventDefault();
+        setLoading(true);
+        const { error } = await supabase.from("testimonials").insert([{ name: form.name, message: form.message, course: form.course, avatar: form.avatar, is_active: form.is_active }]);
+        setLoading(false);
+        if (error) return alert(error.message);
+        alert("Testimonial added.");
+        setForm({ name: "", message: "", course: "", avatar: "", is_active: true });
+    }
+
+    return (
+        <div className="max-w-3xl">
+            <h2 className="text-2xl font-bold text-blue-900 mb-4">Add Testimonial</h2>
+
+            <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded-lg shadow">
+                <input name="name" placeholder="Name" value={form.name} onChange={change} className="w-full border p-3 rounded" required />
+                <input name="course" placeholder="Course" value={form.course} onChange={change} className="w-full border p-3 rounded" />
+                <input name="avatar" placeholder="Avatar URL" value={form.avatar} onChange={change} className="w-full border p-3 rounded" />
+                <textarea name="message" rows={4} placeholder="Message" value={form.message} onChange={change} className="w-full border p-3 rounded" />
+                <label className="flex items-center gap-3"><input type="checkbox" name="is_active" checked={form.is_active} onChange={change as any} /> Active</label>
+
+                <button disabled={loading} className="bg-blue-900 text-white px-4 py-2 rounded">{loading ? "Saving..." : "Add Testimonial"}</button>
+            </form>
+        </div>
+    );
 }
 
