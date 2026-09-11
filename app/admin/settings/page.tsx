@@ -15,8 +15,8 @@ export default function SettingsPage() {
             <h2 className="text-2xl font-bold text-blue-900 mb-4">Site Settings</h2>
 
             <form onSubmit={save} className="space-y-4 bg-white p-6 rounded-lg shadow">
-                <input value={siteTitle} onChange={(e) => setSiteTitle(e.target.value)} className="w-full border p-3 rounded" />
-                <button className="bg-blue-900 text-white px-4 py-2 rounded">Save Settings</button>
+                <input value={siteTitle} onChange={(e) => setSiteTitle(e.target.value)} className="input-default" />
+                <button className="btn-primary text-on-primary">Save Settings</button>
             </form>
         </div>
     );

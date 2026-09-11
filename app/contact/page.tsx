@@ -33,15 +33,30 @@ export default function ContactPage() {
                     <p className="text-gray-600 mb-6">Reach out for admissions, partnerships, and queries.</p>
 
                     <form onSubmit={submit} className="space-y-4">
-                        <input name="name" placeholder="Your Name" value={form.name} onChange={change} className="w-full border p-3 rounded" required />
-                        <input name="email" type="email" placeholder="Email" value={form.email} onChange={change} className="w-full border p-3 rounded" />
-                        <input name="phone" placeholder="Phone" value={form.phone} onChange={change} className="w-full border p-3 rounded" />
-                        <textarea name="message" rows={4} placeholder="Message" value={form.message} onChange={change} className="w-full border p-3 rounded" />
+                        <input name="name" placeholder="Your Name" value={form.name} onChange={change} className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" required />
+                        <input name="email" type="email" placeholder="Email" value={form.email} onChange={change} className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" />
+                        <input name="phone" placeholder="Phone" value={form.phone} onChange={change} className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" />
+                        <textarea name="message" rows={4} placeholder="Message" value={form.message} onChange={change} className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" />
 
                         <button className="w-full bg-blue-900 text-white p-3 rounded" disabled={loading}>{loading ? "Sending..." : "Send Message"}</button>
                     </form>
                 </div>
             </div>
+
+            <section className="max-w-7xl mx-auto px-8 py-12">
+                <h2 className="text-2xl font-bold text-blue-900 mb-4 text-center">Find Us</h2>
+
+                <div className="mx-auto max-w-4xl">
+                    <iframe
+                        title="Elite English Academy - Map"
+                        src="https://www.google.com/maps?q=Near+Sai+Deep+Hospital,+Mondha+Naka,+Georai,+Beed,+Maharashtra&z=15&output=embed"
+                        className="w-full h-80 rounded-lg shadow"
+                        loading="lazy"
+                    />
+
+                    <p className="mt-4 text-center text-gray-600">Near Sai Deep Hospital, Mondha Naka, Georai, Beed, Maharashtra. <a className="text-blue-700 underline" href="https://www.google.com/maps/search/?api=1&query=Near+Sai+Deep+Hospital,+Mondha+Naka,+Georai,+Beed,+Maharashtra" target="_blank" rel="noreferrer">Open in Google Maps</a></p>
+                </div>
+            </section>
 
             <Footer />
         </>

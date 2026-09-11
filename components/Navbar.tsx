@@ -28,20 +28,20 @@ export default function Navbar() {
 
     return (
         <header
-            className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
-                    ? "bg-blue-950/95 backdrop-blur-lg shadow-xl"
-                    : "bg-blue-950"
+            className={`sticky top-0 z-50 text-on-primary transition-all duration-300 ${scrolled
+                ? "bg-primary backdrop-blur-lg shadow-xl"
+                : "bg-primary"
                 }`}
         >
             <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-3">
-                    <div className="rounded-xl bg-yellow-400 p-2 text-blue-950">
+                    <div className="rounded-xl bg-accent p-2 text-blue-950">
                         <GraduationCap size={24} />
                     </div>
 
                     <div>
-                        <h1 className="text-lg font-extrabold tracking-wide text-yellow-400">
+                        <h1 className="text-lg font-extrabold tracking-wide text-accent">
                             ELITE'S
                         </h1>
                         <p className="text-xs text-blue-200">
@@ -57,8 +57,8 @@ export default function Navbar() {
                             key={item.name}
                             href={item.href}
                             className={`relative text-sm font-medium transition ${pathname === item.href
-                                    ? "text-yellow-400"
-                                    : "text-white hover:text-yellow-300"
+                                ? "text-accent"
+                                : "text-white hover:text-accent/80"
                                 }`}
                         >
                             {item.name}
@@ -83,7 +83,7 @@ export default function Navbar() {
 
                 {/* Mobile Menu Button */}
                 <button
-                    className="text-white md:hidden"
+                    className="md:hidden text-on-primary"
                     onClick={() => setOpen(!open)}
                 >
                     {open ? <X size={28} /> : <Menu size={28} />}
@@ -92,7 +92,7 @@ export default function Navbar() {
 
             {/* Mobile Menu */}
             <div
-                className={`overflow-hidden bg-blue-900 transition-all duration-300 md:hidden ${open ? "max-h-96 py-3" : "max-h-0"
+                className={`overflow-hidden bg-primary-dark transition-all duration-300 md:hidden ${open ? "max-h-96 py-3" : "max-h-0"
                     }`}
             >
                 {menu.map((item) => (
@@ -101,8 +101,8 @@ export default function Navbar() {
                         href={item.href}
                         onClick={() => setOpen(false)}
                         className={`block px-6 py-3 text-sm transition ${pathname === item.href
-                                ? "bg-yellow-400 text-blue-950 font-semibold"
-                                : "text-white hover:bg-blue-800"
+                            ? "bg-accent text-blue-950 font-semibold"
+                            : "text-on-primary hover:bg-primary/80"
                             }`}
                     >
                         {item.name}

@@ -27,18 +27,18 @@ export default function AddNotice() {
             <h2 className="text-2xl font-bold text-blue-900 mb-4">Add Notice</h2>
 
             <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded-lg shadow">
-                <input name="title" placeholder="Title" value={form.title} onChange={change} className="w-full border p-3 rounded" required />
-                <select name="category" value={form.category} onChange={change} className="w-full border p-3 rounded">
+                <input name="title" placeholder="Title" value={form.title} onChange={change} className="input-default" required />
+                <select name="category" value={form.category} onChange={change} className="input-default">
                     <option>General</option>
                     <option>Admission</option>
                     <option>Exam</option>
                 </select>
-                <textarea name="description" rows={4} placeholder="Description" value={form.description} onChange={change} className="w-full border p-3 rounded" />
+                <textarea name="description" rows={4} placeholder="Description" value={form.description} onChange={change} className="input-default" />
                 <label className="flex items-center gap-3">
                     <input type="checkbox" name="is_active" checked={form.is_active} onChange={change} /> Active
                 </label>
 
-                <button disabled={loading} className="bg-blue-900 text-white px-4 py-2 rounded">{loading ? "Saving..." : "Publish Notice"}</button>
+                <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Saving..." : "Publish Notice"}</button>
             </form>
         </div>
     );

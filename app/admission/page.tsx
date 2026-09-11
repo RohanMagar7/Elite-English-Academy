@@ -74,7 +74,7 @@ export default function AdmissionPage() {
                             placeholder="Student Name"
                             value={form.student_name}
                             onChange={handleChange}
-                            className="w-full border p-3 rounded-lg text-black"
+                            className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                             required
                         />
 
@@ -83,7 +83,7 @@ export default function AdmissionPage() {
                             placeholder="Parent Name"
                             value={form.parent_name}
                             onChange={handleChange}
-                            className="w-full border p-3 rounded-lg text-black"
+                            className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                         />
 
                         <input
@@ -91,7 +91,7 @@ export default function AdmissionPage() {
                             placeholder="Phone Number"
                             value={form.phone}
                             onChange={handleChange}
-                            className="w-full border p-3 rounded-lg text-black"
+                            className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                             required
                         />
 
@@ -101,14 +101,14 @@ export default function AdmissionPage() {
                             placeholder="Email Address"
                             value={form.email}
                             onChange={handleChange}
-                            className="w-full border p-3 rounded-lg text-black"
+                            className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                         />
 
                         <select
                             name="class_name"
                             value={form.class_name}
                             onChange={handleChange}
-                            className="w-full border p-3 rounded-lg text-black"
+                            className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                             required
                         >
                             <option value="">Select Class</option>
@@ -128,7 +128,7 @@ export default function AdmissionPage() {
                             name="course"
                             value={form.course}
                             onChange={handleChange}
-                            className="w-full border p-3 rounded-lg text-black"
+                            className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                         >
                             <option value="">Select Course</option>
                             <option>English Speaking</option>
@@ -143,7 +143,7 @@ export default function AdmissionPage() {
                             placeholder="Message (Optional)"
                             value={form.message}
                             onChange={handleChange}
-                            className="w-full border p-3 rounded-lg text-black"
+                            className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                         />
 
                         <button

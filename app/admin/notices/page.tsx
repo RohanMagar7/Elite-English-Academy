@@ -91,14 +91,14 @@ export default function NoticesPage() {
                     placeholder="Notice Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full border rounded-lg p-3 text-black"
+                    className="input-default"
                     required
                 />
 
                 <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full border rounded-lg p-3 text-black"
+                    className="input-default"
                 >
                     <option>General</option>
                     <option>Admission</option>
@@ -112,14 +112,14 @@ export default function NoticesPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={4}
-                    className="w-full border rounded-lg p-3 text-black"
+                    className="input-default"
                     required
                 />
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="bg-blue-900 text-white px-6 py-3 rounded-lg"
+                    className="btn-accent text-blue-950"
                 >
                     {loading ? "Saving..." : "Add Notice"}
                 </button>
@@ -161,8 +161,8 @@ export default function NoticesPage() {
                                             toggleNotice(notice.id, notice.is_active)
                                         }
                                         className={`rounded-full px-3 py-1 text-white ${notice.is_active
-                                                ? "bg-green-600"
-                                                : "bg-gray-500"
+                                            ? "bg-green-600"
+                                            : "bg-gray-500"
                                             }`}
                                     >
                                         {notice.is_active ? "Active" : "Hidden"}

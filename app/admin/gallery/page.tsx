@@ -88,6 +88,35 @@ export default function GalleryPage() {
         setLoading(false);
     }
 
+    async function deleteImage(id: string, imageUrl: string) {
+        if (!confirm("Delete this image?")) return;
+
+        setLoading(true);
+
+        // try to remove storage object if we can infer the file name
+        try {
+            const url = new URL(imageUrl);
+            const parts = url.pathname.split("/");
+            const fileName = parts[parts.length - 1];
+
+            if (fileName) {
+                await supabase.storage.from("gallery").remove([fileName]);
+            }
+        } catch (err) {
+            // ignore storage deletion errors
+            console.warn("Could not parse storage file name for deletion", err);
+        }
+
+        // delete DB record
+        const { error } = await supabase.from("gallery").delete().eq("id", id);
+
+        setLoading(false);
+
+        if (error) return alert(error.message);
+
+        setImages((prev) => prev.filter((i) => i.id !== id));
+    }
+
     return (
         <div className="p-8 bg-gray-100 min-h-screen">
             <h1 className="text-3xl font-bold text-blue-900 mb-6">
@@ -100,7 +129,7 @@ export default function GalleryPage() {
                     placeholder="Image Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full border rounded-lg p-3 text-black"
+                    className="input-default"
                     required
                 />
 
@@ -109,7 +138,7 @@ export default function GalleryPage() {
                     placeholder="Category"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full border rounded-lg p-3 text-black"
+                    className="input-default"
                     required
                 />
 
@@ -117,14 +146,14 @@ export default function GalleryPage() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => setFile(e.target.files?.[0] || null)}
-                    className="w-full border rounded-lg p-3 text-black"
+                    className="input-default"
                     required
                 />
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="bg-blue-900 text-white px-6 py-3 rounded-lg"
+                    className="btn-primary text-on-primary"
                 >
                     {loading ? "Uploading..." : "Upload Image"}
                 </button>
@@ -139,9 +168,15 @@ export default function GalleryPage() {
                             className="w-full h-48 object-cover"
                         />
 
-                        <div className="p-4">
-                            <h3 className="font-semibold text-black">{img.title}</h3>
-                            <p className="text-gray-500">{img.category}</p>
+                        <div className="p-4 flex items-center justify-between gap-4">
+                            <div>
+                                <h3 className="font-semibold text-black">{img.title}</h3>
+                                <p className="text-gray-500">{img.category}</p>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => deleteImage(img.id, img.image_url)} className="btn-accent">Delete</button>
+                            </div>
                         </div>
                     </div>
                 ))}
