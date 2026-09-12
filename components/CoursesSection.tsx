@@ -9,6 +9,7 @@ interface Course {
   duration: string;
   fees: number;
   description: string;
+  image_url?: string | null;
 }
 
 export default function CoursesSection() {
@@ -31,16 +32,30 @@ export default function CoursesSection() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {courses.map((course) => (
-            <div key={course.id} className="rounded-2xl bg-white p-6 shadow">
-              <h3 className="text-2xl font-bold text-blue-900">
-                {course.title}
-              </h3>
+            <div key={course.id} className="overflow-hidden rounded-2xl bg-white shadow">
+              {course.image_url ? (
+                <img
+                  src={course.image_url}
+                  alt={course.title}
+                  className="h-52 w-full object-cover"
+                />
+              ) : (
+                <div className="flex h-52 w-full items-center justify-center bg-blue-100 text-sm font-medium uppercase tracking-wide text-blue-900">
+                  Course Image
+                </div>
+              )}
 
-              <p className="mt-3 text-gray-600">{course.description}</p>
+              <div className="p-6">
+                <h3 className="text-2xl font-bold text-blue-900">
+                  {course.title}
+                </h3>
 
-              <div className="mt-6 flex justify-between">
-                <span className="font-semibold">{course.duration}</span>
-                <span className="font-bold text-yellow-600">₹ {course.fees}</span>
+                <p className="mt-3 text-gray-600">{course.description}</p>
+
+                <div className="mt-6 flex justify-between">
+                  <span className="font-semibold">{course.duration}</span>
+                  <span className="font-bold text-yellow-600">₹ {course.fees}</span>
+                </div>
               </div>
             </div>
           ))}
