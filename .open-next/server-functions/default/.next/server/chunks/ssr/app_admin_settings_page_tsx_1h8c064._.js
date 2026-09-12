@@ -1,0 +1,3 @@
+module.exports=[81502,a=>{"use strict";var b=a.i(87924),c=a.i(72131);a.s(["default",0,function(){let[a,d]=(0,c.useState)("Elite English Academy");return(0,b.jsxs)("div",{className:"max-w-3xl",children:[(0,b.jsx)("h2",{className:"text-2xl font-bold text-blue-900 mb-4",children:"Site Settings"}),(0,b.jsxs)("form",{onSubmit:function(a){a.preventDefault(),alert("Settings saved (demo). Replace with real settings persistence.")},className:"space-y-4 bg-white p-6 rounded-lg shadow",children:[(0,b.jsx)("input",{value:a,onChange:a=>d(a.target.value),className:"input-default"}),(0,b.jsx)("button",{className:"btn-primary text-on-primary",children:"Save Settings"})]})]})}])}];
+
+//# sourceMappingURL=app_admin_settings_page_tsx_1h8c064._.js.map
