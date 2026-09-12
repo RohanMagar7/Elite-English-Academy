@@ -1,6 +1,8 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import Stats from "@/components/Stats";
 import AboutSection from "@/components/AboutSection";
+import WhyChooseUs from "@/components/WhyChooseUs";
 import CoursesSection from "@/components/CoursesSection";
 import NoticeSection from "@/components/NoticeCard";
 import GallerySection from "@/components/GalleryCard";
@@ -12,7 +14,9 @@ export default function Home() {
     <>
       <Navbar />
       <Hero />
+      <Stats />
       <AboutSection />
+      <WhyChooseUs />
       <CoursesSection />
       <NoticeSection />
       <CallToAction />
