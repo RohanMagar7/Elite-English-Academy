@@ -22,5 +22,7 @@
   "/notices/page": "app/notices/page.js",
   "/page": "app/page.js",
   "/profile/page": "app/profile/page.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/testimonials/page": "app/testimonials/page.js"
 }

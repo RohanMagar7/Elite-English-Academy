@@ -54,7 +54,7 @@
       ],
       "maximumRedirects": 3,
       "maximumResponseBody": 50000000,
-      "dangerouslyAllowLocalIP": false,
+      "dangerouslyAllowLocalIP": true,
       "dangerouslyAllowSVG": false,
       "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
       "contentDispositionType": "attachment",
@@ -64,7 +64,12 @@
           "search": ""
         }
       ],
-      "remotePatterns": [],
+      "remotePatterns": [
+        {
+          "protocol": "https",
+          "hostname": "cbapuswsyxcjoeavphtq.supabase.co"
+        }
+      ],
       "qualities": [
         75
       ],

@@ -104,7 +104,7 @@ body {
     textarea,
     select,
     button {
-      @apply text-gray-100 bg-gray-800;
+      @apply text-gray-100;
     }
   }
 }
@@ -170,19 +170,24 @@ body {
   }
 
   @keyframes floatWhatsApp {
+
     0%,
     100% {
       transform: translateY(0px);
     }
+
     20% {
       transform: translateY(-6px);
     }
+
     40% {
       transform: translateY(0px);
     }
+
     60% {
       transform: translateY(-4px);
     }
+
     80% {
       transform: translateY(0px);
     }

@@ -22,5 +22,7 @@
   "/notices/page": "/notices",
   "/page": "/",
   "/profile/page": "/profile",
+  "/robots.txt/route": "/robots.txt",
+  "/sitemap.xml/route": "/sitemap.xml",
   "/testimonials/page": "/testimonials"
 }
