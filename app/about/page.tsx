@@ -10,7 +10,7 @@ export default function AboutPage() {
             <Navbar />
             <AboutSection />
 
-            <section className="bg-white py-12 sm:py-16">
+            <section className="bg-white py-8 sm:py-10">
                 <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
                     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
                         <div>
@@ -55,7 +55,7 @@ export default function AboutPage() {
                                 With a strong academic foundation in English and a passion for mentoring, Prof. J. M. Wagh-Dhotre helps learners improve fluency, confidence, and real-world communication through focused guidance and practical teaching methods.
                             </p>
                             <div className="mt-6 rounded-2xl border border-blue-200 bg-white p-4 text-sm text-slate-700">
-                                <p><span className="font-bold text-blue-950">Expertise:</span> Spoken English, IELTS, Grammar, Personal Mentorship, Teacher Training</p>
+                                <p className="text-cyan-950"><span className="font-bold text-blue-950">Expertise:</span> Spoken English, IELTS, Grammar, Personal Mentorship, Teacher Training</p>
                             </div>
                         </div>
                     </div>

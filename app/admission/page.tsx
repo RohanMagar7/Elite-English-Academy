@@ -56,7 +56,7 @@ export default function AdmissionPage() {
         <>
             <Navbar />
 
-            <div className="min-h-screen bg-[#F8FBFF] py-12 sm:py-16">
+            <div className="min-h-screen bg-[#F8FBFF] py-8 sm:py-10">
                 <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10 xl:px-14">
                     <div className="mb-8 rounded-[2rem] bg-gradient-to-r from-[#0F172A] via-[#1D4ED8] to-[#2563EB] p-8 text-white shadow-[0_25px_60px_rgba(37,99,235,0.35)]">
                         <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]">
@@ -131,6 +131,8 @@ export default function AdmissionPage() {
                                     <option>8th</option>
                                     <option>9th</option>
                                     <option>10th</option>
+                                    <option>Confident English Teacher Program</option>
+
                                 </select>
 
                                 <select

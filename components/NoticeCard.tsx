@@ -24,7 +24,7 @@ export default function NoticeSection() {
     }, []);
 
     return (
-        <section className="bg-white py-12">
+        <section className="bg-white py-8">
             <div className="max-w-7xl mx-auto px-8">
                 <h2 className="text-center text-4xl font-bold text-blue-900 mb-10">
                     Latest Notices
@@ -37,18 +37,23 @@ export default function NoticeSection() {
                             initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.2 }}
-                            transition={{ duration: shouldReduceMotion ? 0 : 0.45, delay: shouldReduceMotion ? 0 : index * 0.06 }}
-                            className="rounded-xl border-l-4 border-yellow-400 bg-blue-50 p-5 shadow"
+                            transition={{
+                                duration: shouldReduceMotion ? 0 : 0.45,
+                                delay: shouldReduceMotion ? 0 : index * 0.06,
+                            }}
+                            className="rounded-lg border-l-4 border-yellow-400 bg-blue-50 px-4 py-3 shadow-sm hover:shadow-md transition-all"
                         >
-                            <span className="rounded-full bg-yellow-400 px-3 py-1 text-sm font-semibold text-blue-950">
+                            <span className="rounded-full bg-yellow-400 px-2.5 py-0.5 text-[11px] font-semibold text-blue-950">
                                 {notice.category}
                             </span>
 
-                            <h3 className="mt-3 text-2xl font-bold text-blue-900">
+                            <h3 className="mt-2 text-lg font-bold leading-tight text-blue-900">
                                 {notice.title}
                             </h3>
 
-                            <p className="mt-2 text-gray-600">{notice.description}</p>
+                            <p className="mt-1 text-sm leading-5 text-gray-600 line-clamp-2">
+                                {notice.description}
+                            </p>
                         </motion.div>
                     ))}
                 </div>

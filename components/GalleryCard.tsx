@@ -34,7 +34,7 @@ export default function GallerySection() {
     }, []);
 
     return (
-        <section className="bg-[#F8FBFF] py-12 sm:py-16">
+        <section className="bg-[#F8FBFF] py-8 sm:py-10">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
                 <div className="mb-10 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
                     <div>

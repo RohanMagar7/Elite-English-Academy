@@ -47,7 +47,7 @@ export default function ContactPage() {
         <>
             <Navbar />
 
-            <main className="bg-slate-50 py-14 sm:py-16">
+            <main className="bg-slate-50 py-8 sm:py-10">
                 <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
                     <div className="grid gap-8 lg:grid-cols-[1.08fr_1.32fr]">
                         <section className="rounded-[2rem] border border-blue-100 bg-white p-6 shadow-[0_18px_40px_rgba(37,99,235,0.08)] sm:p-8">

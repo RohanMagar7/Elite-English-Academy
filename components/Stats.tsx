@@ -55,7 +55,7 @@ export default function Stats() {
     const shouldReduceMotion = useReducedMotion();
 
     return (
-        <section className="bg-[#F8FBFF] py-12 sm:py-16">
+        <section className="bg-[#F8FBFF] py-8 sm:py-10">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
                     {stats.map(({ icon: Icon, value, suffix, label }) => (

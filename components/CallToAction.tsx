@@ -6,9 +6,9 @@ import { academy } from "@/lib/site";
 
 export default function CallToAction() {
     return (
-        <section className="py-12 sm:py-16">
+        <section className="py-8 sm:py-10">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
-                <div className="overflow-hidden rounded-[2rem] bg-gradient-to-r from-[#0F172A] via-[#1D4ED8] to-[#2563EB] p-6 shadow-[0_25px_60px_rgba(37,99,235,0.35)] sm:p-8 lg:p-12">
+                <div className="overflow-hidden rounded-[2rem]  from-[#0F172A] via-[#1D4ED8] to-[#2563EB] p-6 shadow-[0_25px_60px_rgba(37,99,235,0.35)] sm:p-8 lg:p-12">
                     <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
                         <div className="max-w-2xl text-white">
                             <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-blue-50">
