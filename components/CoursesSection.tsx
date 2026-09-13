@@ -1,9 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { Mail, MessageCircle, Phone } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { academy } from "@/lib/site";
 
 interface Course {
   id: string;
@@ -17,6 +20,7 @@ interface Course {
 
 export default function CoursesSection() {
   const [courses, setCourses] = useState<Course[]>([]);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     async function load() {
@@ -46,11 +50,11 @@ export default function CoursesSection() {
           {courses.map((course, index) => (
             <motion.div
               key={course.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.45, delay: index * 0.05, ease: "easeOut" }}
-              whileHover={{ y: -6 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.45, delay: shouldReduceMotion ? 0 : index * 0.05, ease: "easeOut" }}
+              whileHover={shouldReduceMotion ? undefined : { y: -6 }}
               className="group overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-[0_18px_50px_rgba(37,99,235,0.06)]"
             >
               <div className="relative overflow-hidden">
@@ -88,9 +92,34 @@ export default function CoursesSection() {
                   <span className="text-lg font-black text-[#2563EB]">₹ {course.fees}</span>
                 </div>
 
-                <button className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-[#2563EB] px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">
-                  Enroll Now
-                </button>
+                <div className="mt-6 grid gap-2 sm:grid-cols-2">
+                  <Link
+                    href="/admission"
+                    className="inline-flex w-full items-center justify-center rounded-xl bg-[#2563EB] px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                  >
+                    Enroll Now
+                  </Link>
+                  <a
+                    href={`${academy.whatsappHref}?text=${encodeURIComponent(`Hello Elite English Academy, I want to enquire about ${course.title}.`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700 transition hover:bg-green-100"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    WhatsApp
+                  </a>
+                </div>
+
+                <div className="mt-3 space-y-2 text-sm text-slate-700">
+                  <a href={academy.phoneHref} className="flex items-center gap-2 hover:text-blue-700">
+                    <Phone className="h-4 w-4 text-[#2563EB]" />
+                    {academy.phoneDisplay}
+                  </a>
+                  <a href={academy.emailHref} className="flex items-center gap-2 hover:text-blue-700">
+                    <Mail className="h-4 w-4 text-[#2563EB]" />
+                    {academy.email}
+                  </a>
+                </div>
               </div>
             </motion.div>
           ))}

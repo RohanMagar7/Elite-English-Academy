@@ -2,6 +2,7 @@
 
 import { MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { academy } from "@/lib/site";
 
 export default function FloatingWhatsApp() {
     const [visible, setVisible] = useState(true);
@@ -26,7 +27,7 @@ export default function FloatingWhatsApp() {
 
     return (
         <a
-            href="https://wa.me/8801700000000"
+            href={`${academy.whatsappHref}?text=${encodeURIComponent(academy.whatsappMessage)}`}
             target="_blank"
             rel="noreferrer"
             aria-label="Chat on WhatsApp"

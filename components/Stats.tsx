@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
     ArrowUpRight,
     BookOpen,
@@ -52,6 +52,8 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export default function Stats() {
+    const shouldReduceMotion = useReducedMotion();
+
     return (
         <section className="bg-[#F8FBFF] py-12 sm:py-16">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
@@ -59,10 +61,11 @@ export default function Stats() {
                     {stats.map(({ icon: Icon, value, suffix, label }) => (
                         <motion.div
                             key={label}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.3 }}
-                            transition={{ duration: 0.5, ease: "easeOut" }}
+                            transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" }}
+                            whileHover={shouldReduceMotion ? undefined : { y: -4 }}
                             className="group rounded-2xl border border-blue-100 bg-white p-6 shadow-[0_20px_50px_rgba(37,99,235,0.08)] transition-transform duration-300 hover:-translate-y-1"
                         >
                             <div className="mb-5 flex items-center justify-between">

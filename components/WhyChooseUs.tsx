@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
     BadgeCheck,
     BookOpen,
@@ -44,6 +44,8 @@ const features = [
 ];
 
 export default function WhyChooseUs() {
+    const shouldReduceMotion = useReducedMotion();
+
     return (
         <section className="bg-[#F8FBFF] py-12 sm:py-16">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
@@ -60,11 +62,11 @@ export default function WhyChooseUs() {
                     {features.map(({ icon: Icon, title, text }, index) => (
                         <motion.div
                             key={title}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.2 }}
-                            transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.05 }}
-                            whileHover={{ y: -6 }}
+                            transition={{ duration: shouldReduceMotion ? 0 : 0.4, ease: "easeOut", delay: shouldReduceMotion ? 0 : index * 0.05 }}
+                            whileHover={shouldReduceMotion ? undefined : { y: -6 }}
                             className="rounded-2xl border border-blue-100 bg-white p-6 shadow-[0_18px_50px_rgba(37,99,235,0.05)] transition-all duration-300"
                         >
                             <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-[#2563EB]">

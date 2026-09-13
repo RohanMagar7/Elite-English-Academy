@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 const features = [
@@ -11,14 +11,16 @@ const features = [
 ];
 
 export default function AboutSection() {
+    const shouldReduceMotion = useReducedMotion();
+
     return (
         <section className="bg-white py-12 sm:py-16">
             <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.05fr_1.35fr] lg:px-10 xl:px-14">
                 <motion.div
-                    initial={{ opacity: 0, x: -30 }}
+                    initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" }}
                     className="flex justify-center lg:justify-start"
                 >
                     <img
@@ -29,10 +31,10 @@ export default function AboutSection() {
                 </motion.div>
 
                 <motion.div
-                    initial={{ opacity: 0, x: 30 }}
+                    initial={shouldReduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.3 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    transition={{ duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" }}
                     className="max-w-2xl"
                 >
                     <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-[#2563EB]">
@@ -51,10 +53,10 @@ export default function AboutSection() {
                         {features.map((feature) => (
                             <motion.div
                                 key={feature}
-                                initial={{ opacity: 0, y: 10 }}
+                                initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true, amount: 0.4 }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                transition={{ duration: shouldReduceMotion ? 0 : 0.4, ease: "easeOut" }}
                                 className="flex items-center gap-3 text-base font-medium text-slate-700"
                             >
                                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2563EB] text-white shadow-sm">

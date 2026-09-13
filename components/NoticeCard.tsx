@@ -1,10 +1,12 @@
 "use client";
 
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function NoticeSection() {
     const [notices, setNotices] = useState<any[]>([]);
+    const shouldReduceMotion = useReducedMotion();
 
     useEffect(() => {
         async function load() {
@@ -29,8 +31,15 @@ export default function NoticeSection() {
                 </h2>
 
                 <div className="space-y-5">
-                    {notices.map((notice) => (
-                        <div key={notice.id} className="rounded-xl border-l-4 border-yellow-400 bg-blue-50 p-5 shadow">
+                    {notices.map((notice, index) => (
+                        <motion.div
+                            key={notice.id}
+                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: shouldReduceMotion ? 0 : 0.45, delay: shouldReduceMotion ? 0 : index * 0.06 }}
+                            className="rounded-xl border-l-4 border-yellow-400 bg-blue-50 p-5 shadow"
+                        >
                             <span className="rounded-full bg-yellow-400 px-3 py-1 text-sm font-semibold text-blue-950">
                                 {notice.category}
                             </span>
@@ -40,7 +49,7 @@ export default function NoticeSection() {
                             </h3>
 
                             <p className="mt-2 text-gray-600">{notice.description}</p>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>

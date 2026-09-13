@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MessageCircle, Phone } from "lucide-react";
+import { academy } from "@/lib/site";
 
 export default function CallToAction() {
     return (
@@ -23,7 +24,7 @@ export default function CallToAction() {
 
                         <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
                             <Link
-                                href="https://wa.me/8801700000000"
+                                href={`${academy.whatsappHref}?text=${encodeURIComponent(academy.whatsappMessage)}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#1D4ED8] shadow-lg transition hover:bg-blue-50"
@@ -33,11 +34,11 @@ export default function CallToAction() {
                             </Link>
 
                             <Link
-                                href="/admission"
+                                href={academy.phoneHref}
                                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white backdrop-blur-sm transition hover:bg-white/15"
                             >
                                 <Phone className="h-4 w-4" />
-                                Book Free Demo Class
+                                Call Now
                             </Link>
                         </div>
                     </div>

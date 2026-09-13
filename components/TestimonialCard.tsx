@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -30,6 +30,7 @@ export default function TestimonialSection() {
     const [loading, setLoading] = useState(false);
     const [notice, setNotice] = useState("");
     const [showForm, setShowForm] = useState(false);
+    const shouldReduceMotion = useReducedMotion();
 
     async function loadTestimonials() {
         const { data, error } = await supabase
@@ -199,10 +200,11 @@ export default function TestimonialSection() {
                         items.map((item, index) => (
                             <motion.article
                                 key={item.id}
-                                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30, y: 20 }}
+                                initial={shouldReduceMotion ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: index % 2 === 0 ? -30 : 30, y: 20 }}
                                 whileInView={{ opacity: 1, x: 0, y: 0 }}
                                 viewport={{ once: true, amount: 0.3 }}
-                                transition={{ duration: 0.5, delay: index * 0.12 }}
+                                transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : index * 0.12 }}
+                                whileHover={shouldReduceMotion ? undefined : { y: -6 }}
                                 className="min-w-[280px] flex-1 snap-center rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-[0_16px_40px_rgba(37,99,235,0.08)] md:min-w-0"
                             >
                                 <div className="mb-5 flex items-center gap-4">

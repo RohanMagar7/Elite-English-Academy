@@ -14,40 +14,47 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eliteenglishacademy.magarohan8.workers.dev"),
+  alternates: {
+    canonical: "https://eliteenglishacademy.magarohan8.workers.dev",
+  },
 
   title: {
-    default: "Elite English Academy | Spoken English & IELTS Coaching",
+    default: "Elite English Academy | Spoken English, IELTS & Teacher Training",
     template: "%s | Elite English Academy",
   },
 
   description:
-    "Elite English Academy helps students improve Spoken English, Grammar, IELTS, PTE, and Communication Skills through expert guidance and practical learning.",
+    "Elite English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
 
   keywords: [
     "Elite English Academy",
-    "Spoken English Classes",
-    "IELTS Coaching",
-    "PTE Coaching",
-    "English Grammar Classes",
-    "Communication Skills",
-    "English Academy Maharashtra",
-    "Online Spoken English",
+    "Spoken English Georai",
+    "IELTS Coaching Beed",
+    "English Teacher Training Maharashtra",
+    "Personal Mentorship Georai",
+    "English Classes Beed",
+    "Grammar Classes Georai",
+    "Phonics Training Beed",
   ],
 
-  authors: [{ name: "Elite English Academy" }],
+  authors: [{ name: "Prof. J. M. Wagh-Dhotre" }],
   creator: "Elite English Academy",
+  publisher: "Elite English Academy",
 
   openGraph: {
-    title: "Elite English Academy | Spoken English & IELTS Coaching",
+    title: "Elite English Academy | Spoken English, IELTS & Teacher Training",
     description:
-      "Join Elite English Academy for Spoken English, IELTS, PTE, Grammar, and Communication Skills training.",
+      "Elite English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
     url: "https://eliteenglishacademy.magarohan8.workers.dev",
     siteName: "Elite English Academy",
     locale: "en_IN",
     type: "website",
+    phoneNumbers: ["+91 88887 11228"],
+    emails: ["elitejamesw182025@gmail.com"],
+    countryName: "India",
     images: [
       {
-        url: "/og-image.jpg", // Place og-image.jpg inside /public
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Elite English Academy",
@@ -57,15 +64,17 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Elite English Academy | Spoken English & IELTS Coaching",
+    title: "Elite English Academy | Spoken English, IELTS & Teacher Training",
     description:
-      "Improve your English with Spoken English, IELTS, PTE, Grammar, and Communication Skills courses.",
+      "Elite English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
     images: ["/og-image.jpg"],
+    site: "@EliteEnglishAcademy",
+    creator: "@EliteEnglishAcademy",
   },
 
   icons: {
-    icon: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    apple: "/favicon.svg",
   },
 
   robots: {

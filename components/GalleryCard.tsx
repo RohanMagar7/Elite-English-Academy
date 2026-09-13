@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 
 interface GalleryImage {
@@ -16,6 +17,7 @@ const imageHeights = ["h-48", "h-64", "h-80", "h-56", "h-72", "h-60"];
 
 export default function GallerySection() {
     const [images, setImages] = useState<GalleryImage[]>([]);
+    const shouldReduceMotion = useReducedMotion();
 
     useEffect(() => {
         async function load() {
@@ -54,7 +56,15 @@ export default function GallerySection() {
 
                 <div className="columns-1 gap-5 sm:columns-2 xl:columns-3">
                     {images.map((img, index) => (
-                        <div key={img.id} className="group mb-5 overflow-hidden rounded-[1.5rem]">
+                        <motion.div
+                            key={img.id}
+                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, amount: 0.15 }}
+                            transition={{ duration: shouldReduceMotion ? 0 : 0.45, delay: shouldReduceMotion ? 0 : index * 0.04 }}
+                            whileHover={shouldReduceMotion ? undefined : { y: -6 }}
+                            className="group mb-5 overflow-hidden rounded-[1.5rem]"
+                        >
                             <div className={`relative overflow-hidden rounded-[1.5rem] ${imageHeights[index % imageHeights.length]}`}>
                                 <Image
                                     src={img.image_url}
@@ -65,7 +75,7 @@ export default function GallerySection() {
                                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>
