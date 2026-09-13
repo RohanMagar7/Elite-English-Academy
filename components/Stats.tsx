@@ -53,7 +53,7 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 
 export default function Stats() {
     return (
-        <section className="bg-[#F8FBFF] py-16 sm:py-20">
+        <section className="bg-[#F8FBFF] py-12 sm:py-16">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
                     {stats.map(({ icon: Icon, value, suffix, label }) => (

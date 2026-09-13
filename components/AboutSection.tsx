@@ -12,7 +12,7 @@ const features = [
 
 export default function AboutSection() {
     return (
-        <section className="bg-white py-18 sm:py-20">
+        <section className="bg-white py-12 sm:py-16">
             <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.05fr_1.35fr] lg:px-10 xl:px-14">
                 <motion.div
                     initial={{ opacity: 0, x: -30 }}

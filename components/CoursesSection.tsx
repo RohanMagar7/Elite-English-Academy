@@ -31,7 +31,7 @@ export default function CoursesSection() {
   }, []);
 
   return (
-    <section className="bg-[#F8FBFF] py-16 sm:py-20">
+    <section className="bg-[#F8FBFF] py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
         <div className="mb-10 text-center">
           <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-[#2563EB]">
