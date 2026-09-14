@@ -2,23 +2,22 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient, parseCookieHeader } from "@supabase/ssr";
 
-/**
- * Next.js 16 Proxy (formerly middleware).
- * Protects all /admin pages and /api/admin/* routes.
- * - Unauthenticated users are redirected to /login (pages) or get 401 (API).
- * - Expired sessions are refreshed; if refresh fails, user is signed out.
- */
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Protect admin pages and admin APIs only
   const isAdminPage = pathname.startsWith("/admin");
   const isAdminApi = pathname.startsWith("/api/admin");
+
+  // Allow login page without authentication
+  if (pathname === "/login") {
+    return NextResponse.next();
+  }
 
   if (!isAdminPage && !isAdminApi) {
     return NextResponse.next();
   }
 
-  // Create a Supabase server client bound to this request/response
   const response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -31,39 +30,34 @@ export async function proxy(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return parseCookieHeader(request.headers.get("Cookie") ?? "");
+          return parseCookieHeader(request.headers.get("cookie") ?? "");
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
         },
       },
     }
   );
 
-  // IMPORTANT: Do not run code between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with being randomly logged out and have mysterious auth bugs.
+  // Verify logged-in user
   const {
     data: { user },
-    error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) {
-    // Session is invalid or expired — clear auth cookies
-    await supabase.auth.signOut();
-
+  // Not logged in → redirect to admin login
+  if (!user) {
     if (isAdminApi) {
       return NextResponse.json(
-        { error: "Unauthorized. Please log in again." },
+        { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    // Redirect to login page
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
+
     return NextResponse.redirect(loginUrl);
   }
 
