@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     countryName: "India",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/vercel.png",
         width: 1200,
         height: 630,
         alt: "Elite English Academy",
@@ -67,14 +67,14 @@ export const metadata: Metadata = {
     title: "Elite English Academy | Spoken English, IELTS & Teacher Training",
     description:
       "Elite English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
-    images: ["/og-image.jpg"],
+    images: ["/vercel.png"],
     site: "@EliteEnglishAcademy",
     creator: "@EliteEnglishAcademy",
   },
 
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    apple: "/favicon.svg",
+    icon: [{ url: "/vercel.png", type: "image/svg+xml+png" }],
+    apple: "/vercel.png",
   },
 
   robots: {
