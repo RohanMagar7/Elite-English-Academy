@@ -9,6 +9,7 @@ interface Course {
     duration: string;
     fees: number;
     description: string | null;
+    image_url?: string | null;
 }
 
 export default function CoursesPage() {
@@ -19,6 +20,27 @@ export default function CoursesPage() {
     const [duration, setDuration] = useState("");
     const [fees, setFees] = useState("");
     const [description, setDescription] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
+    const [file, setFile] = useState<File | null>(null);
+
+    async function uploadCourseImage(selectedFile: File): Promise<string> {
+        const buckets = ["courses", "gallery"];
+        let lastError: Error | null = null;
+
+        for (const bucket of buckets) {
+            const fileName = `${Date.now()}-${selectedFile.name.replace(/\s+/g, "-")}`;
+            const { error } = await supabase.storage.from(bucket).upload(fileName, selectedFile);
+
+            if (!error) {
+                const { data } = supabase.storage.from(bucket).getPublicUrl(fileName);
+                return data.publicUrl;
+            }
+
+            lastError = error;
+        }
+
+        throw new Error(lastError?.message || "Unable to upload course image to storage.");
+    }
 
     // Fetch all courses
     async function getCourses() {
@@ -50,31 +72,44 @@ export default function CoursesPage() {
 
         setLoading(true);
 
-        const { error } = await supabase.from("courses").insert([
-            {
-                title,
-                duration,
-                fees: Number(fees),
-                description,
-            },
-        ]);
+        try {
+            let finalImageUrl = imageUrl.trim() || null;
 
-        setLoading(false);
+            if (file) {
+                finalImageUrl = await uploadCourseImage(file);
+            }
 
-        if (error) {
+            const { error } = await supabase.from("courses").insert([
+                {
+                    title,
+                    duration,
+                    fees: Number(fees),
+                    description,
+                    image_url: finalImageUrl,
+                },
+            ]);
+
+            if (error) {
+                console.error(error);
+                alert(error.message);
+                return;
+            }
+
+            alert("Course Added Successfully!");
+
+            setTitle("");
+            setDuration("");
+            setFees("");
+            setDescription("");
+            setImageUrl("");
+            setFile(null);
+            getCourses();
+        } catch (error) {
             console.error(error);
-            alert(error.message);
-            return;
+            alert(error instanceof Error ? error.message : "Unable to upload course image.");
+        } finally {
+            setLoading(false);
         }
-
-        alert("Course Added Successfully!");
-
-        setTitle("");
-        setDuration("");
-        setFees("");
-        setDescription("");
-
-        getCourses();
     }
 
     // Delete Course
@@ -129,6 +164,21 @@ export default function CoursesPage() {
                         className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
 
+                    <input
+                        type="url"
+                        placeholder="Course Image URL (optional)"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black file:mr-4 file:rounded file:border-0 file:bg-blue-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+                    />
+
                     <textarea
                         placeholder="Course Description"
                         value={description}
@@ -177,8 +227,23 @@ export default function CoursesPage() {
                         ) : (
                             courses.map((course) => (
                                 <tr key={course.id} className="border-b hover:bg-gray-50">
-                                    <td className="p-3 font-medium text-gray-900">
-                                        {course.title}
+                                    <td className="p-3">
+                                        <div className="flex items-center gap-3">
+                                            {course.image_url ? (
+                                                <img
+                                                    src={course.image_url}
+                                                    alt={course.title}
+                                                    className="h-12 w-12 rounded-lg object-cover"
+                                                />
+                                            ) : (
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-[10px] font-semibold text-blue-900">
+                                                    IMG
+                                                </div>
+                                            )}
+                                            <span className="font-medium text-gray-900">
+                                                {course.title}
+                                            </span>
+                                        </div>
                                     </td>
 
                                     <td className="p-3 text-gray-700">
