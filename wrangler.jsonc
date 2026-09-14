@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "eliteenglishacademy",
+	"name": "elite-english-academy",
 	"compatibility_date": "2026-09-11",
 	"compatibility_flags": [
 		"nodejs_compat",
@@ -15,7 +15,7 @@
 		{
 			
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "eliteenglishacademy"
+			"service": "elite-english-academy"
 		}
 	],
 	"images": {
