@@ -31,7 +31,7 @@ export default function Navbar() {
     { name: "About", href: "/about" },
     { name: "Courses", href: "/courses" },
     { name: "Gallery", href: "/gallery" },
-    { name: "Notices", href: "/notices" },
+    // { name: "Notices", href: "/notices" },
     { name: "Admission", href: "/admission" },
     { name: "Contact", href: "/contact" },
   ];
@@ -47,14 +47,13 @@ export default function Navbar() {
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
-          href="/"
+          href="/vercel.png"
           className="flex items-center gap-3 min-w-0"
           aria-label="Elite English Academy Home"
         >
           <div className="shrink-0 rounded-xl bg-yellow-400 p-2 text-blue-950 shadow-md">
             <GraduationCap size={24} />
           </div>
-
           <div className="min-w-0">
             <h1 className="truncate text-sm sm:text-base lg:text-lg font-extrabold tracking-wide text-yellow-400">
               {academy.name}

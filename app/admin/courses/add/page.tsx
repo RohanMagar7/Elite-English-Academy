@@ -4,7 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function AddCourse() {
-    const [form, setForm] = useState({ title: "", duration: "", fees: "", description: "", image_url: "" });
+    const [form, setForm] = useState({ title: "", duration: "", fees: "", description: "", eligibility: "", image_url: "" });
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -47,12 +47,13 @@ export default function AddCourse() {
                 duration: form.duration,
                 fees: Number(form.fees),
                 description: form.description,
+                eligibility: form.eligibility.trim() || null,
                 image_url: imageUrl,
             };
             const { error } = await supabase.from("courses").insert([payload]);
             if (error) return alert(error.message);
             alert("Course added.");
-            setForm({ title: "", duration: "", fees: "", description: "", image_url: "" });
+            setForm({ title: "", duration: "", fees: "", description: "", eligibility: "", image_url: "" });
             setFile(null);
         } catch (error) {
             alert(error instanceof Error ? error.message : "Unable to upload course image.");
@@ -69,6 +70,7 @@ export default function AddCourse() {
                 <input name="title" placeholder="Course Title" value={form.title} onChange={change} className="input-default" required />
                 <input name="duration" placeholder="Duration (e.g., 3 months)" value={form.duration} onChange={change} className="input-default" />
                 <input name="fees" placeholder="Fees" value={form.fees} onChange={change} className="input-default" />
+                <input name="eligibility" placeholder="Eligibility (optional)" value={form.eligibility} onChange={change} className="input-default" />
                 <input name="image_url" placeholder="Course Image URL (optional)" value={form.image_url} onChange={change} className="input-default" />
                 <input
                     type="file"

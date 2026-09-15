@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { MessageCircle } from "lucide-react";
 import { academy } from "@/lib/site";
 import { supabase } from "@/lib/supabase";
 
@@ -14,6 +15,7 @@ export default function AdmissionPage() {
         email: "",
         class_name: "",
         course: "",
+        preferred_batch: "",
         message: "",
     });
 
@@ -48,6 +50,7 @@ export default function AdmissionPage() {
             email: "",
             class_name: "",
             course: "",
+            preferred_batch: "",
             message: "",
         });
     }
@@ -149,6 +152,19 @@ export default function AdmissionPage() {
                                     <option>Personal Mentorship</option>
                                 </select>
 
+                                <select
+                                    name="preferred_batch"
+                                    value={form.preferred_batch}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                                >
+                                    <option value="">Preferred Batch</option>
+                                    <option>Morning</option>
+                                    <option>Afternoon</option>
+                                    <option>Evening</option>
+                                    <option>Weekend</option>
+                                </select>
+
                                 <textarea
                                     name="message"
                                     rows={4}
@@ -164,6 +180,18 @@ export default function AdmissionPage() {
                                 >
                                     {loading ? "Submitting..." : "Submit Enquiry"}
                                 </button>
+
+                                <a
+                                    href={`${academy.whatsappHref}?text=${encodeURIComponent(
+                                        `Hello Elite English Academy, I'd like to know more about the "${form.course || "course"}" (${form.preferred_batch || "batch"}).`
+                                    )}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-green-500 bg-green-50 p-4 font-semibold text-green-700 transition hover:bg-green-100"
+                                >
+                                    <MessageCircle className="h-5 w-5" />
+                                    Enquire on WhatsApp
+                                </a>
                             </form>
                         </div>
 

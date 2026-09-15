@@ -1,6 +1,6 @@
 "use client";
 
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Camera, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -110,6 +110,50 @@ export default function ContactPage() {
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Address</p>
                                         <p className="mt-2 text-base font-medium text-slate-700">{academy.address}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                        <Clock className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Business Hours</p>
+                                        <p className="mt-2 text-base font-medium text-slate-700">
+                                            Mon – Sat: 7:00 AM – 9:00 PM
+                                        </p>
+                                        <p className="text-base font-medium text-slate-700">
+                                            Sunday: Weekend batches (by schedule)
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="flex items-center gap-2">
+                                        <a
+                                            aria-label="WhatsApp"
+                                            href={`${academy.whatsappHref}?text=${encodeURIComponent(academy.whatsappMessage)}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#25D366] text-white transition hover:opacity-90"
+                                        >
+                                            <MessageCircle className="h-5 w-5" />
+                                        </a>
+                                        <a
+                                            aria-label="Instagram"
+                                            href={academy.instagramHref}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-500 text-white transition hover:opacity-90"
+                                        >
+                                            <Camera className="h-5 w-5" />
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Follow Us</p>
+                                        <p className="mt-2 text-base font-medium text-slate-700">
+                                            Stay updated with our latest batches & events
+                                        </p>
                                     </div>
                                 </div>
                             </div>

@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
+import { MessageCircle, Sparkles } from "lucide-react";
+import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
 import { academy } from "@/lib/site";
 
@@ -16,11 +17,13 @@ interface Course {
   description: string | null;
   image_url?: string | null;
   mode?: string | null;
+  eligibility?: string | null;
 }
 
 export default function CoursesSection() {
   const [courses, setCourses] = useState<Course[]>([]);
-  const shouldReduceMotion = useReducedMotion();
+  // SSR-safe: false during SSR + first client render, so markup matches.
+  const reduceMotion = useSafeReducedMotion();
 
   useEffect(() => {
     async function loadCourses() {
@@ -56,19 +59,15 @@ export default function CoursesSection() {
           {courses.map((course, index) => (
             <motion.div
               key={course.id}
-              initial={
-                shouldReduceMotion
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 20 }
-              }
+              initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{
-                duration: shouldReduceMotion ? 0 : 0.45,
-                delay: shouldReduceMotion ? 0 : index * 0.05,
+                duration: reduceMotion ? 0 : 0.45,
+                delay: reduceMotion ? 0 : index * 0.05,
                 ease: "easeOut",
               }}
-              whileHover={shouldReduceMotion ? undefined : { y: -5 }}
+              whileHover={!reduceMotion ? { y: -5 } : undefined}
               className="group flex flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-md transition-all duration-300 hover:shadow-lg"
             >
               {/* Course Image */}
@@ -117,6 +116,14 @@ export default function CoursesSection() {
                     ₹ {course.fees.toLocaleString("en-IN")}
                   </span>
                 </div>
+
+                {/* Eligibility */}
+                {course.eligibility ? (
+                  <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                    <Sparkles className="h-3.5 w-3.5 text-yellow-500" />
+                    Eligibility: {course.eligibility}
+                  </p>
+                ) : null}
 
                 {/* Buttons */}
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">

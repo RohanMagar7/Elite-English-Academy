@@ -10,6 +10,7 @@ interface Course {
     fees: number;
     description: string | null;
     image_url?: string | null;
+    eligibility?: string | null;
 }
 
 export default function CoursesPage() {
@@ -20,6 +21,7 @@ export default function CoursesPage() {
     const [duration, setDuration] = useState("");
     const [fees, setFees] = useState("");
     const [description, setDescription] = useState("");
+    const [eligibility, setEligibility] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [file, setFile] = useState<File | null>(null);
 
@@ -85,6 +87,7 @@ export default function CoursesPage() {
                     duration,
                     fees: Number(fees),
                     description,
+                    eligibility: eligibility.trim() || null,
                     image_url: finalImageUrl,
                 },
             ]);
@@ -101,6 +104,7 @@ export default function CoursesPage() {
             setDuration("");
             setFees("");
             setDescription("");
+            setEligibility("");
             setImageUrl("");
             setFile(null);
             getCourses();
@@ -161,6 +165,14 @@ export default function CoursesPage() {
                         placeholder="Fees"
                         value={fees}
                         onChange={(e) => setFees(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Eligibility (optional)"
+                        value={eligibility}
+                        onChange={(e) => setEligibility(e.target.value)}
                         className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
 

@@ -13,6 +13,10 @@ import {
     GraduationCap,
     LogOut,
     X,
+    Clock,
+    CircleHelp,
+    Trophy,
+    UserCheck,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -20,9 +24,13 @@ import { useRouter } from "next/navigation";
 const menu = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Courses", href: "/admin/courses", icon: BookOpen },
+    { name: "Trainers", href: "/admin/trainers", icon: UserCheck },
+    { name: "Batches", href: "/admin/batches", icon: Clock },
+    { name: "Success Stories", href: "/admin/success-stories", icon: Trophy },
+    { name: "Testimonials", href: "/admin/testimonials", icon: Star },
+    { name: "FAQs", href: "/admin/faqs", icon: CircleHelp },
     { name: "Gallery", href: "/admin/gallery", icon: Image },
     { name: "Notices", href: "/admin/notices", icon: Bell },
-    { name: "Testimonials", href: "/admin/testimonials", icon: Star },
     { name: "Admissions", href: "/admin/admissions", icon: Users },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

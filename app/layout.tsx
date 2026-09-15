@@ -19,15 +19,15 @@ export const metadata: Metadata = {
   },
 
   title: {
-    default: "Elite English Academy | Spoken English, IELTS & Teacher Training",
-    template: "%s | Elite English Academy",
+    default: "'Elite's' English Academy | Spoken English, IELTS & Teacher Training",
+    template: "%s | 'Elite's' English Academy",
   },
 
   description:
-    "Elite English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
+    "'Elite's' English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
 
   keywords: [
-    "Elite English Academy",
+    "'Elite's' English Academy",
     "Spoken English Georai",
     "IELTS Coaching Beed",
     "English Teacher Training Maharashtra",
@@ -38,15 +38,15 @@ export const metadata: Metadata = {
   ],
 
   authors: [{ name: "Prof. J. M. Wagh-Dhotre" }],
-  creator: "Elite English Academy",
-  publisher: "Elite English Academy",
+  creator: "'Elite's' English Academy",
+  publisher: "'Elite's' English Academy",
 
   openGraph: {
-    title: "Elite English Academy | Spoken English, IELTS & Teacher Training",
+    title: "'Elite's' English Academy | Spoken English, IELTS & Teacher Training",
     description:
-      "Elite English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
+      "'Elite's' English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
     url: "https://eliteenglishacademy.magarohan8.workers.dev",
-    siteName: "Elite English Academy",
+    siteName: "'Elite's' English Academy",
     locale: "en_IN",
     type: "website",
     phoneNumbers: ["+91 88887 11228"],
@@ -57,16 +57,16 @@ export const metadata: Metadata = {
         url: "/vercel.png",
         width: 1200,
         height: 630,
-        alt: "Elite English Academy",
+        alt: "'Elite's' English Academy",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Elite English Academy | Spoken English, IELTS & Teacher Training",
+    title: "'Elite's' English Academy | Spoken English, IELTS & Teacher Training",
     description:
-      "Elite English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
+      "'Elite's' English Academy in Georai, Beed offers Spoken English, IELTS, Grammar, Phonics, Teacher Training, and Personal Mentorship programs with expert guidance from Prof. J. M. Wagh-Dhotre.",
     images: ["/vercel.png"],
     site: "@EliteEnglishAcademy",
     creator: "@EliteEnglishAcademy",

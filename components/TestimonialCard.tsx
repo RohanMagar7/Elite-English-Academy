@@ -1,7 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
 
 type Testimonial = {
@@ -30,7 +32,30 @@ export default function TestimonialSection() {
     const [loading, setLoading] = useState(false);
     const [notice, setNotice] = useState("");
     const [showForm, setShowForm] = useState(false);
-    const shouldReduceMotion = useReducedMotion();
+    const [activeIndex, setActiveIndex] = useState(0);
+    const listRef = useRef<HTMLDivElement>(null);
+    const reduceMotion = useSafeReducedMotion();
+
+    // Auto-advance the testimonials carousel
+    useEffect(() => {
+        if (items.length <= 1) return;
+
+        const timer = setInterval(() => {
+            setActiveIndex((prev) => (prev + 1) % items.length);
+        }, 5000);
+
+        return () => clearInterval(timer);
+    }, [items.length]);
+
+    // Scroll the carousel to the active card
+    useEffect(() => {
+        const el = listRef.current;
+        if (!el) return;
+        const child = el.children[activeIndex] as HTMLElement | undefined;
+        if (child) {
+            el.scrollTo({ left: child.offsetLeft - el.offsetLeft - 16, behavior: "smooth" });
+        }
+    }, [activeIndex]);
 
     async function loadTestimonials() {
         const { data, error } = await supabase
@@ -191,7 +216,53 @@ export default function TestimonialSection() {
                     </div>
                 )}
 
-                <div className="mt-10 flex gap-5 overflow-x-auto pb-4 md:grid md:grid-cols-3 md:overflow-visible">
+                <div className="mt-8 flex items-center justify-center gap-3">
+                    <button
+                        type="button"
+                        aria-label="Previous testimonial"
+                        onClick={() =>
+                            setActiveIndex((prev) =>
+                                items.length > 0 ? (prev - 1 + items.length) % items.length : 0
+                            )
+                        }
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-white text-[#2563EB] transition hover:bg-blue-50 disabled:opacity-40"
+                        disabled={items.length <= 1}
+                    >
+                        <ChevronLeft className="h-5 w-5" />
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                        {items.map((_, i) => (
+                            <button
+                                key={i}
+                                type="button"
+                                aria-label={`Go to testimonial ${i + 1}`}
+                                onClick={() => setActiveIndex(i)}
+                                className={`h-2.5 rounded-full transition-all ${
+                                    i === activeIndex
+                                        ? "w-7 bg-[#2563EB]"
+                                        : "w-2.5 bg-blue-200 hover:bg-blue-300"
+                                }`}
+                            />
+                        ))}
+                    </div>
+
+                    <button
+                        type="button"
+                        aria-label="Next testimonial"
+                        onClick={() =>
+                            setActiveIndex((prev) =>
+                                items.length > 0 ? (prev + 1) % items.length : 0
+                            )
+                        }
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-white text-[#2563EB] transition hover:bg-blue-50 disabled:opacity-40"
+                        disabled={items.length <= 1}
+                    >
+                        <ChevronRight className="h-5 w-5" />
+                    </button>
+                </div>
+
+                <div ref={listRef} className="mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scroll-smooth">
                     {items.length === 0 ? (
                         <div className="md:col-span-3 w-full rounded-[1.5rem] border border-dashed border-blue-200 bg-blue-50/60 p-8 text-center text-slate-600">
                             No reviews yet. Be the first to share your experience.
@@ -200,12 +271,12 @@ export default function TestimonialSection() {
                         items.map((item, index) => (
                             <motion.article
                                 key={item.id}
-                                initial={shouldReduceMotion ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: index % 2 === 0 ? -30 : 30, y: 20 }}
+                                initial={reduceMotion ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: index % 2 === 0 ? -30 : 30, y: 20 }}
                                 whileInView={{ opacity: 1, x: 0, y: 0 }}
                                 viewport={{ once: true, amount: 0.3 }}
-                                transition={{ duration: shouldReduceMotion ? 0 : 0.5, delay: shouldReduceMotion ? 0 : index * 0.12 }}
-                                whileHover={shouldReduceMotion ? undefined : { y: -6 }}
-                                className="min-w-[280px] flex-1 snap-center rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-[0_16px_40px_rgba(37,99,235,0.08)] md:min-w-0"
+                                transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.12 }}
+                                whileHover={!reduceMotion ? { y: -6 } : undefined}
+                                className="min-w-[88%] snap-center rounded-[1.5rem] border border-blue-100 bg-white p-5 shadow-[0_16px_40px_rgba(37,99,235,0.08)] sm:min-w-[340px] md:min-w-[360px]"
                             >
                                 <div className="mb-5 flex items-center gap-4">
                                     <img

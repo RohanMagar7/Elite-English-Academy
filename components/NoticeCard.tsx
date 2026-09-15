@@ -1,12 +1,14 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function NoticeSection() {
     const [notices, setNotices] = useState<any[]>([]);
-    const shouldReduceMotion = useReducedMotion();
+    // SSR-safe: false during SSR + first client render, so markup matches.
+    const reduceMotion = useSafeReducedMotion();
 
     useEffect(() => {
         async function load() {
@@ -34,12 +36,12 @@ export default function NoticeSection() {
                     {notices.map((notice, index) => (
                         <motion.div
                             key={notice.id}
-                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                            initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.2 }}
                             transition={{
-                                duration: shouldReduceMotion ? 0 : 0.45,
-                                delay: shouldReduceMotion ? 0 : index * 0.06,
+                                duration: reduceMotion ? 0 : 0.45,
+                                delay: reduceMotion ? 0 : index * 0.06,
                             }}
                             className="rounded-lg border-l-4 border-yellow-400 bg-blue-50 px-4 py-3 shadow-sm hover:shadow-md transition-all"
                         >

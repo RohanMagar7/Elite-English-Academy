@@ -12,6 +12,7 @@ interface Admission {
   email: string;
   class_name: string;
   course: string;
+  preferred_batch: string;
   status: string;
 }
 

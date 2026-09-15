@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
 
 interface GalleryImage {
@@ -17,7 +18,7 @@ const imageHeights = ["h-48", "h-64", "h-80", "h-56", "h-72", "h-60"];
 
 export default function GallerySection() {
     const [images, setImages] = useState<GalleryImage[]>([]);
-    const shouldReduceMotion = useReducedMotion();
+    const reduceMotion = useSafeReducedMotion();
 
     useEffect(() => {
         async function load() {
@@ -58,11 +59,11 @@ export default function GallerySection() {
                     {images.map((img, index) => (
                         <motion.div
                             key={img.id}
-                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+                            initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.15 }}
-                            transition={{ duration: shouldReduceMotion ? 0 : 0.45, delay: shouldReduceMotion ? 0 : index * 0.04 }}
-                            whileHover={shouldReduceMotion ? undefined : { y: -6 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : index * 0.04 }}
+                            whileHover={reduceMotion ? undefined : { y: -6 }}
                             className="group mb-5 overflow-hidden rounded-[1.5rem]"
                         >
                             <div className={`relative overflow-hidden rounded-[1.5rem] ${imageHeights[index % imageHeights.length]}`}>

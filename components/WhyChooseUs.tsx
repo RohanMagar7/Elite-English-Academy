@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/hooks/useMounted";
 import {
     BadgeCheck,
     BookOpen,
@@ -44,7 +45,8 @@ const features = [
 ];
 
 export default function WhyChooseUs() {
-    const shouldReduceMotion = useReducedMotion();
+    // SSR-safe: false during SSR + first client render, so markup matches.
+    const reduceMotion = useSafeReducedMotion();
 
     return (
         <section className="bg-[#F8FBFF] py-8 sm:py-10">
@@ -62,11 +64,11 @@ export default function WhyChooseUs() {
                     {features.map(({ icon: Icon, title, text }, index) => (
                         <motion.div
                             key={title}
-                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.2 }}
-                            transition={{ duration: shouldReduceMotion ? 0 : 0.4, ease: "easeOut", delay: shouldReduceMotion ? 0 : index * 0.05 }}
-                            whileHover={shouldReduceMotion ? undefined : { y: -6 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.4, ease: "easeOut", delay: reduceMotion ? 0 : index * 0.05 }}
+                            whileHover={reduceMotion ? undefined : { y: -6 }}
                             className="rounded-2xl border border-blue-100 bg-white p-6 shadow-[0_18px_50px_rgba(37,99,235,0.05)] transition-all duration-300"
                         >
                             <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-[#2563EB]">

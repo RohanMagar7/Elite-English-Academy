@@ -1,22 +1,37 @@
 "use client";
 
 import DashboardCard from "@/components/DashboardCard";
-import { BookOpen, Image, Bell, Star, User } from "lucide-react";
+import { BookOpen, Clock, Image, Bell, Star, CircleHelp, Trophy, UserCheck, Users, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 
 export default function AdminDashboard() {
-    const [counts, setCounts] = useState({ courses: 0, gallery: 0, notices: 0, testimonials: 0 });
+    const [counts, setCounts] = useState({
+        courses: 0,
+        gallery: 0,
+        notices: 0,
+        testimonials: 0,
+        batches: 0,
+        faqs: 0,
+        successStories: 0,
+        trainers: 0,
+        admissions: 0,
+    });
 
     useEffect(() => {
         async function loadCounts() {
             try {
-                const [c1, c2, c3, c4] = await Promise.all([
+                const [c1, c2, c3, c4, c5, c6, c7, c8, c9] = await Promise.all([
                     supabase.from("courses").select("id", { head: true, count: "exact" }),
                     supabase.from("gallery").select("id", { head: true, count: "exact" }),
                     supabase.from("notices").select("id", { head: true, count: "exact" }),
                     supabase.from("testimonials").select("id", { head: true, count: "exact" }),
+                    supabase.from("batches").select("id", { head: true, count: "exact" }),
+                    supabase.from("faqs").select("id", { head: true, count: "exact" }),
+                    supabase.from("success_stories").select("id", { head: true, count: "exact" }),
+                    supabase.from("trainers").select("id", { head: true, count: "exact" }),
+                    supabase.from("admissions").select("id", { head: true, count: "exact" }),
                 ]);
 
                 setCounts({
@@ -24,6 +39,11 @@ export default function AdminDashboard() {
                     gallery: (c2.count as number) || 0,
                     notices: (c3.count as number) || 0,
                     testimonials: (c4.count as number) || 0,
+                    batches: (c5.count as number) || 0,
+                    faqs: (c6.count as number) || 0,
+                    successStories: (c7.count as number) || 0,
+                    trainers: (c8.count as number) || 0,
+                    admissions: (c9.count as number) || 0,
                 });
             } catch (err) {
                 console.error("Failed to load dashboard counts", err);
@@ -48,11 +68,16 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
                 <DashboardCard title="Courses" value={String(counts.courses)} icon={<BookOpen size={36} />} />
+                <DashboardCard title="Trainers" value={String(counts.trainers)} icon={<UserCheck size={36} />} />
+                <DashboardCard title="Batches" value={String(counts.batches)} icon={<Clock size={36} />} />
+                <DashboardCard title="Success Stories" value={String(counts.successStories)} icon={<Trophy size={36} />} />
+                <DashboardCard title="Testimonials" value={String(counts.testimonials)} icon={<Star size={36} />} />
+                <DashboardCard title="FAQs" value={String(counts.faqs)} icon={<CircleHelp size={36} />} />
                 <DashboardCard title="Gallery Images" value={String(counts.gallery)} icon={<Image size={36} />} />
                 <DashboardCard title="Notices" value={String(counts.notices)} icon={<Bell size={36} />} />
-                <DashboardCard title="Testimonials" value={String(counts.testimonials)} icon={<Star size={36} />} />
+                <DashboardCard title="Admissions" value={String(counts.admissions)} icon={<Users size={36} />} />
             </div>
         </>
     );

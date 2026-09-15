@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useSafeReducedMotion } from "@/hooks/useMounted";
 import {
     ArrowUpRight,
     BookOpen,
@@ -52,7 +53,8 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export default function Stats() {
-    const shouldReduceMotion = useReducedMotion();
+    // SSR-safe: false during SSR + first client render, so markup matches.
+    const reduceMotion = useSafeReducedMotion();
 
     return (
         <section className="bg-[#F8FBFF] py-8 sm:py-10">
@@ -61,11 +63,11 @@ export default function Stats() {
                     {stats.map(({ icon: Icon, value, suffix, label }) => (
                         <motion.div
                             key={label}
-                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.3 }}
-                            transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" }}
-                            whileHover={shouldReduceMotion ? undefined : { y: -4 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.5, ease: "easeOut" }}
+                            whileHover={reduceMotion ? undefined : { y: -4 }}
                             className="group rounded-2xl border border-blue-100 bg-white p-6 shadow-[0_20px_50px_rgba(37,99,235,0.08)] transition-transform duration-300 hover:-translate-y-1"
                         >
                             <div className="mb-5 flex items-center justify-between">
