@@ -36,6 +36,17 @@
 --    sort_order int  not null default 0              -> admin reordering (ORDER BY sort_order)
 --    is_active  bool not null default true           -> show/hide toggle in the admin panel
 --    slug / page / section_key / section_slug        -> CMS grouping + future pretty URLs
+--    profiles.id / admins.user_id -> auth.users(id)  -> auth-linked metadata tables
+--    admins.id is text on purpose: it is the short login id that app/login/page.tsx
+--    resolves through .or("username.eq.x,login.eq.x,id.eq.x").
+--
+--  TABLES (20 + storage)
+--    content : courses, gallery, notices, testimonials, batches, faqs, success_stories,
+--              trainers, navigation_links, hero_slides, stats, features, social_links,
+--              footer_links, page_sections, section_items, settings
+--    inbox   : admissions, contacts                       (admin-only, no public read)
+--    auth    : profiles, admins                           (never wiped by section [9]...
+--                                                          admins never; profiles re-synced)
 --
 --  NOTES
 --    * gen_random_uuid() is built into PostgreSQL 13+ (Supabase = 15/17): no extension needed.
@@ -444,12 +455,15 @@ alter table public.stats add column if not exists updated_at timestamptz default
 --      `section_slug` is what the app filters on (.eq("section_slug","why-choose-us")).
 --      `section_key` is the new canonical CMS key — a trigger keeps both in sync,
 --      so writing either one always updates the other (see section [5]).
+--      Both columns are nullable with NO database default: the sync trigger computes
+--      the effective key from whatever the client sent (section_slug-only admin forms
+--      included) and fills in 'why-choose-us' only when neither is provided.
 -- -------------------------------------------------------------------------------------
 create table if not exists public.features (
   id           uuid primary key default gen_random_uuid(),
   page         text not null default 'home',
-  section_key  text not null default 'why-choose-us',
-  section_slug text not null default 'why-choose-us',
+  section_key  text,
+  section_slug text,
   title        text not null,
   description  text,
   icon         text default 'BadgeCheck',
@@ -461,8 +475,8 @@ create table if not exists public.features (
 );
 
 alter table public.features add column if not exists page         text default 'home';
-alter table public.features add column if not exists section_key  text default 'why-choose-us';
-alter table public.features add column if not exists section_slug text default 'why-choose-us';
+alter table public.features add column if not exists section_key  text;
+alter table public.features add column if not exists section_slug text;
 alter table public.features add column if not exists title        text;
 alter table public.features add column if not exists description  text;
 alter table public.features add column if not exists icon         text default 'BadgeCheck';
@@ -577,12 +591,15 @@ update public.page_sections set section_slug = slug where section_slug is null;
 -- -------------------------------------------------------------------------------------
 -- 1.19 SECTION ITEMS  (list rows that belong to a page_section / feature group)
 --      `section_key` and `section_slug` are kept in sync by the same trigger.
+--      Both columns are nullable with NO database default (same reasoning as
+--      public.features above): the sync trigger derives the effective key from the
+--      row itself, defaulting to 'why-choose-us' only when neither is provided.
 -- -------------------------------------------------------------------------------------
 create table if not exists public.section_items (
   id           uuid primary key default gen_random_uuid(),
   page         text not null default 'home',
-  section_key  text not null,
-  section_slug text not null,
+  section_key  text,
+  section_slug text,
   title        text not null,
   description  text,
   icon         text,
@@ -636,9 +653,58 @@ alter table public.profiles add column if not exists role       text default 'ad
 alter table public.profiles add column if not exists is_admin   boolean default true;
 alter table public.profiles add column if not exists created_at timestamptz default now();
 alter table public.profiles add column if not exists updated_at timestamptz default now();
+-- app/profile/page.tsx renders profile?.avatar_url and profile?.phone, so both columns
+-- must exist or the page silently falls back to the auth metadata / "-" forever.
+alter table public.profiles add column if not exists avatar_url text;
+alter table public.profiles add column if not exists phone      text;
 
 -- -------------------------------------------------------------------------------------
--- 1.21 COLUMN DEFAULTS / NOT NULL NORMALISATION
+-- 1.21 ADMIN LOGIN IDS  (app/login/page.tsx)
+--      /login accepts EITHER an email address OR a short login id. When the typed value
+--      has no "@", the page resolves it before signing in with:
+--         supabase.from("admins").select("email")
+--           .or("username.eq.<value>,login.eq.<value>,id.eq.<value>")
+--      The table therefore has to exist with EXACTLY those three lookup columns,
+--      otherwise PostgREST answers with
+--         "Could not find the table 'public.admins' in the schema cache"
+--      on every single login attempt.
+--
+--      `id` is intentionally `text` (not uuid) so the `id.eq.<value>` branch of that
+--      `.or()` filter can never fail with "invalid input syntax for type uuid" when a
+--      human types a login id such as `admin`. Link the row to the real Supabase Auth
+--      user through `user_id`.
+--
+--      No rows are seeded: email + password sign-in works without them. To enable a
+--      short login id for an existing Auth user, run (once, with your own values):
+--         insert into public.admins (id, user_id, email, username, login, full_name)
+--         values ('admin',
+--                 (select id from auth.users where email = 'you@example.com'),
+--                 'you@example.com', 'admin', 'admin', 'Academy Admin')
+--         on conflict (id) do nothing;
+-- -------------------------------------------------------------------------------------
+create table if not exists public.admins (
+  id         text primary key,                                   -- short login id
+  user_id    uuid references auth.users (id) on delete cascade,  -- the Auth account it maps to
+  email      text not null,                                      -- the address used for signInWithPassword
+  username   text,                                               -- alternative login id
+  login      text,                                               -- alternative login id
+  full_name  text,
+  is_active  boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.admins add column if not exists user_id    uuid;
+alter table public.admins add column if not exists email      text;
+alter table public.admins add column if not exists username   text;
+alter table public.admins add column if not exists login      text;
+alter table public.admins add column if not exists full_name  text;
+alter table public.admins add column if not exists is_active  boolean default true;
+alter table public.admins add column if not exists created_at timestamptz default now();
+alter table public.admins add column if not exists updated_at timestamptz default now();
+
+-- -------------------------------------------------------------------------------------
+-- 1.22 COLUMN DEFAULTS / NOT NULL NORMALISATION
 --      Makes sure tables created by the older schema.sql / cms.sql end up with exactly
 --      the same defaults as the CREATE TABLE statements above.
 --      `alter column ... set default` / `set not null` are idempotent -> safe to re-run.
@@ -710,8 +776,6 @@ alter table public.stats alter column is_active  set default true;
 alter table public.stats alter column updated_at set default now();
 
 alter table public.features alter column page         set default 'home';
-alter table public.features alter column section_key  set default 'why-choose-us';
-alter table public.features alter column section_slug set default 'why-choose-us';
 alter table public.features alter column icon         set default 'BadgeCheck';
 alter table public.features alter column sort_order   set default 0;
 alter table public.features alter column is_active    set default true;
@@ -740,8 +804,16 @@ alter table public.section_items alter column updated_at   set default now();
 
 alter table public.settings alter column updated_at set default now();
 
+-- profiles / admins (Auth-linked metadata: no sort_order or page column).
+alter table public.profiles alter column is_admin   set default true;
+alter table public.profiles alter column updated_at set default now();
+
+alter table public.admins alter column is_active  set default true;
+alter table public.admins alter column created_at set default now();
+alter table public.admins alter column updated_at set default now();
+
 -- -------------------------------------------------------------------------------------
--- 1.22 BACKFILL NULLS + FORCE NOT NULL ON THE CONVENTION COLUMNS
+-- 1.23 BACKFILL NULLS + FORCE NOT NULL ON THE CONVENTION COLUMNS
 --      Any legacy row that still has NULL sort_order / is_active / created_at /
 --      updated_at / page is repaired, then the column is marked NOT NULL so the
 --      admin panel and the public site can never hit an unexpected NULL again.
@@ -757,7 +829,7 @@ declare
                  'courses', 'gallery', 'notices', 'testimonials', 'batches', 'faqs',
                  'success_stories', 'trainers', 'navigation_links', 'hero_slides',
                  'stats', 'features', 'social_links', 'footer_links',
-                 'page_sections', 'section_items', 'settings'
+                 'page_sections', 'section_items', 'settings', 'admins'
                ];
   targets    text[][] := array[
                  ['sort_order', '0'],
@@ -892,6 +964,15 @@ delete from public.section_items a
  where (lower(a.section_slug), lower(a.title)) is not distinct from (lower(b.section_slug), lower(b.title))
    and (a.created_at, a.id) > (b.created_at, b.id);
 
+-- Admin login ids: the same short id or the same address added twice
+delete from public.admins a
+ using public.admins b
+ where a.id > b.id
+   and ( lower(a.id)         is not distinct from lower(b.id)
+      or lower(a.username)   is not distinct from lower(b.username)
+      or lower(a.login)      is not distinct from lower(b.login)
+      or lower(a.email)      is not distinct from lower(b.email) );
+
 -- `settings` is keyed by its primary key (key) so it can never hold duplicates.
 
 -- =====================================================================================
@@ -952,10 +1033,22 @@ create unique index if not exists ux_page_sections_slug
 create unique index if not exists ux_section_items_section_title
   on public.section_items (lower(section_slug), lower(title));
 
+-- Admin login ids (app/login/page.tsx resolves a non-email login with
+-- .or("username.eq.x,login.eq.x,id.eq.x"), so each identifier must resolve to one row).
+create unique index if not exists ux_admins_username
+  on public.admins (lower(username)) where username is not null;
+create unique index if not exists ux_admins_login
+  on public.admins (lower(login)) where login is not null;
+create unique index if not exists ux_admins_email
+  on public.admins (lower(email));
+create unique index if not exists ux_admins_user_id
+  on public.admins (user_id) where user_id is not null;
+
 -- =====================================================================================
 -- [4] FOREIGN KEYS
 --     * profiles.id -> auth.users.id (also declared inline in section [1.20]; re-added
 --       here for databases where `profiles` already existed without the constraint).
+--     * admins.user_id -> auth.users.id (declared inline in section [1.21] as well).
 --     * features.section_slug / section_items.section_slug -> page_sections.slug, so a
 --       CMS row can never point at a section that does not exist.
 --     * Declared NOT VALID then VALIDATEd: legacy orphan rows coming from the old
@@ -979,6 +1072,25 @@ begin
     alter table public.profiles
       add constraint profiles_id_fkey
       foreign key (id) references auth.users (id) on delete cascade;
+  end if;
+
+  -- 4.1b admins.user_id -> auth.users (the login-id row points at the real Auth account;
+  --      re-added here for databases where `admins` already existed without it).
+  if not exists (
+    select 1 from pg_constraint
+     where conrelid = 'public.admins'::regclass
+       and contype  = 'f'
+       and conname  = 'admins_user_id_fkey'
+  ) then
+    alter table public.admins
+      add constraint admins_user_id_fkey
+      foreign key (user_id) references auth.users (id) on delete cascade
+      not valid;
+    begin
+      alter table public.admins validate constraint admins_user_id_fkey;
+    exception when others then
+      raise notice 'admins_user_id_fkey left NOT VALID (rows point at removed Auth users).';
+    end;
   end if;
 
   -- 4.2 features.section_slug -> page_sections.slug
@@ -1039,7 +1151,7 @@ declare
     'courses', 'gallery', 'notices', 'testimonials', 'admissions', 'contacts',
     'batches', 'faqs', 'success_stories', 'trainers', 'navigation_links',
     'hero_slides', 'stats', 'features', 'social_links', 'footer_links',
-    'page_sections', 'section_items', 'profiles', 'settings'
+    'page_sections', 'section_items', 'profiles', 'settings', 'admins'
   ];
 begin
   foreach tbl in array tables loop
@@ -1073,7 +1185,7 @@ declare
     'courses', 'gallery', 'notices', 'testimonials', 'admissions', 'contacts',
     'batches', 'faqs', 'success_stories', 'trainers', 'navigation_links',
     'hero_slides', 'stats', 'features', 'social_links', 'footer_links',
-    'page_sections', 'section_items', 'profiles'
+    'page_sections', 'section_items', 'profiles', 'admins'
   ];
 begin
   foreach tbl in array tables loop
@@ -1096,23 +1208,34 @@ $$;
 --       * both provided     -> `section_key` wins and `section_slug` mirrors it;
 --       * neither provided  -> defaults to 'why-choose-us';
 --       * both are slugified (lowercase, dashes) and `page` defaults to 'home'.
+--
+--     The canonical key is computed by public.effective_section_key() below, which
+--     section [5.4]'s ensure_page_section() calls as well — so the auto-created parent
+--     row always matches the final synced value, regardless of trigger fire order
+--     (Postgres fires same-event triggers in alphabetical name order).
 -- -------------------------------------------------------------------------------------
+-- Canonical section key shared by the sync trigger (5.2) and the auto-create-parent
+-- trigger (5.4). Immutable so both stay in lock-step by construction.
+create or replace function public.effective_section_key(p_key text, p_slug text)
+returns text
+language sql
+immutable
+as $$
+  select coalesce(
+           public.slugify(nullif(trim(coalesce(p_key,  '')), '')),
+           public.slugify(nullif(trim(coalesce(p_slug, '')), '')),
+           'why-choose-us'
+         );
+$$;
+
 create or replace function public.sync_section_keys()
 returns trigger
 language plpgsql
 as $$
 begin
-  new.section_key  := nullif(trim(coalesce(new.section_key,  '')), '');
-  new.section_slug := nullif(trim(coalesce(new.section_slug, '')), '');
-
-  if new.section_key is null and new.section_slug is null then
-    new.section_key := 'why-choose-us';
-  elsif new.section_key is null then
-    new.section_key := new.section_slug;
-  end if;
-
-  -- section_key is canonical -> section_slug always mirrors it, both normalised.
-  new.section_slug := coalesce(public.slugify(new.section_key), 'why-choose-us');
+  -- One canonical value for both trigger paths (see effective_section_key above):
+  -- section_key wins when present, otherwise section_slug, else the default.
+  new.section_slug := public.effective_section_key(new.section_key, new.section_slug);
   new.section_key  := new.section_slug;
 
   new.page := nullif(trim(coalesce(new.page, '')), '');
@@ -1198,7 +1321,9 @@ as $$
 declare
   missing_key text;
 begin
-  missing_key := coalesce(nullif(trim(new.section_slug), ''), nullif(trim(new.section_key), ''));
+  -- Same canonical key the sync trigger (5.2) will compute from this row, so the parent
+  -- row always matches the final synced section_slug and the FK in section [4] holds.
+  missing_key := public.effective_section_key(new.section_key, new.section_slug);
 
   if missing_key is null then
     return new;
@@ -1222,12 +1347,16 @@ end;
 $$;
 
 -- Attached to both tables that carry a section key: features + section_items.
-drop trigger if exists trg_features_ensure_page_section on public.features;
+-- (Fire order vs the sync triggers is irrelevant: both functions now derive the same
+-- canonical key from effective_section_key(), so they cannot disagree.)
+drop trigger if exists trg_features_ensure_page_section on public.features;        -- pre-rename name
+drop trigger if exists trg_a_features_ensure_page_section on public.features;
 create trigger trg_features_ensure_page_section
   before insert or update on public.features
   for each row execute function public.ensure_page_section();
 
-drop trigger if exists trg_section_items_ensure_page_section on public.section_items;
+drop trigger if exists trg_section_items_ensure_page_section on public.section_items; -- pre-rename name
+drop trigger if exists trg_a_section_items_ensure_page_section on public.section_items;
 create trigger trg_section_items_ensure_page_section
   before insert or update on public.section_items
   for each row execute function public.ensure_page_section();
@@ -1325,6 +1454,9 @@ create index if not exists idx_testimonials_pending
 create index if not exists idx_profiles_email          on public.profiles (lower(email));
 create index if not exists idx_profiles_is_admin       on public.profiles (is_admin) where is_admin = true;
 
+-- Login page: the short-id lookup only ever wants active rows (see section 7.9).
+create index if not exists idx_admins_active           on public.admins (lower(email)) where is_active = true;
+
 -- =====================================================================================
 -- [7] ROW LEVEL SECURITY
 --     Model used by this app:
@@ -1345,7 +1477,7 @@ declare
     'courses', 'gallery', 'notices', 'testimonials', 'admissions', 'contacts',
     'batches', 'faqs', 'success_stories', 'trainers', 'settings',
     'navigation_links', 'hero_slides', 'stats', 'features', 'social_links',
-    'footer_links', 'page_sections', 'section_items', 'profiles'
+    'footer_links', 'page_sections', 'section_items', 'profiles', 'admins'
   ];
 begin
   foreach tbl in array tables loop
@@ -1364,7 +1496,7 @@ declare
     'courses', 'gallery', 'notices', 'testimonials', 'admissions', 'contacts',
     'batches', 'faqs', 'success_stories', 'trainers', 'settings',
     'navigation_links', 'hero_slides', 'stats', 'features', 'social_links',
-    'footer_links', 'page_sections', 'section_items'
+    'footer_links', 'page_sections', 'section_items', 'admins'
   ];
 begin
   foreach tbl in array tables loop
@@ -1458,6 +1590,43 @@ create policy profiles_update_own
 --       using  (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin))
 --       with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin));
 
+-- 7.9 ADMIN LOGIN LOOKUP — app/login/page.tsx resolves a non-email login id BEFORE the
+--     visitor is authenticated, so the `anon` role must be able to read the matching row.
+--     Only rows with is_active = true are exposed, and the page only ever selects the
+--     `email` column from them. Trade-off: the active admin addresses (never the
+--     passwords) become readable with the publishable key. To remove even that exposure,
+--     drop this policy — plain email + password sign-in keeps working, only the short
+--     login ids stop resolving.
+drop policy if exists public_read_active_admins on public.admins;
+create policy public_read_active_admins
+  on public.admins for select to anon using (is_active = true);
+
+-- 7.10 TABLE PRIVILEGES — mirrors the policies above exactly.
+--      Supabase already grants these to anon / authenticated for tables in `public`, so on
+--      a Supabase project this block is a no-op; it is stated explicitly so the file is
+--      self-contained and also works on a bare Postgres database. GRANT is idempotent.
+grant usage on schema public to anon, authenticated;
+
+-- anon: read the public content + the login lookup row, write the three public forms.
+grant select on
+  public.courses, public.gallery, public.notices, public.testimonials, public.batches,
+  public.faqs, public.success_stories, public.trainers, public.navigation_links,
+  public.hero_slides, public.stats, public.features, public.social_links,
+  public.footer_links, public.page_sections, public.section_items, public.settings,
+  public.admins
+  to anon;
+
+grant insert on public.admissions, public.contacts, public.testimonials to anon;
+
+-- authenticated (the logged-in admin): full CRUD, matching the admin_all_* policies.
+grant select, insert, update, delete on
+  public.courses, public.gallery, public.notices, public.testimonials, public.admissions,
+  public.contacts, public.batches, public.faqs, public.success_stories, public.trainers,
+  public.settings, public.navigation_links, public.hero_slides, public.stats,
+  public.features, public.social_links, public.footer_links, public.page_sections,
+  public.section_items, public.admins, public.profiles
+  to authenticated;
+
 -- =====================================================================================
 -- [8] STORAGE BUCKETS + POLICIES
 --     Public read buckets so <Image src={publicUrl}> works without signing URLs,
@@ -1530,7 +1699,10 @@ create policy "admin_delete_media"
 --     Truncates every content table in a single statement (single statement =
 --     no foreign-key ordering problems) and restarts identities.
 --     * auth.users (your Supabase Auth logins) is NOT touched — you stay logged in.
---     * Profiles are re-synced from auth.users at the end of section [10].
+--     * public.profiles is truncated here and immediately re-created from auth.users by
+--       section [10.15], so app/profile/page.tsx keeps working after the reset.
+--     * public.admins is deliberately NOT truncated: those rows are hand-made login-id
+--       mappings that point at auth.users, and there is no way to regenerate them.
 --     * TO KEEP YOUR CURRENT CONTENT: comment out this whole statement.
 -- =====================================================================================
 truncate table
@@ -1631,8 +1803,10 @@ on conflict do nothing;
 -- -------------------------------------------------------------------------------------
 insert into public.stats (page, label, value, suffix, icon, sort_order, is_active) values
   ('home', 'Happy Students',             500, '+', 'GraduationCap', 1, true),
-  ('home', 'Years Teaching Experience',   12, '+', 'BadgeCheck',    2, true),
-  ('home', 'Courses Offered',              6, '+', 'BookOpen',      3, true)
+  ('home', 'Years Teaching Experience',   12, '+', 'BookOpen',      2, true),
+  ('home', 'Online and Offline Classes',   2, '',  'Laptop',        3, true),
+  ('home', 'Practical Speaking Focus',   100, '%', 'Sparkles',      4, true),
+  ('home', 'Courses Offered',              6, '+', 'BadgeCheck',    5, true)
 on conflict do nothing;
 
 -- -------------------------------------------------------------------------------------
@@ -1806,6 +1980,61 @@ insert into public.testimonials (name, course, message, rating, sort_order, is_a
    'Grammar was always my weak point. The simple explanations and regular practice made it easy to understand.',
    4, 3, true)
 on conflict do nothing;
+
+-- -------------------------------------------------------------------------------------
+-- 10.13 FOOTER LINKS — the values components/Footer.tsx falls back to when the table
+--       is empty, so the footer looks identical whether or not the CMS is used.
+--       group_name: 'quick_links' (Quick Links column) | 'courses' (Courses column).
+-- -------------------------------------------------------------------------------------
+insert into public.footer_links (group_name, label, href, sort_order, is_active) values
+  ('quick_links', 'About Us',  '/about',     1, true),
+  ('quick_links', 'Courses',   '/courses',   2, true),
+  ('quick_links', 'Gallery',   '/gallery',   3, true),
+  ('quick_links', 'Admission', '/admission', 4, true),
+  ('quick_links', 'Contact',   '/contact',   5, true),
+  ('courses',     'Spoken English',        '/courses', 1, true),
+  ('courses',     'IELTS Preparation',     '/courses', 2, true),
+  ('courses',     'Grammar and Vocabulary','/courses', 3, true),
+  ('courses',     'Teacher Training',      '/courses', 4, true)
+on conflict do nothing;
+
+-- -------------------------------------------------------------------------------------
+-- 10.14 SOCIAL LINKS — same URLs as the settings seed, so the footer icons work even if
+--       you never touch Admin -> Settings.
+-- -------------------------------------------------------------------------------------
+insert into public.social_links (platform, label, url, sort_order, is_active) values
+  ('whatsapp',  'WhatsApp',  'https://wa.me/918888711228',                     0, true),
+  ('instagram', 'Instagram', 'https://www.instagram.com/eliteenglishacademy', 1, true),
+  ('facebook',  'Facebook',  'https://facebook.com/eliteenglishacademy',      2, true),
+  ('youtube',   'YouTube',   'https://youtube.com/@eliteenglishacademy',      3, true)
+on conflict do nothing;
+
+-- NOTE — public.gallery is intentionally LEFT EMPTY: it only ever holds real uploaded
+--        files (app/admin/gallery), and components/GalleryCard.tsx renders its own
+--        "no photos yet" state when the table has no active rows.
+
+-- -------------------------------------------------------------------------------------
+-- 10.15 PROFILES — re-created from auth.users, because section [9] just truncated them.
+--       app/profile/page.tsx reads public.profiles by the signed-in uid, so the page stays
+--       functional after the reset, and the optional is_admin hardening in section [7.8]
+--       finally has rows to check. Insert-only: a profile you already customised
+--       (full_name / role / avatar_url) is never overwritten.
+--       RLS is not a concern here — the SQL Editor runs as the table owner.
+-- -------------------------------------------------------------------------------------
+insert into public.profiles (id, email, full_name, role, is_admin)
+select u.id,
+       u.email,
+       coalesce(nullif(u.raw_user_meta_data ->> 'full_name', ''),
+                split_part(coalesce(u.email, ''), '@', 1)),
+       'admin',
+       true
+  from auth.users u
+ where u.email is not null
+on conflict (id) do nothing;
+
+-- NOTE — public.admins starts empty on purpose: email + password sign-in needs no rows,
+--        and a short login id can only be mapped to a real Auth user by hand (see the
+--        commented insert in section [1.21]).
 -- =====================================================================================
 -- [11] POSTGREST SCHEMA CACHE RELOAD  (prevents "schema cache" / PGRST205 errors)
 --     PostgREST caches the table + column list it learned from Postgres. After adding
@@ -1839,6 +2068,8 @@ notify pgrst, 'reload config';
 --      union all select 'social_links',   count(*) from public.social_links
 --      union all select 'page_sections',  count(*) from public.page_sections
 --      union all select 'settings',       count(*) from public.settings
+--      union all select 'admins',         count(*) from public.admins
+--      union all select 'profiles',       count(*) from public.profiles
 --      order by t;
 --
 -- 2) Confirm the CMS mirror columns agree:
@@ -1858,4 +2089,3 @@ notify pgrst, 'reload config';
 --    testimonials, courses, batches, faqs, success-stories, trainers, admissions,
 --    settings) should load and save without a schema-cache error.
 -- =====================================================================================
---       with check (exists (select 1 from public.profiles p where p.id = auth.uid() and p.is_admin));
