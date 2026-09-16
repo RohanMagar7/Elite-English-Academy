@@ -12,6 +12,7 @@ interface GalleryImage {
     title: string;
     image_url: string;
     created_at?: string;
+    is_active?: boolean;
 }
 
 const imageHeights = ["h-48", "h-64", "h-80", "h-56", "h-72", "h-60"];
@@ -25,7 +26,9 @@ export default function GallerySection() {
             const { data } = await supabase
                 .from("gallery")
                 .select("*")
+                .eq("is_active", true)
                 .limit(6)
+                .order("sort_order", { ascending: true })
                 .order("created_at", { ascending: false });
 
             setImages(data || []);

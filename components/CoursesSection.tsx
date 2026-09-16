@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { MessageCircle, Sparkles } from "lucide-react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
-import { academy } from "@/lib/site";
+import { useSiteSettings, whatsappLink } from "@/hooks/useSiteSettings";
 
 interface Course {
   id: string;
@@ -22,14 +22,16 @@ interface Course {
 
 export default function CoursesSection() {
   const [courses, setCourses] = useState<Course[]>([]);
-  // SSR-safe: false during SSR + first client render, so markup matches.
   const reduceMotion = useSafeReducedMotion();
+  const { settings } = useSiteSettings();
 
   useEffect(() => {
     async function loadCourses() {
       const { data, error } = await supabase
         .from("courses")
         .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true })
         .order("created_at", { ascending: false });
 
       if (!error && data) {
@@ -135,9 +137,7 @@ export default function CoursesSection() {
                   </Link>
 
                   <a
-                    href={`${academy.whatsappHref}?text=${encodeURIComponent(
-                      `Hello Elite English Academy, I want to enquire about "${course.title}".`
-                    )}`}
+                    href={whatsappLink(settings.whatsapp_number, `Hello ${settings.academy_name}, I want to enquire about "${course.title}".`)}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center justify-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-2.5 text-sm font-semibold text-green-700 transition hover:bg-green-100"

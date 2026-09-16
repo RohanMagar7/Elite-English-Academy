@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { BadgeCheck, GraduationCap, Award } from "lucide-react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
-import { academy } from "@/lib/site";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import SectionHeading from "@/components/home/SectionHeading";
 
 interface Trainer {
@@ -121,7 +121,7 @@ export default function TrainerCards() {
                 </div>
 
                 <p className="mt-8 text-center text-sm text-slate-500">
-                    Guided by {academy.instructor.name} ({academy.instructor.qualifications})
+                    Guided by our expert faculty
                 </p>
             </div>
         </section>

@@ -1,52 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
-import {
-    BadgeCheck,
-    BookOpen,
-    BriefcaseBusiness,
-    GraduationCap,
-    Laptop2,
-    MessageSquareMore,
-} from "lucide-react";
+import { BadgeCheck, BookOpen, Briefcase, GraduationCap, Laptop, MessageSquare, Sparkles } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
-const features = [
-    {
-        icon: MessageSquareMore,
-        title: "Daily Speaking Practice",
-        text: "Build real confidence through guided speaking drills and practical conversation routines.",
-    },
-    {
-        icon: GraduationCap,
-        title: "Small Batch Size",
-        text: "Get personal attention and focused mentorship in a supportive learning environment.",
-    },
-    {
-        icon: BookOpen,
-        title: "Weekly Assessments",
-        text: "Track your progress with structured evaluations and targeted feedback every week.",
-    },
-    {
-        icon: BriefcaseBusiness,
-        title: "Modern Study Material",
-        text: "Access updated resources designed for interviews, exams, and everyday communication.",
-    },
-    {
-        icon: BadgeCheck,
-        title: "Certificate After Completion",
-        text: "Earn a recognized certificate that reflects your growth and commitment to learning.",
-    },
-    {
-        icon: Laptop2,
-        title: "Online & Offline Classes",
-        text: "Choose the learning mode that fits your schedule without compromising quality.",
-    },
+type Feature = { title: string; description?: string | null; icon?: string | null };
+
+const FALLBACK: Feature[] = [
+    { title: "Daily Speaking Practice", description: "Build real confidence." },
+    { title: "Small Batch Size", description: "Personal attention." },
 ];
 
+const ICONS: Record<string, typeof Sparkles> = { BadgeCheck, BookOpen, Briefcase, GraduationCap, Laptop, MessageSquare, Sparkles };
+
 export default function WhyChooseUs() {
-    // SSR-safe: false during SSR + first client render, so markup matches.
     const reduceMotion = useSafeReducedMotion();
+    const [features, setFeatures] = useState<Feature[]>(FALLBACK);
+    useEffect(() => {
+        (async () => {
+            const { data } = await supabase.from("features").select("title, description, icon").eq("section_slug", "why-choose-us").eq("is_active", true).order("sort_order");
+            if (data && data.length > 0) setFeatures(data);
+        })();
+    }, []);
 
     return (
         <section className="bg-[#F8FBFF] py-8 sm:py-10">
@@ -61,7 +38,9 @@ export default function WhyChooseUs() {
                 </div>
 
                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                    {features.map(({ icon: Icon, title, text }, index) => (
+                    {features.map(({ icon, title, description }, index) => {
+                        const Icon = ICONS[icon || "BadgeCheck"] || BadgeCheck;
+                        return (
                         <motion.div
                             key={title}
                             initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -77,10 +56,11 @@ export default function WhyChooseUs() {
 
                             <h3 className="text-xl font-bold text-blue-950">{title}</h3>
                             <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-                                {text}
+                                {description}
                             </p>
                         </motion.div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </section>

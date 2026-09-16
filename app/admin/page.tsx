@@ -1,7 +1,7 @@
 "use client";
 
 import DashboardCard from "@/components/DashboardCard";
-import { BookOpen, Clock, Image, Bell, Star, CircleHelp, Trophy, UserCheck, Users, User } from "lucide-react";
+import { BookOpen, Clock, Image, Bell, Star, CircleHelp, Trophy, UserCheck, Users, User, Images, Menu as MenuIcon, BarChart3, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
@@ -17,12 +17,17 @@ export default function AdminDashboard() {
         successStories: 0,
         trainers: 0,
         admissions: 0,
+        nav: 0,
+        hero: 0,
+        stats: 0,
+        features: 0,
+        footer: 0,
     });
 
     useEffect(() => {
         async function loadCounts() {
             try {
-                const [c1, c2, c3, c4, c5, c6, c7, c8, c9] = await Promise.all([
+                const [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14] = await Promise.all([
                     supabase.from("courses").select("id", { head: true, count: "exact" }),
                     supabase.from("gallery").select("id", { head: true, count: "exact" }),
                     supabase.from("notices").select("id", { head: true, count: "exact" }),
@@ -32,6 +37,11 @@ export default function AdminDashboard() {
                     supabase.from("success_stories").select("id", { head: true, count: "exact" }),
                     supabase.from("trainers").select("id", { head: true, count: "exact" }),
                     supabase.from("admissions").select("id", { head: true, count: "exact" }),
+                    supabase.from("navigation_links").select("id", { head: true, count: "exact" }),
+                    supabase.from("hero_slides").select("id", { head: true, count: "exact" }),
+                    supabase.from("stats").select("id", { head: true, count: "exact" }),
+                    supabase.from("features").select("id", { head: true, count: "exact" }),
+                    supabase.from("footer_links").select("id", { head: true, count: "exact" }),
                 ]);
 
                 setCounts({
@@ -44,6 +54,11 @@ export default function AdminDashboard() {
                     successStories: (c7.count as number) || 0,
                     trainers: (c8.count as number) || 0,
                     admissions: (c9.count as number) || 0,
+                    nav: (c10.count as number) || 0,
+                    hero: (c11.count as number) || 0,
+                    stats: (c12.count as number) || 0,
+                    features: (c13.count as number) || 0,
+                    footer: (c14.count as number) || 0,
                 });
             } catch (err) {
                 console.error("Failed to load dashboard counts", err);
@@ -78,6 +93,11 @@ export default function AdminDashboard() {
                 <DashboardCard title="Gallery Images" value={String(counts.gallery)} icon={<Image size={36} />} />
                 <DashboardCard title="Notices" value={String(counts.notices)} icon={<Bell size={36} />} />
                 <DashboardCard title="Admissions" value={String(counts.admissions)} icon={<Users size={36} />} />
+                <DashboardCard title="Menu Links" value={String(counts.nav)} icon={<MenuIcon size={36} />} />
+                <DashboardCard title="Hero Banners" value={String(counts.hero)} icon={<Images size={36} />} />
+                <DashboardCard title="Stats" value={String(counts.stats)} icon={<BarChart3 size={36} />} />
+                <DashboardCard title="Features" value={String(counts.features)} icon={<BookOpen size={36} />} />
+                <DashboardCard title="Footer Links" value={String(counts.footer)} icon={<Share2 size={36} />} />
             </div>
         </>
     );

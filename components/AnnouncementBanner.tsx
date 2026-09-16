@@ -4,20 +4,13 @@ import { motion } from "framer-motion";
 import { Megaphone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { supabase } from "@/lib/supabase";
 
-const DEFAULT_ANNOUNCEMENT = {
-    title: "Admissions Open 2026",
-    description:
-        "Book your free demo class today and start speaking English with confidence!",
-};
-
 export default function AnnouncementBanner() {
-    const [notice, setNotice] = useState<{ title: string; description: string } | null>(
-        null
-    );
+    const { settings } = useSiteSettings();
+    const [notice, setNotice] = useState<{ title: string; description: string } | null>(null);
     const [hidden, setHidden] = useState(false);
-    // SSR-safe: false during SSR + first client render, so markup matches.
     const reduceMotion = useSafeReducedMotion();
 
     useEffect(() => {
@@ -33,12 +26,18 @@ export default function AnnouncementBanner() {
                 const { title, description } = data[0];
                 setNotice({ title, description });
             } else {
-                setNotice(DEFAULT_ANNOUNCEMENT);
+                // Fallback: announcement text managed in Admin → Settings
+                if (settings.announcement_title) {
+                    setNotice({
+                        title: settings.announcement_title,
+                        description: settings.announcement_text || "",
+                    });
+                }
             }
         }
 
         load();
-    }, []);
+    }, [settings.announcement_title, settings.announcement_text]);
 
     if (hidden || !notice) return null;
 

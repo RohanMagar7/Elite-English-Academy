@@ -3,19 +3,37 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MessageCircle, Phone } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
-import { academy } from "@/lib/site";
+import { supabase } from "@/lib/supabase";
+import { useSiteSettings, whatsappLink } from "@/hooks/useSiteSettings";
 
-const featureBadges = [
-    "Online & Offline Batches",
-    "Small Batch Size",
-];
+type HeroSlide = {
+    badge?: string | null; title: string; description?: string | null;
+    image_url?: string | null; primary_button_text?: string | null;
+    primary_button_link?: string | null; secondary_button_text?: string | null;
+    secondary_button_link?: string | null;
+};
+
+const DEFAULT_HERO: HeroSlide = {
+    badge: "Admissions Open 2026",
+    title: "Speak English with Confidence. Build Your Future.",
+    description: "Master Spoken English, IELTS preparation, grammar foundations, and practical communication skills.",
+    image_url: "/hero/Teacher-portrait.png",
+    primary_button_text: "Free Demo Class", primary_button_link: "/admission",
+    secondary_button_text: "View Courses", secondary_button_link: "/courses",
+};
 
 export default function Hero() {
-    // SSR-safe: returns false during SSR + first client render, then syncs
-    // with the real OS reduced-motion setting after mount (via useEffect),
-    // so server and first-client markup always match.
     const reduceMotion = useSafeReducedMotion();
+    const { settings } = useSiteSettings();
+    const [slide, setSlide] = useState<HeroSlide>(DEFAULT_HERO);
+    useEffect(() => {
+        (async () => {
+            const { data } = await supabase.from("hero_slides").select("*").eq("is_active", true).order("sort_order").limit(1);
+            if (data && data.length > 0) setSlide({ ...DEFAULT_HERO, ...data[0] });
+        })();
+    }, []);
 
     return (
         <section className="relative overflow-hidden bg-[#EFF6FF] text-slate-900">
@@ -44,36 +62,36 @@ export default function Hero() {
                     className="flex flex-col justify-center"
                 >
                     <span className="mb-5 inline-flex w-fit items-center rounded-full border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-[#2563EB] shadow-sm">
-                        Admissions Open 2026
+                        {slide.badge}
                     </span>
 
                     <h1 className="max-w-xl text-3xl font-black leading-tight tracking-tight text-blue-950 sm:text-4xl lg:text-5xl xl:text-6xl">
-                        Speak English with Confidence. Build Your Future.
+                        {slide.title}
                     </h1>
 
                     <p className="mt-4 max-w-xl text-sm leading-6 text-slate-600 sm:text-base lg:text-lg">
-                        Master Spoken English, IELTS preparation, grammar foundations, and practical communication skills with expert-led training designed for real-world success.
+                        {slide.description}
                     </p>
 
                     <div className="mt-6 flex flex-col gap-4 sm:flex-row">
                         <Link
-                            href="/admission"
+                            href={slide.primary_button_link || "/admission"}
                             className="inline-flex h-12 items-center justify-center rounded-xl bg-[#2563EB] px-6 text-base font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
                         >
-                            Free Demo Class
+                            {slide.primary_button_text}
                         </Link>
 
                         <Link
-                            href="/courses"
+                            href={slide.secondary_button_link || "/courses"}
                             className="inline-flex h-12 items-center justify-center rounded-xl border-2 border-blue-600 bg-white px-6 text-base font-semibold text-[#2563EB] transition hover:bg-blue-50"
                         >
-                            View Courses
+                            {slide.secondary_button_text}
                         </Link>
                     </div>
 
                     <div className="mt-5 flex flex-wrap items-center gap-3">
                         <a
-                            href={`${academy.whatsappHref}?text=${encodeURIComponent(academy.whatsappMessage)}`}
+                            href={whatsappLink(settings.whatsapp_number)}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-flex h-11 items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 text-sm font-semibold text-green-700 transition hover:bg-green-100"
@@ -83,23 +101,12 @@ export default function Hero() {
                         </a>
 
                         <a
-                            href={academy.phoneHref}
+                            href={settings.phone_href}
                             className="inline-flex h-11 items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 text-sm font-semibold text-[#2563EB] transition hover:bg-blue-100"
                         >
                             <Phone className="h-4 w-4" />
-                            Call {academy.phoneDisplay}
+                            Call {settings.phone_display}
                         </a>
-                    </div>
-
-                    <div className="mt-5 flex flex-wrap gap-3">
-                        {featureBadges.map((badge) => (
-                            <span
-                                key={badge}
-                                className="inline-flex items-center rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-800 ring-1 ring-blue-200"
-                            >
-                                {badge}
-                            </span>
-                        ))}
                     </div>
                 </motion.div>
 
@@ -112,7 +119,7 @@ export default function Hero() {
                     <div className="absolute inset-0 -z-10 rounded-[2rem] bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 blur-2xl opacity-20" />
 
                     <motion.img
-                        src="/hero/Teacher-portrait.png"
+                        src={slide.image_url || "/hero/Teacher-portrait.png"}
                         alt="Teacher at Elite English Academy"
                         animate={reduceMotion ? { y: 0 } : { y: [0, -10, 0] }}
                         transition={reduceMotion ? { duration: 0 } : { duration: 5, repeat: Infinity, ease: "easeInOut" }}

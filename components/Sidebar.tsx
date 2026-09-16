@@ -17,6 +17,10 @@ import {
     CircleHelp,
     Trophy,
     UserCheck,
+    Menu as MenuIcon,
+    Images,
+    BarChart3,
+    Share2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -32,6 +36,11 @@ const menu = [
     { name: "Gallery", href: "/admin/gallery", icon: Image },
     { name: "Notices", href: "/admin/notices", icon: Bell },
     { name: "Admissions", href: "/admin/admissions", icon: Users },
+    { name: "Header & Menu", href: "/admin/navigation", icon: MenuIcon },
+    { name: "Banners / Hero", href: "/admin/hero", icon: Images },
+    { name: "Stats", href: "/admin/stats", icon: BarChart3 },
+    { name: "Features", href: "/admin/features", icon: GraduationCap },
+    { name: "Footer & Social", href: "/admin/footer", icon: Share2 },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

@@ -1,30 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { Camera, MapPin, Mail, MessageCircle, Phone } from "lucide-react";
-import { academy } from "@/lib/site";
+import { MapPin, Mail, MessageCircle, Phone, Globe } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useSiteSettings, whatsappLink } from "@/hooks/useSiteSettings";
 
-const quickLinks = [
-    { label: "About Us", href: "/about" },
-    { label: "Courses", href: "/courses" },
-    { label: "Gallery", href: "/gallery" },
-    { label: "Admission", href: "/admission" },
-    { label: "Contact", href: "/contact" },
-];
-
-const courseLinks = [
-    "Spoken English",
-    "IELTS Preparation",
-    "Grammar & Vocabulary",
-    "Teacher Training",
-];
-
-const socials = [
-    { label: "WhatsApp", href: academy.whatsappHref, icon: MessageCircle },
-    { label: "Instagram", href: academy.instagramHref, icon: Camera },
-];
+type FLink = { label: string; href: string; group_name: string };
+type SLink = { platform: string; label: string | null; url: string };
 
 export default function Footer() {
+    const { settings } = useSiteSettings();
+    const [quickLinks, setQuickLinks] = useState<FLink[]>([]);
+    const [courseLinks, setCourseLinks] = useState<FLink[]>([]);
+    const [socials, setSocials] = useState<SLink[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            const { data } = await supabase.from("footer_links").select("label, href, group_name").eq("is_active", true).order("sort_order");
+            if (data && data.length > 0) {
+                setQuickLinks(data.filter((r: FLink) => r.group_name === "quick_links"));
+                setCourseLinks(data.filter((r: FLink) => r.group_name === "courses"));
+            }
+        })();
+        (async () => {
+            const { data } = await supabase.from("social_links").select("platform, label, url").eq("is_active", true).order("sort_order");
+            if (data && data.length > 0) setSocials(data);
+        })();
+    }, []);
+
+    const qLinks = quickLinks.length > 0 ? quickLinks : [
+        { label: "About Us", href: "/about", group_name: "quick_links" },
+        { label: "Courses", href: "/courses", group_name: "quick_links" },
+        { label: "Gallery", href: "/gallery", group_name: "quick_links" },
+        { label: "Admission", href: "/admission", group_name: "quick_links" },
+        { label: "Contact", href: "/contact", group_name: "quick_links" },
+    ];
+    const cLinks = courseLinks.length > 0 ? courseLinks : [
+        { label: "Spoken English", href: "/courses", group_name: "courses" },
+        { label: "IELTS Preparation", href: "/courses", group_name: "courses" },
+    ];
     return (
         <footer className="bg-[#0B1F4D] text-white">
             <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10 xl:px-14">
@@ -35,33 +50,32 @@ export default function Footer() {
                                 E
                             </div>
                             <div>
-                                <p className="text-lg font-black tracking-tight">{academy.name}</p>
-                                <p className="text-[10px] uppercase tracking-[0.18em] text-blue-200">{academy.tagline}</p>
+                                <p className="text-lg font-black tracking-tight">{settings.academy_name}</p>
+                                <p className="text-[10px] uppercase tracking-[0.18em] text-blue-200">{settings.tagline}</p>
                             </div>
                         </div>
 
-                        <p className="mt-5 text-sm leading-7 text-blue-100">{academy.tagline}</p>
+                        <p className="mt-5 text-sm leading-7 text-blue-100">{settings.footer_about || settings.tagline}</p>
 
                         <div className="mt-6 flex items-center gap-3">
-                            {socials.map(({ label, href, icon: Icon }) => (
-                                <a
-                                    key={label}
-                                    href={href}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    aria-label={label}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-blue-100 transition hover:bg-white hover:text-[#0B1F4D]"
-                                >
-                                    <Icon className="h-4 w-4" />
+                            {socials.length > 0 ? socials.map((s) => (
+                                <a key={s.platform + s.url} href={s.url} target="_blank" rel="noreferrer" aria-label={s.label || s.platform}
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-blue-100 transition hover:bg-white hover:text-[#0B1F4D]">
+                                    <Globe className="h-4 w-4" />
                                 </a>
-                            ))}
+                            )) : (
+                                <a href={whatsappLink(settings.whatsapp_number)} target="_blank" rel="noreferrer" aria-label="WhatsApp"
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-blue-100 transition hover:bg-white hover:text-[#0B1F4D]">
+                                    <MessageCircle className="h-4 w-4" />
+                                </a>
+                            )}
                         </div>
                     </div>
 
                     <div>
                         <h3 className="text-lg font-bold text-white">Quick Links</h3>
                         <ul className="mt-5 space-y-3 text-sm text-blue-100">
-                            {quickLinks.map((link) => (
+                            {qLinks.map((link) => (
                                 <li key={link.label}>
                                     <Link href={link.href} className="transition hover:text-white">
                                         {link.label}
@@ -74,8 +88,8 @@ export default function Footer() {
                     <div>
                         <h3 className="text-lg font-bold text-white">Courses</h3>
                         <ul className="mt-5 space-y-3 text-sm text-blue-100">
-                            {courseLinks.map((course) => (
-                                <li key={course}>{course}</li>
+                            {cLinks.map((course) => (
+                                <li key={course.label}><Link href={course.href} className="transition hover:text-white">{course.label}</Link></li>
                             ))}
                         </ul>
                     </div>
@@ -85,15 +99,15 @@ export default function Footer() {
                         <ul className="mt-5 space-y-4 text-sm text-blue-100">
                             <li className="flex items-start gap-3">
                                 <MapPin className="mt-0.5 h-4 w-4 text-blue-200" />
-                                <span>{academy.shortAddress}</span>
+                                <span>{settings.address}</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="h-4 w-4 text-blue-200" />
-                                <a href={academy.phoneHref} className="hover:text-white">{academy.phoneDisplay}</a>
+                                <a href={settings.phone_href} className="hover:text-white">{settings.phone_display}</a>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-4 w-4 text-blue-200" />
-                                <a href={academy.emailHref} className="hover:text-white">{academy.email}</a>
+                                <a href={`mailto:${settings.email}`} className="hover:text-white">{settings.email}</a>
                             </li>
                         </ul>
                     </div>
@@ -101,7 +115,7 @@ export default function Footer() {
 
                 <div className="mt-12 border-t border-white/10 pt-6">
                     <p className="text-center text-sm text-blue-200">
-                        © 2026 {academy.name}. All Rights Reserved.
+                        © 2026 {settings.academy_name}. {settings.copyright_text}
                     </p>
                 </div>
             </div>

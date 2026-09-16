@@ -5,6 +5,16 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
 
+const aboutContent = {
+    eyebrow: "About Elite English Academy",
+    title: "Meet Our Expert English Trainer",
+    description:
+        "At Elite English Academy, we help learners build real confidence through practical communication, strong grammar foundations, and result-driven preparation for speaking, exams, and everyday success.",
+    image: "/hero/teacher-about.png",
+    buttonText: "Book Free Demo",
+    buttonLink: "/admission",
+};
+
 const features = [
     "Spoken English",
     "IELTS & PTE Preparation",
@@ -27,7 +37,7 @@ export default function AboutSection() {
                     className="flex justify-center lg:justify-start"
                 >
                     <img
-                        src="/hero/teacher-about.png"
+                        src={aboutContent.image}
                         alt="English trainer"
                         className="h-[420px] w-full max-w-[420px] object-contain sm:h-[500px] lg:h-[560px] lg:max-w-[460px]"
                     />
@@ -41,15 +51,15 @@ export default function AboutSection() {
                     className="max-w-2xl"
                 >
                     <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-[#2563EB]">
-                        About Elite English Academy
+                        {aboutContent.eyebrow}
                     </span>
 
                     <h2 className="mt-6 text-3xl font-black leading-tight tracking-tight text-blue-950 sm:text-4xl lg:text-5xl">
-                        Meet Our Expert English Trainer
+                        {aboutContent.title}
                     </h2>
 
                     <p className="mt-5 max-w-xl text-base leading-8 text-slate-600 sm:text-lg">
-                        At Elite English Academy, we help learners build real confidence through practical communication, strong grammar foundations, and result-driven preparation for speaking, exams, and everyday success.
+                        {aboutContent.description}
                     </p>
 
                     <div className="mt-8 space-y-4">
@@ -72,10 +82,10 @@ export default function AboutSection() {
 
                     <div className="mt-10 flex flex-wrap items-center gap-4">
                         <Link
-                            href="/admission"
+                            href={aboutContent.buttonLink}
                             className="inline-flex items-center gap-2 rounded-xl bg-[#2563EB] px-6 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
                         >
-                            Book Free Demo
+                            {aboutContent.buttonText}
                             <ArrowRight size={16} />
                         </Link>
                         <span className="text-sm font-medium text-slate-500">
