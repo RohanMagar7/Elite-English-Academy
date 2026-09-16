@@ -1,40 +1,19 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import {
-    ArrowUpRight,
-    BookOpen,
-    GraduationCap,
-    Laptop2,
-    Sparkles,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useSafeReducedMotion } from "@/hooks/useMounted";
+import { ArrowUpRight, BookOpen, GraduationCap, Laptop, Sparkles, BadgeCheck, Trophy } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
-const stats = [
-    {
-        icon: GraduationCap,
-        value: 500,
-        suffix: "+",
-        label: "Happy Students",
-    },
-    {
-        icon: BookOpen,
-        value: 12,
-        suffix: "+",
-        label: "Years Teaching Experience",
-    },
-    {
-        icon: Laptop2,
-        value: 2,
-        suffix: "",
-        label: "Online & Offline Classes",
-    },
-    {
-        icon: Sparkles,
-        value: 100,
-        suffix: "%",
-        label: "Practical Speaking Focus",
-    },
+type Stat = { label: string; value: number; suffix?: string | null; icon?: string | null };
+
+const FALLBACK: Stat[] = [
+    { label: "Happy Students", value: 500, suffix: "+" },
+    { label: "Years Teaching Experience", value: 12, suffix: "+" },
 ];
+
+const ICONS: Record<string, typeof Sparkles> = { GraduationCap, BookOpen, Laptop, Sparkles, BadgeCheck, Trophy };
 
 function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
     return (
@@ -52,20 +31,29 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export default function Stats() {
-    const shouldReduceMotion = useReducedMotion();
+    const reduceMotion = useSafeReducedMotion();
+    const [stats, setStats] = useState<Stat[]>(FALLBACK);
+    useEffect(() => {
+        (async () => {
+            const { data } = await supabase.from("stats").select("label, value, suffix, icon").eq("is_active", true).order("sort_order");
+            if (data && data.length > 0) setStats(data);
+        })();
+    }, []);
 
     return (
         <section className="bg-[#F8FBFF] py-8 sm:py-10">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
                 <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-                    {stats.map(({ icon: Icon, value, suffix, label }) => (
+                    {stats.map(({ icon, value, suffix, label }) => {
+                        const Icon = ICONS[icon || "Sparkles"] || Sparkles;
+                        return (
                         <motion.div
                             key={label}
-                            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.3 }}
-                            transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" }}
-                            whileHover={shouldReduceMotion ? undefined : { y: -4 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.5, ease: "easeOut" }}
+                            whileHover={reduceMotion ? undefined : { y: -4 }}
                             className="group rounded-2xl border border-blue-100 bg-white p-6 shadow-[0_20px_50px_rgba(37,99,235,0.08)] transition-transform duration-300 hover:-translate-y-1"
                         >
                             <div className="mb-5 flex items-center justify-between">
@@ -75,13 +63,14 @@ export default function Stats() {
                                 <ArrowUpRight className="h-5 w-5 text-blue-400 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                             </div>
 
-                            <AnimatedNumber value={value} suffix={suffix} />
+                            <AnimatedNumber value={Number(value)} suffix={suffix || ""} />
 
                             <p className="mt-3 text-sm font-medium text-slate-600 sm:text-base">
                                 {label}
                             </p>
                         </motion.div>
-                    ))}
+                        );
+                    })}
                 </div>
             </div>
         </section>

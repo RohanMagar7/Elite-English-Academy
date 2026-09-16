@@ -13,6 +13,14 @@ import {
     GraduationCap,
     LogOut,
     X,
+    Clock,
+    CircleHelp,
+    Trophy,
+    UserCheck,
+    Menu as MenuIcon,
+    Images,
+    BarChart3,
+    Share2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -20,10 +28,19 @@ import { useRouter } from "next/navigation";
 const menu = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Courses", href: "/admin/courses", icon: BookOpen },
+    { name: "Trainers", href: "/admin/trainers", icon: UserCheck },
+    { name: "Batches", href: "/admin/batches", icon: Clock },
+    { name: "Success Stories", href: "/admin/success-stories", icon: Trophy },
+    { name: "Testimonials", href: "/admin/testimonials", icon: Star },
+    { name: "FAQs", href: "/admin/faqs", icon: CircleHelp },
     { name: "Gallery", href: "/admin/gallery", icon: Image },
     { name: "Notices", href: "/admin/notices", icon: Bell },
-    { name: "Testimonials", href: "/admin/testimonials", icon: Star },
     { name: "Admissions", href: "/admin/admissions", icon: Users },
+    { name: "Header & Menu", href: "/admin/navigation", icon: MenuIcon },
+    { name: "Banners / Hero", href: "/admin/hero", icon: Images },
+    { name: "Stats", href: "/admin/stats", icon: BarChart3 },
+    { name: "Features", href: "/admin/features", icon: GraduationCap },
+    { name: "Footer & Social", href: "/admin/footer", icon: Share2 },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

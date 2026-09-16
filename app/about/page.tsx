@@ -1,10 +1,13 @@
+"use client";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AboutSection from "@/components/AboutSection";
 import { Mail, MapPin, Phone, GraduationCap } from "lucide-react";
-import { academy } from "@/lib/site";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export default function AboutPage() {
+    const { settings } = useSiteSettings();
     return (
         <>
             <Navbar />
@@ -18,13 +21,13 @@ export default function AboutPage() {
                                 Meet the Mentor
                             </span>
                             <h2 className="mt-5 text-3xl font-black tracking-tight text-blue-950 sm:text-4xl">
-                                {academy.instructor.name}
+                                Prof. J. M. Wagh-Dhotre
                             </h2>
                             <p className="mt-4 text-base font-semibold text-[#2563EB] sm:text-lg">
-                                {academy.instructor.qualifications}
+                                M.A. English | MH-SET
                             </p>
                             <p className="mt-2 text-lg font-medium text-slate-700">
-                                {academy.instructor.experience}
+                                12+ Years of Teaching Experience
                             </p>
                             <p className="mt-5 max-w-xl text-base leading-8 text-slate-600">
                                 Under the guidance of Prof. J. M. Wagh-Dhotre, students build speaking confidence, improve communication, and gain the skills needed for academic and professional success through structured mentoring and practical learning.
@@ -33,15 +36,15 @@ export default function AboutPage() {
                             <div className="mt-8 space-y-4 text-slate-700">
                                 <div className="flex items-center gap-3">
                                     <Phone className="h-5 w-5 text-[#2563EB]" />
-                                    <a href={academy.phoneHref} className="font-medium hover:text-blue-700">{academy.phoneDisplay}</a>
+                                    <a href={settings.phone_href} className="font-medium hover:text-blue-700">{settings.phone_display}</a>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <Mail className="h-5 w-5 text-[#2563EB]" />
-                                    <a href={academy.emailHref} className="font-medium hover:text-blue-700">{academy.email}</a>
+                                    <a href={`mailto:${settings.email}`} className="font-medium hover:text-blue-700">{settings.email}</a>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <MapPin className="h-5 w-5 text-[#2563EB]" />
-                                    <span>{academy.shortAddress}</span>
+                                    <span>{settings.address}</span>
                                 </div>
                             </div>
                         </div>

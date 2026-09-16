@@ -1,13 +1,14 @@
 "use client";
 
-import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Camera, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { academy } from "@/lib/site";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { supabase } from "@/lib/supabase";
 
 export default function ContactPage() {
+    const { settings } = useSiteSettings();
     const [form, setForm] = useState({
         full_name: "",
         email: "",
@@ -68,8 +69,8 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Phone</p>
-                                        <a href={academy.phoneHref} className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700">
-                                            {academy.phoneDisplay}
+                                        <a href={settings.phone_href} className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700">
+                                            {settings.phone_display}
                                         </a>
                                     </div>
                                 </div>
@@ -81,12 +82,12 @@ export default function ContactPage() {
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">WhatsApp</p>
                                         <a
-                                            href={`${academy.whatsappHref}?text=${encodeURIComponent(academy.whatsappMessage)}`}
+                                            href={`https://wa.me/${(settings.whatsapp_number || "").replace(/\D/g, "")}`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700"
                                         >
-                                            {academy.phoneDisplay}
+                                            {settings.phone_display}
                                         </a>
                                     </div>
                                 </div>
@@ -97,8 +98,8 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Email</p>
-                                        <a href={academy.emailHref} className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700">
-                                            {academy.email}
+                                        <a href={`mailto:${settings.email}`} className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700">
+                                            {settings.email}
                                         </a>
                                     </div>
                                 </div>
@@ -109,7 +110,48 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Address</p>
-                                        <p className="mt-2 text-base font-medium text-slate-700">{academy.address}</p>
+                                        <p className="mt-2 text-base font-medium text-slate-700">{settings.address}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                        <Clock className="h-5 w-5" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Business Hours</p>
+                                        <p className="mt-2 text-base font-medium text-slate-700">
+                                            {settings.business_hours}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                                    <div className="flex items-center gap-2">
+                                        <a
+                                            aria-label="WhatsApp"
+                                            href={`https://wa.me/${(settings.whatsapp_number || "").replace(/\D/g, "")}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#25D366] text-white transition hover:opacity-90"
+                                        >
+                                            <MessageCircle className="h-5 w-5" />
+                                        </a>
+                                        <a
+                                            aria-label="Instagram"
+                                            href={settings.instagram_url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-500 text-white transition hover:opacity-90"
+                                        >
+                                            <Camera className="h-5 w-5" />
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Follow Us</p>
+                                        <p className="mt-2 text-base font-medium text-slate-700">
+                                            Stay updated with our latest batches & events
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -187,8 +229,8 @@ export default function ContactPage() {
 
                             <div className="mt-8 overflow-hidden rounded-[1.5rem] border border-blue-100">
                                 <iframe
-                                    title="Elite English Academy Map"
-                                    src={`https://www.google.com/maps?q=${academy.mapsQuery}&z=15&output=embed`}
+                                    title="Academy Map"
+                                    src={`https://www.google.com/maps?q=${encodeURIComponent(settings.address)}&z=15&output=embed`}
                                     className="h-[320px] w-full border-0"
                                     loading="lazy"
                                     referrerPolicy="no-referrer-when-downgrade"

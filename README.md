@@ -24,25 +24,30 @@ Elite's English Academy is led by **Prof. J. M. Wagh-Dhotre** (M.A. English | MH
 ## ✨ Features
 
 ### Public Website
-- **Home page** with hero, stats, about, why-choose-us, courses, testimonials, notices, admission CTA, and gallery sections
-- **Courses page** — dynamic course listings fetched from Supabase with fees, duration, mode, and images
-- **Admission page** — enquiry form that saves directly to Supabase
+- **Home page** with announcement banner, hero, stats, success stories, about + mission/vision, trainers, why-choose-us, courses, batch timings, testimonials carousel, notices, FAQs, admission CTA, and gallery sections
+- **Courses page** — dynamic course listings fetched from Supabase with fees, duration, eligibility, mode, and images
+- **Admission page** — enquiry form (name, phone, email, class, course, preferred batch, message) that saves directly to Supabase, with a WhatsApp enquiry option
 - **Notices page** — latest announcements and updates
-- **Testimonials page** — student reviews and success stories
+- **Testimonials page** — auto-advancing student reviews carousel with star ratings
 - **Gallery page** — photo gallery of the academy
-- **About page** — academy story and instructor profile
-- **Contact page** — contact details, map, phone, email, and WhatsApp
-- **Floating WhatsApp button** — quick chat with the academy
+- **About page** — academy story, mission/vision, and instructor profile
+- **Contact page** — contact details, business hours, Google Maps embed, WhatsApp/call, and social links
+- **Floating WhatsApp button** + **scroll-to-top button** — quick chat and navigation
 - **SEO optimized** — metadata, Open Graph, Twitter cards, sitemap, and robots.txt
 
 ### Admin Dashboard (`/admin`)
 - **Server-side auth guard** — every admin page verifies the Supabase session and redirects to `/login` if unauthenticated
-- **Dashboard** — live counts of courses, gallery images, notices, and testimonials
-- **Courses management** — add, list, and delete courses (with image upload to Supabase Storage)
-- **Gallery management** — upload and manage gallery images
-- **Notices management** — publish and manage notices
-- **Testimonials management** — add and manage student testimonials
-- **Settings** — academy configuration
+- **Dashboard** — live counts of courses, trainers, batches, success stories, testimonials, FAQs, gallery, notices, and admissions
+- **Courses management** — add, edit, delete (with image upload to Supabase Storage, plus eligibility/duration/fees/mode)
+- **Trainers management** — add, edit, delete trainer profiles (photo, qualification, experience, specialization)
+- **Batches management** — add, edit, delete batch timings (morning/afternoon/evening/weekend)
+- **Success Stories management** — add, edit, delete before/after student results
+- **Testimonials management** — activate/deactivate student reviews
+- **FAQs management** — add, edit, delete collapsible FAQ items
+- **Gallery management** — upload, categorize, delete images
+- **Notices management** — publish, activate/deactivate, delete announcements
+- **Admissions management** — view, update status, delete enquiries
+- **Settings** — manage academy name, tagline, phone, email, WhatsApp, address, social links, logo URL, and business hours (persisted to the `settings` table)
 - **Profile** — user profile page
 - **Secure API route** — `/api/admin/health` protected by `requireAdminApi` guard
 
@@ -179,17 +184,25 @@ The app expects the following tables in your Supabase project:
 
 | Table | Purpose |
 |-------|---------|
-| `courses` | Course listings (title, duration, fees, description, image_url, mode) |
+| `courses` | Course listings (title, duration, eligibility, fees, mode, description, image_url) |
 | `gallery` | Gallery images |
 | `notices` | Announcements and notices |
 | `testimonials` | Student testimonials |
 | `admissions` | Admission enquiry form submissions |
+| `contacts` | Contact form messages |
+| `batches` | Batch timings (morning/afternoon/evening/weekend) |
+| `faqs` | FAQ accordion items |
+| `success_stories` | Before/after student success stories |
+| `trainers` | Trainer/faculty profiles |
+| `settings` | Key/value site-wide configuration |
 
-**Storage buckets:** `courses` and `gallery` (for image uploads).
+> 💡 **Quick setup:** run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor. It creates all tables, public-read + insert RLS policies, and the storage buckets. New sections (batches, FAQs, success stories, trainers, settings) render with sensible built-in defaults if the tables are empty, so the site still looks great before you add content.
+
+**Storage buckets:** `courses`, `gallery`, `trainers`, `uploads` (for image uploads).
 
 **Auth:** Supabase Auth is used for admin login. The admin layout calls `requireAdmin()` on every page load, which validates the JWT server-side and redirects to `/login` if the session is invalid or expired.
 
-> 🔒 **RLS (Row-Level Security):** Client-side database calls require appropriate RLS policies. Do not add code that assumes unrestricted anon database access.
+> 🔒 **RLS (Row-Level Security):** Client-side database calls require appropriate RLS policies. The schema enables public read/insert; configure authenticated write policies for the admin role as described in the file.
 
 ---
 

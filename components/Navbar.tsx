@@ -1,166 +1,70 @@
 "use client";
-
 import Link from "next/link";
 import { Menu, X, Phone, GraduationCap } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { academy } from "@/lib/site";
-
+import { supabase } from "@/lib/supabase";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+type NavLink = { id?: string; label: string; href: string };
+const FALLBACK_MENU: NavLink[] = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Courses", href: "/courses" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Admission", href: "/admission" },
+  { label: "Contact", href: "/contact" },
+];
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [menu, setMenu] = useState<NavLink[]>(FALLBACK_MENU);
   const pathname = usePathname();
-
+  const { settings } = useSiteSettings();
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const h = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", h);
+    return () => window.removeEventListener("scroll", h);
   }, []);
-
-  // Prevent body scrolling when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
-
-  const menu = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Courses", href: "/courses" },
-    { name: "Gallery", href: "/gallery" },
-    { name: "Notices", href: "/notices" },
-    { name: "Admission", href: "/admission" },
-    { name: "Contact", href: "/contact" },
-  ];
-
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from("navigation_links").select("id, label, href").eq("is_active", true).order("sort_order");
+      if (data && data.length > 0) setMenu(data);
+    })();
+  }, []);
+  const logoUrl = settings.logo_url || "/vercel.png";
+  const showImg = !!logoUrl && logoUrl !== "/vercel.png";
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled
-          ? "bg-blue-900/95 backdrop-blur-xl shadow-lg border-b border-blue-800"
-          : "bg-blue-900"
-      }`}
-    >
+    <header className={"sticky top-0 z-50 w-full transition-all duration-300 " + (scrolled ? "bg-blue-900/95 backdrop-blur-xl shadow-lg border-b border-blue-800" : "bg-blue-900")}>
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-3 min-w-0"
-          aria-label="Elite English Academy Home"
-        >
-          <div className="shrink-0 rounded-xl bg-yellow-400 p-2 text-blue-950 shadow-md">
-            <GraduationCap size={24} />
-          </div>
-
+        <Link href="/" className="flex items-center gap-3 min-w-0" aria-label="Home">
+          {showImg ? (<img src={logoUrl} alt="Logo" className="h-11 w-11 shrink-0 rounded-xl bg-white object-contain p-1 shadow-md" />) : (<div className="shrink-0 rounded-xl bg-yellow-400 p-2 text-blue-950 shadow-md"><GraduationCap size={24} /></div>)}
           <div className="min-w-0">
-            <h1 className="truncate text-sm sm:text-base lg:text-lg font-extrabold tracking-wide text-yellow-400">
-              {academy.name}
-            </h1>
-
-            <p className="truncate text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-blue-200">
-              {academy.tagline}
-            </p>
+            <h1 className="truncate text-sm sm:text-base lg:text-lg font-extrabold tracking-wide text-yellow-400">{settings.academy_name}</h1>
+            <p className="truncate text-[9px] sm:text-[10px] uppercase tracking-[0.15em] text-blue-200">{settings.tagline}</p>
           </div>
         </Link>
-
-        {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-5 xl:gap-7">
           {menu.map((item) => {
             const active = pathname === item.href;
-
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`relative text-sm font-medium transition-colors duration-300 ${
-                  active
-                    ? "text-yellow-400"
-                    : "text-white hover:text-yellow-300"
-                }`}
-              >
-                {item.name}
-
-                <span
-                  className={`absolute left-0 -bottom-2 h-0.5 rounded-full bg-yellow-400 transition-all duration-300 ${
-                    active ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
-                />
-              </Link>
-            );
+            return (<Link key={item.label + item.href} href={item.href} className={"relative text-sm font-medium transition-colors " + (active ? "text-yellow-400" : "text-white hover:text-yellow-300")}>{item.label}</Link>);
           })}
         </div>
-
-        {/* Desktop CTA */}
         <div className="hidden lg:block">
-          <a
-            href={academy.phoneHref}
-            className="flex items-center gap-2 rounded-full bg-yellow-400 px-5 py-2.5 text-sm font-semibold text-blue-950 shadow-md transition-all duration-300 hover:scale-105 hover:bg-yellow-300"
-          >
-            <Phone size={16} />
-            Enquire Now
-          </a>
+          <a href={settings.phone_href || "tel:+918888711228"} className="flex items-center gap-2 rounded-full bg-yellow-400 px-5 py-2.5 text-sm font-semibold text-blue-950 shadow-md hover:bg-yellow-300"><Phone size={16} />Enquire Now</a>
         </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          aria-label="Toggle navigation menu"
-          onClick={() => setOpen(!open)}
-          className="rounded-lg p-2 text-white transition hover:bg-blue-800 lg:hidden"
-        >
-          {open ? <X size={28} /> : <Menu size={28} />}
-        </button>
+        <button aria-label="Toggle navigation menu" onClick={() => setOpen(!open)} className="rounded-lg p-2 text-white hover:bg-blue-800 lg:hidden">{open ? <X size={28} /> : <Menu size={28} />}</button>
       </nav>
-
-      {/* Mobile Menu */}
-      <div
-        className={`overflow-hidden bg-blue-950 transition-all duration-300 lg:hidden ${
-          open
-            ? "max-h-[600px] border-t border-blue-800"
-            : "max-h-0"
-        }`}
-      >
+      <div className={"overflow-hidden bg-blue-950 transition-all lg:hidden " + (open ? "max-h-[600px] border-t border-blue-800" : "max-h-0")}>
         <div className="space-y-1 px-4 py-4">
           {menu.map((item) => {
             const active = pathname === item.href;
-
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`block rounded-xl px-4 py-3 text-base font-medium transition ${
-                  active
-                    ? "bg-yellow-400 text-blue-950"
-                    : "text-white hover:bg-blue-800"
-                }`}
-              >
-                {item.name}
-              </Link>
-            );
+            return (<Link key={item.label + item.href} href={item.href} onClick={() => setOpen(false)} className={"block rounded-xl px-4 py-3 text-base font-medium " + (active ? "bg-yellow-400 text-blue-950" : "text-white hover:bg-blue-800")}>{item.label}</Link>);
           })}
-
-          {/* Mobile CTA */}
-          <a
-            href={academy.phoneHref}
-            onClick={() => setOpen(false)}
-            className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-yellow-400 py-3 text-base font-semibold text-blue-950 shadow-md transition hover:bg-yellow-300"
-          >
-            <Phone size={18} />
-            Call for Admission
-          </a>
-
-          <a
-            href={`https://wa.me/918888711228?text=Hello%20Elite%20English%20Academy,%20I%20want%20to%20know%20more%20about%20your%20courses.`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
-            className="mt-3 flex items-center justify-center rounded-xl border border-green-500 py-3 text-base font-semibold text-green-400 transition hover:bg-green-500 hover:text-white"
-          >
-            WhatsApp Us
-          </a>
+          <a href={settings.phone_href || "tel:+918888711228"} onClick={() => setOpen(false)} className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-yellow-400 py-3 font-semibold text-blue-950"><Phone size={18} />Call for Admission</a>
         </div>
       </div>
     </header>

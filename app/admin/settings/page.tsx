@@ -1,22 +1,131 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+
+const KEY_GROUPS: { key: string; label: string; placeholder: string; type?: string }[] = [
+    { key: "academy_name", label: "Academy Name", placeholder: "Elite's English Academy" },
+    { key: "tagline", label: "Tagline", placeholder: "Learn English • Teach English • Build Your Career" },
+    { key: "logo_url", label: "Logo Image URL (upload below or paste URL)", placeholder: "https://..." },
+    { key: "phone_display", label: "Phone (display)", placeholder: "+91 88887 11228" },
+    { key: "phone_href", label: "Phone Link (tel:)", placeholder: "tel:+918888711228" },
+    { key: "whatsapp_number", label: "WhatsApp Number (digits only)", placeholder: "918888711228" },
+    { key: "email", label: "Email", placeholder: "elitejamesw182025@gmail.com" },
+    { key: "address", label: "Address", placeholder: "Full address" },
+    { key: "business_hours", label: "Business Hours", placeholder: "Mon – Sat: 7:00 AM – 9:00 PM" },
+    { key: "instagram_url", label: "Instagram URL", placeholder: "https://instagram.com/..." },
+    { key: "facebook_url", label: "Facebook URL", placeholder: "https://facebook.com/..." },
+    { key: "youtube_url", label: "YouTube URL", placeholder: "https://youtube.com/..." },
+    { key: "footer_about", label: "Footer About Text", placeholder: "Short about text in footer" },
+    { key: "copyright_text", label: "Copyright Line", placeholder: "All Rights Reserved." },
+];
 
 export default function SettingsPage() {
-    const [siteTitle, setSiteTitle] = useState("Elite English Academy");
+    const [values, setValues] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [saved, setSaved] = useState(false);
 
-    function save(e: React.FormEvent) {
+    useEffect(() => {
+        async function load() {
+            const { data } = await supabase.from("settings").select("key, value");
+            if (data) {
+                const map: Record<string, string> = {};
+                data.forEach((row) => {
+                    map[row.key] = row.value ?? "";
+                });
+                setValues(map);
+            }
+        }
+        load();
+    }, []);
+
+    function change(key: string, value: string) {
+        setValues((prev) => ({ ...prev, [key]: value }));
+        setSaved(false);
+    }
+
+    async function save(e: React.FormEvent) {
         e.preventDefault();
-        alert("Settings saved (demo). Replace with real settings persistence.");
+        setLoading(true);
+        const rows = KEY_GROUPS.filter((g) => values[g.key]).map((g) => ({
+            key: g.key,
+            value: values[g.key],
+        }));
+        if (rows.length > 0) {
+            const { error } = await supabase.from("settings").upsert(rows, { onConflict: "key" });
+            if (error) {
+                setLoading(false);
+                alert(error.message);
+                return;
+            }
+        }
+        setLoading(false);
+        setSaved(true);
+        alert("Settings saved!");
+    }
+
+    async function uploadLogo(file: File) {
+        setUploading(true);
+        try {
+            const buckets = ["logos", "site-assets", "uploads", "gallery"];
+            const name = `logo/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
+            let url = "";
+            let lastErr = "";
+            for (const b of buckets) {
+                const { error } = await supabase.storage.from(b).upload(name, file);
+                if (!error) {
+                    url = supabase.storage.from(b).getPublicUrl(name).data.publicUrl;
+                    break;
+                }
+                lastErr = error.message;
+            }
+            if (!url) throw new Error(lastErr || "Upload failed");
+            change("logo_url", url);
+            alert("Logo uploaded! Click Save Settings to apply.");
+        } catch (e) {
+            alert(e instanceof Error ? e.message : "Upload failed");
+        } finally {
+            setUploading(false);
+        }
     }
 
     return (
         <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">Site Settings</h2>
+            <h2 className="text-2xl font-bold text-blue-900 mb-1">Site Settings</h2>
+            <p className="text-gray-600 mb-6">
+                Manage academy-wide details (name, contact, social links, logo, business hours).
+            </p>
 
-            <form onSubmit={save} className="space-y-4 bg-white p-6 rounded-lg shadow">
-                <input value={siteTitle} onChange={(e) => setSiteTitle(e.target.value)} className="input-default" />
-                <button className="btn-primary text-on-primary">Save Settings</button>
+            <div className="mb-4 rounded-xl bg-white p-6 shadow">
+                <p className="mb-2 text-sm font-semibold text-slate-700">Website Logo</p>
+                {values.logo_url ? (
+                    <img src={values.logo_url} alt="Logo preview" className="mb-3 h-20 w-20 rounded-xl border object-contain bg-white p-1" />
+                ) : null}
+                <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadLogo(f); }}
+                    className="input-default file:mr-4 file:rounded file:border-0 file:bg-blue-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
+                {uploading && <p className="mt-2 text-sm text-blue-700">Uploading logo...</p>}
+            </div>
+
+            <form onSubmit={save} className="grid gap-4 rounded-xl bg-white p-6 shadow">
+                {KEY_GROUPS.map((g) => (
+                    <label key={g.key} className="block">
+                        <span className="mb-1 block text-sm font-semibold text-slate-700">{g.label}</span>
+                        <input
+                            value={values[g.key] || ""}
+                            onChange={(e) => change(g.key, e.target.value)}
+                            placeholder={g.placeholder}
+                            className="input-default"
+                        />
+                    </label>
+                ))}
+
+                <button disabled={loading} className="btn-primary text-on-primary w-fit">
+                    {loading ? "Saving..." : "Save Settings"}
+                </button>
+                {saved && (
+                    <p className="text-sm font-medium text-green-700">Changes saved!</p>
+                )}
             </form>
         </div>
     );

@@ -10,16 +10,27 @@ interface Course {
     fees: number;
     description: string | null;
     image_url?: string | null;
+    eligibility?: string | null;
+    mode?: string | null;
+    level?: string | null;
+    sort_order?: number;
+    is_active?: boolean;
 }
 
 export default function CoursesPage() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(false);
+    const [editing, setEditing] = useState<string | null>(null);
 
     const [title, setTitle] = useState("");
     const [duration, setDuration] = useState("");
     const [fees, setFees] = useState("");
     const [description, setDescription] = useState("");
+    const [eligibility, setEligibility] = useState("");
+    const [mode, setMode] = useState("");
+    const [level, setLevel] = useState("");
+    const [sortOrder, setSortOrder] = useState("");
+    const [isActive, setIsActive] = useState(true);
     const [imageUrl, setImageUrl] = useState("");
     const [file, setFile] = useState<File | null>(null);
 
@@ -61,7 +72,7 @@ export default function CoursesPage() {
         getCourses();
     }, []);
 
-    // Add Course
+    // Add or Update Course
     async function addCourse(e: React.FormEvent) {
         e.preventDefault();
 
@@ -79,15 +90,22 @@ export default function CoursesPage() {
                 finalImageUrl = await uploadCourseImage(file);
             }
 
-            const { error } = await supabase.from("courses").insert([
-                {
-                    title,
-                    duration,
-                    fees: Number(fees),
-                    description,
-                    image_url: finalImageUrl,
-                },
-            ]);
+            const payload = {
+                title,
+                duration,
+                fees: Number(fees),
+                description,
+                eligibility: eligibility.trim() || null,
+                mode: mode.trim() || null,
+                level: level.trim() || null,
+                sort_order: Number(sortOrder) || 0,
+                is_active: isActive,
+                image_url: finalImageUrl,
+            };
+
+            const { error } = editing
+                ? await supabase.from("courses").update(payload).eq("id", editing)
+                : await supabase.from("courses").insert([payload]);
 
             if (error) {
                 console.error(error);
@@ -95,14 +113,20 @@ export default function CoursesPage() {
                 return;
             }
 
-            alert("Course Added Successfully!");
+            alert(editing ? "Course Updated Successfully!" : "Course Added Successfully!");
 
             setTitle("");
             setDuration("");
             setFees("");
             setDescription("");
+            setEligibility("");
+            setMode("");
+            setLevel("");
+            setSortOrder("");
+            setIsActive(true);
             setImageUrl("");
             setFile(null);
+            setEditing(null);
             getCourses();
         } catch (error) {
             console.error(error);
@@ -110,6 +134,42 @@ export default function CoursesPage() {
         } finally {
             setLoading(false);
         }
+    }
+
+    function startEdit(course: Course) {
+        setEditing(course.id);
+        setTitle(course.title);
+        setDuration(course.duration || "");
+        setFees(String(course.fees ?? ""));
+        setDescription(course.description || "");
+        setEligibility(course.eligibility || "");
+        setMode(course.mode || "");
+        setLevel(course.level || "");
+        setSortOrder(String(course.sort_order ?? 0));
+        setIsActive(course.is_active ?? true);
+        setImageUrl(course.image_url || "");
+        setFile(null);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function cancelEdit() {
+        setEditing(null);
+        setTitle("");
+        setDuration("");
+        setFees("");
+        setDescription("");
+        setEligibility("");
+        setMode("");
+        setLevel("");
+        setSortOrder("");
+        setIsActive(true);
+        setImageUrl("");
+        setFile(null);
+    }
+
+    async function toggleCourse(id: string, active: boolean) {
+        await supabase.from("courses").update({ is_active: !active }).eq("id", id);
+        getCourses();
     }
 
     // Delete Course
@@ -165,6 +225,38 @@ export default function CoursesPage() {
                     />
 
                     <input
+                        type="text"
+                        placeholder="Eligibility (optional)"
+                        value={eligibility}
+                        onChange={(e) => setEligibility(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Mode (Online / Offline / Online & Offline)"
+                        value={mode}
+                        onChange={(e) => setMode(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Level / Audience (optional)"
+                        value={level}
+                        onChange={(e) => setLevel(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+
+                    <input
+                        type="number"
+                        placeholder="Sort Order"
+                        value={sortOrder}
+                        onChange={(e) => setSortOrder(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+
+                    <input
                         type="url"
                         placeholder="Course Image URL (optional)"
                         value={imageUrl}
@@ -187,13 +279,25 @@ export default function CoursesPage() {
                         className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     />
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="rounded-lg bg-blue-900 px-6 py-3 font-semibold text-white hover:bg-blue-800 disabled:bg-gray-400"
-                    >
-                        {loading ? "Saving..." : "Add Course"}
-                    </button>
+                    <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                        <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+                        Active (visible on website)
+                    </label>
+
+                    <div className="flex gap-3">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="rounded-lg bg-blue-900 px-6 py-3 font-semibold text-white hover:bg-blue-800 disabled:bg-gray-400"
+                        >
+                            {loading ? "Saving..." : editing ? "Update Course" : "Add Course"}
+                        </button>
+                        {editing && (
+                            <button type="button" onClick={cancelEdit} className="rounded-lg bg-yellow-400 px-6 py-3 font-semibold text-blue-950 hover:bg-yellow-300">
+                                Cancel
+                            </button>
+                        )}
+                    </div>
                 </form>
             </div>
 
@@ -259,12 +363,26 @@ export default function CoursesPage() {
                                     </td>
 
                                     <td className="p-3 text-center">
-                                        <button
-                                            onClick={() => deleteCourse(course.id)}
-                                            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
-                                        >
-                                            Delete
-                                        </button>
+                                        <div className="flex flex-wrap justify-center gap-2">
+                                            <button
+                                                onClick={() => startEdit(course)}
+                                                className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-blue-950 hover:bg-yellow-300"
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                onClick={() => toggleCourse(course.id, !!course.is_active)}
+                                                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white ${course.is_active ? "bg-green-600 hover:bg-green-700" : "bg-gray-500 hover:bg-gray-600"}`}
+                                            >
+                                                {course.is_active ? "Hide" : "Show"}
+                                            </button>
+                                            <button
+                                                onClick={() => deleteCourse(course.id)}
+                                                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))

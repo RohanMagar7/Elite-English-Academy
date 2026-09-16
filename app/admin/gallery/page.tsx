@@ -8,12 +8,17 @@ interface GalleryImage {
     title: string;
     category: string;
     image_url: string;
+    sort_order?: number;
+    is_active?: boolean;
 }
 
 export default function GalleryPage() {
     const [images, setImages] = useState<GalleryImage[]>([]);
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState("");
+    const [sortOrder, setSortOrder] = useState("");
+    const [isActive, setIsActive] = useState(true);
+    const [editing, setEditing] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -21,6 +26,7 @@ export default function GalleryPage() {
         const { data, error } = await supabase
             .from("gallery")
             .select("*")
+            .order("sort_order", { ascending: true })
             .order("created_at", { ascending: false });
 
         if (error) {
@@ -38,54 +44,85 @@ export default function GalleryPage() {
     async function uploadImage(e: React.FormEvent) {
         e.preventDefault();
 
-        if (!file) {
+        if (!editing && !file) {
             alert("Please select an image.");
             return;
         }
 
         setLoading(true);
 
-        const fileName = `${Date.now()}-${file.name}`;
+        try {
+            let imageUrl: string | null = null;
 
-        // Upload to Storage
-        const { error: uploadError } = await supabase.storage
-            .from("gallery")
-            .upload(fileName, file);
+            if (file) {
+                const fileName = `${Date.now()}-${file.name}`;
+                const { error: uploadError } = await supabase.storage
+                    .from("gallery")
+                    .upload(fileName, file);
 
-        if (uploadError) {
-            console.error(uploadError);
-            alert(uploadError.message);
+                if (uploadError) {
+                    console.error(uploadError);
+                    alert(uploadError.message);
+                    return;
+                }
+                imageUrl = supabase.storage.from("gallery").getPublicUrl(fileName).data.publicUrl;
+            }
+
+            const payload = {
+                title,
+                category,
+                sort_order: Number(sortOrder) || 0,
+                is_active: isActive,
+                ...(imageUrl ? { image_url: imageUrl } : {}),
+            };
+
+            const { error: dbError } = editing
+                ? await supabase.from("gallery").update(payload).eq("id", editing)
+                : await supabase.from("gallery").insert({ ...payload, image_url: imageUrl || "" });
+
+            if (dbError) {
+                console.error(dbError);
+                alert(dbError.message);
+                return;
+            }
+
+            alert(editing ? "Image updated!" : "Image Uploaded Successfully!");
+
+            setTitle("");
+            setCategory("");
+            setSortOrder("");
+            setIsActive(true);
+            setFile(null);
+            setEditing(null);
+
+            await getImages();
+        } finally {
             setLoading(false);
-            return;
         }
+    }
 
-        // Get public URL
-        const { data } = supabase.storage
-            .from("gallery")
-            .getPublicUrl(fileName);
+    function startEdit(img: GalleryImage) {
+        setEditing(img.id);
+        setTitle(img.title);
+        setCategory(img.category || "");
+        setSortOrder(String(img.sort_order ?? 0));
+        setIsActive(img.is_active ?? true);
+        setFile(null);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
-        // Save URL in database
-        const { error: dbError } = await supabase.from("gallery").insert({
-            title,
-            category,
-            image_url: data.publicUrl,
-        });
-
-        if (dbError) {
-            console.error(dbError);
-            alert(dbError.message);
-            setLoading(false);
-            return;
-        }
-
-        alert("Image Uploaded Successfully!");
-
+    function cancelEdit() {
+        setEditing(null);
         setTitle("");
         setCategory("");
+        setSortOrder("");
+        setIsActive(true);
         setFile(null);
+    }
 
-        await getImages();
-        setLoading(false);
+    async function toggleImage(id: string, active: boolean) {
+        await supabase.from("gallery").update({ is_active: !active }).eq("id", id);
+        getImages();
     }
 
     async function deleteImage(id: string, imageUrl: string) {
@@ -143,20 +180,40 @@ export default function GalleryPage() {
                 />
 
                 <input
+                    type="number"
+                    placeholder="Sort Order"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                    className="input-default"
+                />
+
+                <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setFile(e.target.files?.[0] || null)}
                     className="input-default"
-                    required
+                    required={!editing}
                 />
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="btn-primary text-on-primary"
-                >
-                    {loading ? "Uploading..." : "Upload Image"}
-                </button>
+                <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                    <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
+                    Active (visible on website)
+                </label>
+
+                <div className="flex gap-3">
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="btn-primary text-on-primary"
+                    >
+                        {loading ? "Saving..." : editing ? "Update Image" : "Upload Image"}
+                    </button>
+                    {editing && (
+                        <button type="button" onClick={cancelEdit} className="btn-accent text-blue-950">
+                            Cancel
+                        </button>
+                    )}
+                </div>
             </form>
 
             <div className="grid md:grid-cols-3 gap-4 mt-8">
@@ -173,10 +230,14 @@ export default function GalleryPage() {
                                 <h3 className="font-semibold text-black">{img.title}</h3>
                                 <p className="text-gray-500">{img.category}</p>
                             </div>
+                        </div>
 
-                            <div className="flex items-center gap-2">
-                                <button onClick={() => deleteImage(img.id, img.image_url)} className="btn-accent">Delete</button>
-                            </div>
+                        <div className="flex flex-wrap gap-2 p-4 pt-0">
+                            <button onClick={() => startEdit(img)} className="btn-accent text-blue-950">Edit</button>
+                            <button onClick={() => toggleImage(img.id, !!img.is_active)} className={`rounded-lg px-3 py-2 text-sm font-semibold text-white ${img.is_active ? "bg-green-600" : "bg-gray-500"}`}>
+                                {img.is_active ? "Hide" : "Show"}
+                            </button>
+                            <button onClick={() => deleteImage(img.id, img.image_url)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}

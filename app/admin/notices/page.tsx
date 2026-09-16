@@ -17,6 +17,7 @@ export default function NoticesPage() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("General");
+    const [editing, setEditing] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     async function getNotices() {
@@ -37,11 +38,13 @@ export default function NoticesPage() {
 
         setLoading(true);
 
-        const { error } = await supabase.from("notices").insert({
-            title,
-            description,
-            category,
-        });
+        const { error } = editing
+            ? await supabase.from("notices").update({ title, description, category }).eq("id", editing)
+            : await supabase.from("notices").insert({
+                title,
+                description,
+                category,
+            });
 
         setLoading(false);
 
@@ -50,13 +53,29 @@ export default function NoticesPage() {
             return;
         }
 
-        alert("Notice Added!");
+        alert(editing ? "Notice updated!" : "Notice Added!");
 
         setTitle("");
         setDescription("");
         setCategory("General");
+        setEditing(null);
 
         getNotices();
+    }
+
+    function startEdit(notice: Notice) {
+        setEditing(notice.id);
+        setTitle(notice.title);
+        setDescription(notice.description || "");
+        setCategory(notice.category || "General");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function cancelEdit() {
+        setEditing(null);
+        setTitle("");
+        setDescription("");
+        setCategory("General");
     }
 
     async function deleteNotice(id: string) {
@@ -121,8 +140,13 @@ export default function NoticesPage() {
                     disabled={loading}
                     className="btn-accent text-blue-950"
                 >
-                    {loading ? "Saving..." : "Add Notice"}
+                    {loading ? "Saving..." : editing ? "Update Notice" : "Add Notice"}
                 </button>
+                {editing && (
+                    <button type="button" onClick={cancelEdit} className="btn-primary text-on-primary">
+                        Cancel
+                    </button>
+                )}
             </form>
 
             <div className="bg-white rounded-xl shadow p-6 overflow-x-auto">
@@ -170,12 +194,20 @@ export default function NoticesPage() {
                                 </td>
 
                                 <td>
-                                    <button
-                                        onClick={() => deleteNotice(notice.id)}
-                                        className="bg-red-600 text-white px-3 py-2 rounded-lg"
-                                    >
-                                        Delete
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => startEdit(notice)}
+                                            className="bg-yellow-400 text-blue-950 px-3 py-2 rounded-lg font-semibold"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => deleteNotice(notice.id)}
+                                            className="bg-red-600 text-white px-3 py-2 rounded-lg"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </td>
 
                             </tr>

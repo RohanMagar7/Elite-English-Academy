@@ -3,10 +3,12 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { academy } from "@/lib/site";
+import { MessageCircle } from "lucide-react";
+import { useSiteSettings, whatsappLink } from "@/hooks/useSiteSettings";
 import { supabase } from "@/lib/supabase";
 
 export default function AdmissionPage() {
+    const { settings } = useSiteSettings();
     const [form, setForm] = useState({
         student_name: "",
         parent_name: "",
@@ -14,6 +16,7 @@ export default function AdmissionPage() {
         email: "",
         class_name: "",
         course: "",
+        preferred_batch: "",
         message: "",
     });
 
@@ -48,6 +51,7 @@ export default function AdmissionPage() {
             email: "",
             class_name: "",
             course: "",
+            preferred_batch: "",
             message: "",
         });
     }
@@ -67,8 +71,8 @@ export default function AdmissionPage() {
                             Join Elite English Academy for practical speaking training, personalized mentoring, and confidence-building classes guided by Prof. J. M. Wagh-Dhotre.
                         </p>
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                            <a href={academy.phoneHref} className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#1D4ED8]">Call: {academy.phoneDisplay}</a>
-                            <a href={academy.emailHref} className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white">Email: {academy.email}</a>
+                            <a href={settings.phone_href} className="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#1D4ED8]">Call: {settings.phone_display}</a>
+                            <a href={`mailto:${settings.email}`} className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-bold text-white">Email: {settings.email}</a>
                         </div>
                     </div>
 
@@ -149,6 +153,19 @@ export default function AdmissionPage() {
                                     <option>Personal Mentorship</option>
                                 </select>
 
+                                <select
+                                    name="preferred_batch"
+                                    value={form.preferred_batch}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                                >
+                                    <option value="">Preferred Batch</option>
+                                    <option>Morning</option>
+                                    <option>Afternoon</option>
+                                    <option>Evening</option>
+                                    <option>Weekend</option>
+                                </select>
+
                                 <textarea
                                     name="message"
                                     rows={4}
@@ -164,6 +181,16 @@ export default function AdmissionPage() {
                                 >
                                     {loading ? "Submitting..." : "Submit Enquiry"}
                                 </button>
+
+                                <a
+                                    href={whatsappLink(settings.whatsapp_number, `Hello ${settings.academy_name}, I'd like to know more about the "${form.course || "course"}" (${form.preferred_batch || "batch"}).`)}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-green-500 bg-green-50 p-4 font-semibold text-green-700 transition hover:bg-green-100"
+                                >
+                                    <MessageCircle className="h-5 w-5" />
+                                    Enquire on WhatsApp
+                                </a>
                             </form>
                         </div>
 
@@ -172,15 +199,15 @@ export default function AdmissionPage() {
                             <div className="mt-6 space-y-5 text-slate-700">
                                 <div>
                                     <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Phone</p>
-                                    <a href={academy.phoneHref} className="mt-2 block text-lg font-semibold text-blue-900 hover:text-blue-700">{academy.phoneDisplay}</a>
+                                    <a href={settings.phone_href} className="mt-2 block text-lg font-semibold text-blue-900 hover:text-blue-700">{settings.phone_display}</a>
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Email</p>
-                                    <a href={academy.emailHref} className="mt-2 block text-lg font-semibold text-blue-900 hover:text-blue-700">{academy.email}</a>
+                                    <a href={`mailto:${settings.email}`} className="mt-2 block text-lg font-semibold text-blue-900 hover:text-blue-700">{settings.email}</a>
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Address</p>
-                                    <p className="mt-2 text-base leading-7 text-slate-700">{academy.address}</p>
+                                    <p className="mt-2 text-base leading-7 text-slate-700">{settings.address}</p>
                                 </div>
                             </div>
                         </aside>
