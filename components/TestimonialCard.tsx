@@ -202,15 +202,15 @@ export default function TestimonialSection() {
                             <div className="md:col-span-2 flex flex-col items-center justify-center gap-3">
                                 <button
                                     type="submit"
-                                    disabled={loading}
+                                    disabled={Boolean(loading)}
                                     className="inline-flex w-full items-center justify-center rounded-xl bg-[#2563EB] px-6 py-3 text-base font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
                                 >
                                     {loading ? "Submitting..." : "Submit Review"}
                                 </button>
 
-                                {notice && (
+                                {notice ? (
                                     <p className="text-sm font-medium text-blue-900">{notice}</p>
-                                )}
+                                ) : null}
                             </div>
                         </form>
                     </div>
@@ -225,8 +225,11 @@ export default function TestimonialSection() {
                                 items.length > 0 ? (prev - 1 + items.length) % items.length : 0
                             )
                         }
-                        className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-white text-[#2563EB] transition hover:bg-blue-50 disabled:opacity-40"
-                        disabled={items.length <= 1}
+                        className={`flex h-10 w-10 items-center justify-center rounded-full border transition hover:bg-blue-50 ${
+                            items.length <= 1
+                                ? "border-blue-200 bg-white text-[#2563EB] opacity-40 cursor-not-allowed"
+                                : "border-blue-200 bg-white text-[#2563EB] hover:bg-blue-50"
+                        }`}
                     >
                         <ChevronLeft className="h-5 w-5" />
                     </button>
@@ -255,8 +258,11 @@ export default function TestimonialSection() {
                                 items.length > 0 ? (prev + 1) % items.length : 0
                             )
                         }
-                        className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-200 bg-white text-[#2563EB] transition hover:bg-blue-50 disabled:opacity-40"
-                        disabled={items.length <= 1}
+                        className={`flex h-10 w-10 items-center justify-center rounded-full border transition hover:bg-blue-50 ${
+                            items.length <= 1
+                                ? "border-blue-200 bg-white text-[#2563EB] opacity-40 cursor-not-allowed"
+                                : "border-blue-200 bg-white text-[#2563EB] hover:bg-blue-50"
+                        }`}
                     >
                         <ChevronRight className="h-5 w-5" />
                     </button>
