@@ -24,7 +24,7 @@ export default function AddNotice() {
 
     return (
         <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">Add Notice</h2>
+            <h2 className="admin-page-title">Add Notice</h2>
 
             <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded-lg shadow">
                 <input name="title" placeholder="Title" value={form.title} onChange={change} className="input-default" required />
@@ -38,7 +38,7 @@ export default function AddNotice() {
                     <input type="checkbox" name="is_active" checked={form.is_active} onChange={change} /> Active
                 </label>
 
-                <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Saving..." : "Publish Notice"}</button>
+                <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Saving..." : "Publish Notice"}</button>
             </form>
         </div>
     );

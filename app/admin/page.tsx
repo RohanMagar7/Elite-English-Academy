@@ -69,21 +69,21 @@ export default function AdminDashboard() {
     }, []);
 
     return (
-        <>
-            <div className="flex items-start justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold text-blue-900 mb-2">Dashboard</h1>
-                    <p className="text-gray-600 mb-8">Overview of site content and activity.</p>
+        <div className="admin-page">
+            <div className="admin-header-row">
+                <div className="min-w-0">
+                    <h1 className="admin-page-title">Dashboard</h1>
+                    <p className="admin-page-sub">Overview of site content and activity.</p>
                 </div>
 
-                <div>
-                    <Link href="/profile" className="inline-flex items-center gap-2 btn-accent">
+                <div className="shrink-0">
+                    <Link href="/profile" className="admin-btn-accent w-full sm:w-auto">
                         <User size={16} /> Profile
                     </Link>
                 </div>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <div className="admin-stat-grid">
                 <DashboardCard title="Courses" value={String(counts.courses)} icon={<BookOpen size={36} />} />
                 <DashboardCard title="Trainers" value={String(counts.trainers)} icon={<UserCheck size={36} />} />
                 <DashboardCard title="Batches" value={String(counts.batches)} icon={<Clock size={36} />} />
@@ -99,6 +99,6 @@ export default function AdminDashboard() {
                 <DashboardCard title="Features" value={String(counts.features)} icon={<BookOpen size={36} />} />
                 <DashboardCard title="Footer Links" value={String(counts.footer)} icon={<Share2 size={36} />} />
             </div>
-        </>
+        </div>
     );
 }

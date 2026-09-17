@@ -64,7 +64,7 @@ export default function AddCourse() {
 
     return (
         <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">Add Course</h2>
+            <h2 className="admin-page-title">Add Course</h2>
 
             <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded-lg shadow">
                 <input name="title" placeholder="Course Title" value={form.title} onChange={change} className="input-default" required />
@@ -76,11 +76,11 @@ export default function AddCourse() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => setFile(e.target.files?.[0] || null)}
-                    className="input-default file:mr-4 file:rounded file:border-0 file:bg-blue-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+                    className="input-default"
                 />
                 <textarea name="description" placeholder="Description" value={form.description} onChange={change} className="input-default" />
 
-                <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Saving..." : "Add Course"}</button>
+                <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Saving..." : "Add Course"}</button>
             </form>
         </div>
     );

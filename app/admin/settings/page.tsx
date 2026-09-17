@@ -92,25 +92,25 @@ export default function SettingsPage() {
 
     return (
         <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-blue-900 mb-1">Site Settings</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="admin-page-title">Site Settings</h2>
+            <p className="text-slate-600 mb-6">
                 Manage academy-wide details (name, contact, social links, logo, business hours).
             </p>
 
             <div className="mb-4 rounded-xl bg-white p-6 shadow">
-                <p className="mb-2 text-sm font-semibold text-slate-700">Website Logo</p>
+                <p className="mb-2 text-sm font-semibold text-slate-600">Website Logo</p>
                 {values.logo_url ? (
                     <img src={values.logo_url} alt="Logo preview" className="mb-3 h-20 w-20 rounded-xl border object-contain bg-white p-1" />
                 ) : null}
                 <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadLogo(f); }}
-                    className="input-default file:mr-4 file:rounded file:border-0 file:bg-blue-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
+                    className="input-default" />
                 {uploading && <p className="mt-2 text-sm text-blue-700">Uploading logo...</p>}
             </div>
 
             <form onSubmit={save} className="grid gap-4 rounded-xl bg-white p-6 shadow">
                 {KEY_GROUPS.map((g) => (
                     <label key={g.key} className="block">
-                        <span className="mb-1 block text-sm font-semibold text-slate-700">{g.label}</span>
+                        <span className="mb-1 block text-sm font-semibold text-slate-600">{g.label}</span>
                         <input
                             value={values[g.key] || ""}
                             onChange={(e) => change(g.key, e.target.value)}
@@ -120,7 +120,7 @@ export default function SettingsPage() {
                     </label>
                 ))}
 
-                <button disabled={loading} className="btn-primary text-on-primary w-fit">
+                <button disabled={loading} className="admin-btn-primary w-full sm:w-fit">
                     {loading ? "Saving..." : "Save Settings"}
                 </button>
                 {saved && (

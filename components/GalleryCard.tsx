@@ -38,21 +38,21 @@ export default function GallerySection() {
     }, []);
 
     return (
-        <section className="bg-[#F8FBFF] py-8 sm:py-10">
+        <section className="bg-[#F8FBFF] py-6 sm:py-8">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
-                <div className="mb-10 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
+                <div className="mb-6 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
                     <div>
-                        <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-[#2563EB]">
+                        <span className="badge-text inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 font-semibold text-secondary">
                             Gallery Preview
                         </span>
-                        <h2 className="mt-4 text-3xl font-black tracking-tight text-blue-950 sm:text-4xl">
+                        <h2 className="mt-3 font-section font-black text-primary sm:text-4xl">
                             Campus Moments & Learning Spirit
                         </h2>
                     </div>
 
                     <Link
                         href="/gallery"
-                        className="inline-flex items-center justify-center rounded-xl bg-[#2563EB] px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                                className="btn-primary"
                     >
                         View Full Gallery
                     </Link>

@@ -42,30 +42,30 @@ export default function Footer() {
     ];
     return (
         <footer className="bg-[#0B1F4D] text-white">
-            <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 lg:px-10 xl:px-14">
-                <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8 lg:px-10 xl:px-14">
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                     <div>
                         <div className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-lg font-black text-blue-200">
+                                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 font-black text-blue-200">
                                 E
                             </div>
                             <div>
-                                <p className="text-lg font-black tracking-tight">{settings.academy_name}</p>
-                                <p className="text-[10px] uppercase tracking-[0.18em] text-blue-200">{settings.tagline}</p>
+                                <p className="font-card font-black tracking-tight text-white">{settings.academy_name}</p>
+                                <p className="text-xs tracking-wide text-blue-200 sm:text-sm">{settings.tagline}</p>
                             </div>
                         </div>
 
-                        <p className="mt-5 text-sm leading-7 text-blue-100">{settings.footer_about || settings.tagline}</p>
+                        <p className="mt-5 font-body text-blue-100 sm:text-lg">{settings.footer_about || settings.tagline}</p>
 
-                        <div className="mt-6 flex items-center gap-3">
+                        <div className="mt-4 flex items-center gap-3">
                             {socials.length > 0 ? socials.map((s) => (
                                 <a key={s.platform + s.url} href={s.url} target="_blank" rel="noreferrer" aria-label={s.label || s.platform}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-blue-100 transition hover:bg-white hover:text-[#0B1F4D]">
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 font-sm font-semibold text-blue-100 transition hover:bg-blue-900 hover:text-white">
                                     <Globe className="h-4 w-4" />
                                 </a>
                             )) : (
                                 <a href={whatsappLink(settings.whatsapp_number)} target="_blank" rel="noreferrer" aria-label="WhatsApp"
-                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-blue-100 transition hover:bg-white hover:text-[#0B1F4D]">
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 font-sm font-semibold text-blue-100 transition hover:bg-blue-900 hover:text-white">
                                     <MessageCircle className="h-4 w-4" />
                                 </a>
                             )}
@@ -73,8 +73,8 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="text-lg font-bold text-white">Quick Links</h3>
-                        <ul className="mt-5 space-y-3 text-sm text-blue-100">
+                        <h3 className="font-card font-bold text-white">Quick Links</h3>
+                        <ul className="mt-4 space-y-2 text-sm text-blue-100">
                             {qLinks.map((link) => (
                                 <li key={link.label}>
                                     <Link href={link.href} className="transition hover:text-white">
@@ -86,8 +86,8 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="text-lg font-bold text-white">Courses</h3>
-                        <ul className="mt-5 space-y-3 text-sm text-blue-100">
+                        <h3 className="font-card font-bold text-white">Courses</h3>
+                        <ul className="mt-4 space-y-2 text-sm text-blue-100">
                             {cLinks.map((course) => (
                                 <li key={course.label}><Link href={course.href} className="transition hover:text-white">{course.label}</Link></li>
                             ))}
@@ -95,25 +95,25 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h3 className="text-lg font-bold text-white">Contact</h3>
-                        <ul className="mt-5 space-y-4 text-sm text-blue-100">
+                        <h3 className="font-card font-bold text-white">Contact</h3>
+                        <ul className="mt-4 space-y-3 text-sm text-blue-100">
                             <li className="flex items-start gap-3">
                                 <MapPin className="mt-0.5 h-4 w-4 text-blue-200" />
-                                <span>{settings.address}</span>
+                                <span className="font-body text-blue-100">{settings.address}</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="h-4 w-4 text-blue-200" />
-                                <a href={settings.phone_href} className="hover:text-white">{settings.phone_display}</a>
+                                <a href={settings.phone_href} className="font-body font-medium text-blue-100 hover:text-white">{settings.phone_display}</a>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-4 w-4 text-blue-200" />
-                                <a href={`mailto:${settings.email}`} className="hover:text-white">{settings.email}</a>
+                                <a href={`mailto:${settings.email}`} className="font-body font-medium text-blue-100 hover:text-white">{settings.email}</a>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="mt-12 border-t border-white/10 pt-6">
+                <div className="mt-8 border-t border-white/10 pt-6">
                     <p className="text-center text-sm text-blue-200">
                         © 2026 {settings.academy_name}. {settings.copyright_text}
                     </p>

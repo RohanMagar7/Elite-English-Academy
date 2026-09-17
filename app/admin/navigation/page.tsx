@@ -31,29 +31,29 @@ export default function NavigationAdmin() {
         setForm(EMPTY); setEditing(null); load();
     }
     return (
-        <div className="space-y-6">
-            <div><h1 className="text-3xl font-bold text-blue-900">Header & Navigation Menu</h1>
-            <p className="text-gray-600">Add, edit, reorder, show/hide and delete menu links.</p></div>
-            <form onSubmit={submit} className="grid gap-4 rounded-xl bg-white p-6 shadow md:grid-cols-2">
+        <div className="admin-page">
+            <div><h1 className="admin-page-title">Header & Navigation Menu</h1>
+            <p className="text-slate-600">Add, edit, reorder, show/hide and delete menu links.</p></div>
+            <form onSubmit={submit} className="admin-card admin-form-grid">
                 <input name="label" placeholder="Label (e.g. Courses)" value={form.label} onChange={change} className="input-default" required />
                 <input name="href" placeholder="Link (e.g. /courses)" value={form.href} onChange={change} className="input-default" required />
                 <input name="sort_order" type="number" placeholder="Order" value={form.sort_order} onChange={change} className="input-default" />
                 <label className="flex items-center gap-3"><input type="checkbox" name="is_active" checked={form.is_active} onChange={change} /> Active</label>
                 <div className="flex gap-3 md:col-span-2">
-                    <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Saving..." : editing ? "Update Link" : "Add Link"}</button>
-                    {editing && <button type="button" onClick={() => { setEditing(null); setForm(EMPTY); }} className="btn-accent text-blue-950">Cancel</button>}
+                    <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Saving..." : editing ? "Update Link" : "Add Link"}</button>
+                    {editing && <button type="button" onClick={() => { setEditing(null); setForm(EMPTY); }} className="admin-btn-accent w-full sm:w-auto">Cancel</button>}
                 </div>
             </form>
             <div className="space-y-3">{items.map((n) => (
                 <div key={n.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4 shadow">
-                    <div><p className="font-semibold text-blue-900">{n.label}</p><p className="text-sm text-gray-500">{n.href} • order {n.sort_order}</p></div>
+                    <div><p className="font-semibold text-blue-950">{n.label}</p><p className="text-sm text-slate-600">{n.href} • order {n.sort_order}</p></div>
                     <div className="flex gap-2">
-                        <button onClick={() => { setEditing(n.id); setForm({ label: n.label, href: n.href, sort_order: n.sort_order || 0, is_active: n.is_active ?? true }); }} className="btn-accent text-blue-950">Edit</button>
-                        <button onClick={async () => { await supabase.from("navigation_links").update({ is_active: !n.is_active }).eq("id", n.id); load(); }} className="rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-blue-950">{n.is_active ? "Hide" : "Show"}</button>
+                        <button onClick={() => { setEditing(n.id); setForm({ label: n.label, href: n.href, sort_order: n.sort_order || 0, is_active: n.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
+                        <button onClick={async () => { await supabase.from("navigation_links").update({ is_active: !n.is_active }).eq("id", n.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{n.is_active ? "Hide" : "Show"}</button>
                         <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("navigation_links").delete().eq("id", n.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                     </div>
                 </div>))}
-                {items.length === 0 && <p className="rounded-xl border border-dashed bg-white p-8 text-center text-gray-500">No links yet.</p>}
+                {items.length === 0 && <p className="admin-empty">No links yet.</p>}
             </div>
         </div>
     );

@@ -102,48 +102,48 @@ export default function TestimonialsAdmin() {
         load();
     }
     return (
-        <div className="space-y-6">
+        <div className="admin-page">
             <div>
-                <h1 className="text-3xl font-bold text-blue-900">Testimonials</h1>
-                <p className="text-gray-600">Add, edit, approve, hide and delete student reviews.</p>
+                <h1 className="admin-page-title">Testimonials</h1>
+                <p className="text-slate-600">Add, edit, approve, hide and delete student reviews.</p>
             </div>
 
-            <form onSubmit={submit} className="grid gap-4 rounded-xl bg-white p-6 shadow md:grid-cols-2">
+            <form onSubmit={submit} className="admin-card admin-form-grid">
                 <input name="name" placeholder="Student Name" value={form.name} onChange={change} className="input-default" required />
                 <input name="course" placeholder="Course (e.g. Spoken English)" value={form.course} onChange={change} className="input-default" />
                 <textarea name="message" rows={3} placeholder="Review message" value={form.message} onChange={change} className="input-default md:col-span-2" required />
                 <input name="rating" type="number" min="1" max="5" placeholder="Rating (1-5)" value={form.rating} onChange={change} className="input-default" />
                 <input name="avatar" placeholder="Avatar URL (optional)" value={form.avatar} onChange={change} className="input-default" />
-                <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="input-default file:mr-4 file:rounded file:border-0 file:bg-blue-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
+                <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="input-default" />
                 <label className="flex items-center gap-3">
                     <input type="checkbox" name="is_active" checked={form.is_active} onChange={change} /> Active
                 </label>
                 <div className="flex gap-3 md:col-span-2">
-                    <button disabled={loading} className="btn-primary text-on-primary">
+                    <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">
                         {loading ? "Saving..." : editing ? "Update Testimonial" : "Add Testimonial"}
                     </button>
                     {editing && (
-                        <button type="button" onClick={cancelEdit} className="btn-accent text-blue-950">Cancel</button>
+                        <button type="button" onClick={cancelEdit} className="admin-btn-accent w-full sm:w-auto">Cancel</button>
                     )}
                 </div>
             </form>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2">
                 {items.map((t) => (
                     <div key={t.id} className="p-4 bg-white rounded-xl shadow">
                         <div className="flex items-start justify-between gap-3">
                             <div>
-                                <div className="font-semibold text-blue-900">{t.name}</div>
-                                <div className="text-sm text-gray-600">{t.course} • {"★".repeat(t.rating || 5)}</div>
+                                <div className="font-semibold text-blue-950">{t.name}</div>
+                                <div className="text-sm text-slate-600">{t.course} • {"★".repeat(t.rating || 5)}</div>
                             </div>
-                            <span className={`rounded-full px-3 py-1 text-xs text-white ${t.is_active ? "bg-green-600" : "bg-gray-500"}`}>
+                            <span className={`rounded-full px-3 py-1 text-xs text-white ${t.is_active ? "bg-green-600" : "bg-slate-500"}`}>
                                 {t.is_active ? "Active" : "Hidden"}
                             </span>
                         </div>
-                        <p className="mt-2 text-gray-700">{t.message}</p>
+                        <p className="mt-2 text-slate-800">{t.message}</p>
                         <div className="mt-3 flex flex-wrap gap-2">
-                            <button onClick={() => startEdit(t)} className="btn-accent text-blue-950">Edit</button>
-                            <button onClick={() => toggle(t.id, t.is_active)} className="rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-blue-950">
+                            <button onClick={() => startEdit(t)} className="admin-btn-accent w-full sm:w-auto">Edit</button>
+                            <button onClick={() => toggle(t.id, t.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {t.is_active ? "Deactivate" : "Activate"}
                             </button>
                             <button onClick={() => remove(t.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
@@ -151,7 +151,7 @@ export default function TestimonialsAdmin() {
                     </div>
                 ))}
                 {items.length === 0 && (
-                    <p className="rounded-xl border border-dashed bg-white p-8 text-center text-gray-500 md:col-span-2">No testimonials yet.</p>
+                    <p className="admin-empty md:col-span-2">No testimonials yet.</p>
                 )}
             </div>
         </div>

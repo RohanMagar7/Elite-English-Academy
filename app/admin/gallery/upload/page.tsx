@@ -23,12 +23,12 @@ export default function UploadGallery() {
 
     return (
         <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">Upload Gallery Image</h2>
+            <h2 className="admin-page-title">Upload Gallery Image</h2>
 
             <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded-lg shadow">
                 <input name="title" placeholder="Image Title" value={form.title} onChange={change} className="input-default" />
                 <input name="image_url" placeholder="Image URL" value={form.image_url} onChange={change} className="input-default" required />
-                <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Uploading..." : "Upload"}</button>
+                <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Uploading..." : "Upload"}</button>
             </form>
         </div>
     );

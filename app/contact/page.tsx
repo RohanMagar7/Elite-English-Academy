@@ -48,15 +48,15 @@ export default function ContactPage() {
         <>
             <Navbar />
 
-            <main className="bg-slate-50 py-8 sm:py-10">
+            <main className="bg-slate-50 py-6 sm:py-8">
                 <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
                     <div className="grid gap-8 lg:grid-cols-[1.08fr_1.32fr]">
                         <section className="rounded-[2rem] border border-blue-100 bg-white p-6 shadow-[0_18px_40px_rgba(37,99,235,0.08)] sm:p-8">
                             <div className="mb-6">
-                                <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-[#2563EB]">
+                                <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">
                                     Contact
                                 </span>
-                                <h1 className="mt-4 text-3xl font-black text-blue-950 sm:text-4xl">Let’s talk</h1>
+                                <h2 className="mt-4 text-3xl font-black text-blue-950 sm:text-4xl">Let’s talk</h2>
                                 <p className="mt-3 text-base text-slate-600">
                                     Reach out for admissions, course guidance, and personalized learning support.
                                 </p>
@@ -64,19 +64,19 @@ export default function ContactPage() {
 
                             <div className="space-y-5">
                                 <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
                                         <Phone className="h-5 w-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Phone</p>
-                                        <a href={settings.phone_href} className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700">
+                                        <a href={settings.phone_href} className="mt-2 block text-base font-medium text-slate-600 hover:text-blue-700">
                                             {settings.phone_display}
                                         </a>
                                     </div>
                                 </div>
 
                                 <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
                                         <MessageCircle className="h-5 w-5" />
                                     </div>
                                     <div>
@@ -85,7 +85,7 @@ export default function ContactPage() {
                                             href={`https://wa.me/${(settings.whatsapp_number || "").replace(/\D/g, "")}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700"
+                                            className="mt-2 block text-base font-medium text-slate-600 hover:text-blue-700"
                                         >
                                             {settings.phone_display}
                                         </a>
@@ -93,34 +93,34 @@ export default function ContactPage() {
                                 </div>
 
                                 <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
                                         <Mail className="h-5 w-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Email</p>
-                                        <a href={`mailto:${settings.email}`} className="mt-2 block text-base font-medium text-slate-700 hover:text-blue-700">
+                                        <a href={`mailto:${settings.email}`} className="mt-2 block text-base font-medium text-slate-600 hover:text-blue-700">
                                             {settings.email}
                                         </a>
                                     </div>
                                 </div>
 
                                 <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
                                         <MapPin className="h-5 w-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Address</p>
-                                        <p className="mt-2 text-base font-medium text-slate-700">{settings.address}</p>
+                                        <p className="mt-2 text-base font-medium text-slate-600">{settings.address}</p>
                                     </div>
                                 </div>
 
                                 <div className="flex gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
                                         <Clock className="h-5 w-5" />
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Business Hours</p>
-                                        <p className="mt-2 text-base font-medium text-slate-700">
+                                        <p className="mt-2 text-base font-medium text-slate-600">
                                             {settings.business_hours}
                                         </p>
                                     </div>
@@ -149,7 +149,7 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Follow Us</p>
-                                        <p className="mt-2 text-base font-medium text-slate-700">
+                                        <p className="mt-2 text-base font-medium text-slate-600">
                                             Stay updated with our latest batches & events
                                         </p>
                                     </div>
@@ -221,7 +221,7 @@ export default function ContactPage() {
                                 </button>
 
                                 {toast && (
-                                    <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-900">
+                                    <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-950">
                                         {toast}
                                     </div>
                                 )}

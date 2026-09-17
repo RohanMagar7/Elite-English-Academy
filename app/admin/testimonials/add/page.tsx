@@ -24,7 +24,7 @@ export default function AddTestimonial() {
 
     return (
         <div className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-blue-900 mb-4">Add Testimonial</h2>
+            <h2 className="admin-page-title">Add Testimonial</h2>
 
             <form onSubmit={submit} className="space-y-4 bg-white p-6 rounded-lg shadow">
                 <input name="name" placeholder="Name" value={form.name} onChange={change} className="input-default" required />
@@ -33,7 +33,7 @@ export default function AddTestimonial() {
                 <textarea name="message" rows={4} placeholder="Message" value={form.message} onChange={change} className="input-default" />
                 <label className="flex items-center gap-3"><input type="checkbox" name="is_active" checked={form.is_active} onChange={change as any} /> Active</label>
 
-                <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Saving..." : "Add Testimonial"}</button>
+                <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Saving..." : "Add Testimonial"}</button>
             </form>
         </div>
     );

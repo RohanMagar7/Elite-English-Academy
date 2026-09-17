@@ -123,57 +123,57 @@ export default function TrainersAdmin() {
     }
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-blue-900">Trainers / Faculty</h1>
+        <div className="admin-page">
+            <h1 className="admin-page-title">Trainers / Faculty</h1>
 
-            <form onSubmit={submit} className="grid gap-4 rounded-xl bg-white p-6 shadow md:grid-cols-2">
+            <form onSubmit={submit} className="admin-card admin-form-grid">
                 <input name="name" placeholder="Trainer Name" value={form.name} onChange={change} className="input-default" required />
                 <input name="role" placeholder="Role (e.g., Founder & Principal Trainer)" value={form.role} onChange={change} className="input-default" />
                 <input name="qualification" placeholder="Qualification (e.g., M.A. English | MH-SET)" value={form.qualification} onChange={change} className="input-default" required />
                 <input name="experience" placeholder="Experience (e.g., 12+ Years)" value={form.experience} onChange={change} className="input-default" />
                 <textarea name="specialization" placeholder="Specialization (e.g., Spoken English • IELTS)" value={form.specialization} onChange={change} className="input-default md:col-span-2" />
                 <input name="photo_url" placeholder="Photo URL (optional)" value={form.photo_url} onChange={change} className="input-default" />
-                <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="input-default file:mr-4 file:rounded file:border-0 file:bg-blue-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white" />
-                <label className="flex items-center gap-3 md:col-span-2">
+                <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} className="input-default" />
+                <label className="admin-check-row md:col-span-2">
                     <input type="checkbox" name="is_active" checked={form.is_active} onChange={change} /> Active
                 </label>
                 <div className="flex gap-3 md:col-span-2">
-                    <button disabled={loading} className="btn-primary text-on-primary">
+                    <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">
                         {loading ? "Saving..." : editing ? "Update Trainer" : "Add Trainer"}
                     </button>
                     {editing && (
-                        <button type="button" onClick={() => { setEditing(null); setForm(EMPTY); setFile(null); }} className="btn-accent text-blue-950">Cancel</button>
+                        <button type="button" onClick={() => { setEditing(null); setForm(EMPTY); setFile(null); }} className="admin-btn-accent w-full sm:w-auto">Cancel</button>
                     )}
                 </div>
             </form>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2">
                 {items.map((trainer) => (
-                    <div key={trainer.id} className="rounded-xl border bg-white p-4 shadow">
+                    <div key={trainer.id} className="admin-card">
                         <div className="flex items-center gap-3">
                             {trainer.photo_url ? (
                                 <img src={trainer.photo_url} alt={trainer.name} className="h-14 w-14 rounded-lg object-cover" />
                             ) : (
-                                <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-100 text-xs font-semibold text-blue-900">PHOTO</div>
+                                <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-100 text-xs font-semibold text-blue-950">PHOTO</div>
                             )}
                             <div className="min-w-0">
-                                <h3 className="truncate font-semibold text-blue-900">{trainer.name}</h3>
-                                <p className="truncate text-sm text-gray-600">{trainer.qualification}</p>
+                                <h3 className="truncate font-semibold text-blue-950">{trainer.name}</h3>
+                                <p className="truncate text-sm text-slate-600">{trainer.qualification}</p>
                             </div>
                         </div>
-                        <p className="mt-2 text-sm text-black">{trainer.experience}</p>
-                        <p className="mt-1 text-sm text-black">{trainer.specialization}</p>
+                        <p className="mt-2 text-sm text-slate-900">{trainer.experience}</p>
+                        <p className="mt-1 text-sm text-slate-900">{trainer.specialization}</p>
                         <div className="mt-3 flex flex-wrap gap-2">
-                            <button onClick={() => startEdit(trainer)} className="btn-accent text-blue-950">Edit</button>
-                            <button onClick={() => toggle(trainer.id, !!trainer.is_active)} className="rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-blue-950">
+                            <button onClick={() => startEdit(trainer)} className="admin-btn-accent w-full sm:w-auto">Edit</button>
+                            <button onClick={() => toggle(trainer.id, !!trainer.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {trainer.is_active ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => remove(trainer.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+                            <button onClick={() => remove(trainer.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
                         </div>
                     </div>
                 ))}
                 {items.length === 0 && (
-                    <div className="rounded-xl border border-dashed border-blue-200 bg-white p-8 text-center text-gray-500 md:col-span-2">No trainers yet. Add your first trainer above.</div>
+                    <div className="admin-empty md:col-span-2">No trainers yet. Add your first trainer above.</div>
                 )}
             </div>
         </div>

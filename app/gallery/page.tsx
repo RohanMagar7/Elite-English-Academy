@@ -12,7 +12,7 @@ export default function GalleryPage() {
             <Navbar />
             <GallerySection />
 
-            <section className="bg-white py-8 sm:py-10">
+            <section className="bg-white py-6 sm:py-8">
                 <div className="mx-auto max-w-5xl px-5 sm:px-8 lg:px-10 xl:px-14">
                     <div className="rounded-[2rem] bg-gradient-to-r from-[#0F172A] via-[#1D4ED8] to-[#2563EB] p-8 text-center text-white shadow-[0_25px_60px_rgba(37,99,235,0.35)] sm:p-10">
                         <h2 className="text-3xl font-black text-white sm:text-4xl">Want to Join {settings.academy_name}?</h2>

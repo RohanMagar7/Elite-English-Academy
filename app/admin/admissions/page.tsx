@@ -53,40 +53,40 @@ export default function AdmissionsPage() {
   }
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="admin-page">
 
-      <h1 className="text-3xl font-bold text-blue-900 mb-8">
+      <h1 className="admin-page-title mb-8">
         Admission Enquiries
       </h1>
 
-      <div className="bg-white rounded-xl shadow overflow-x-auto">
+      <div className="admin-table-wrap">
 
-        <table className="w-full">
-          <thead className="bg-blue-900 text-white">
+        <table className="admin-table">
+          <thead>
             <tr>
-              <th className="p-3 text-left">Student</th>
-              <th className="p-3 text-left">Phone</th>
-              <th className="p-3 text-left">Class</th>
-              <th className="p-3 text-left">Course</th>
-              <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-left">Action</th>
+              <th >Student</th>
+              <th >Phone</th>
+              <th >Class</th>
+              <th >Course</th>
+              <th >Status</th>
+              <th >Action</th>
             </tr>
           </thead>
 
           <tbody>
             {admissions.map((student) => (
-              <tr key={student.id} className="border-b">
+              <tr key={student.id} className="admin-tbody-row">
 
                 <td className="p-3">
                   <div className="font-semibold">
                     {student.student_name}
                   </div>
 
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-slate-600">
                     {student.parent_name}
                   </div>
 
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-slate-600">
                     {student.email}
                   </div>
                 </td>
@@ -103,7 +103,7 @@ export default function AdmissionsPage() {
                     onChange={(e) =>
                       updateStatus(student.id, e.target.value)
                     }
-                    className="border rounded px-2 py-1 text-black"
+                    className="admin-select"
                   >
                     <option>New</option>
                     <option>Contacted</option>
@@ -114,7 +114,7 @@ export default function AdmissionsPage() {
                 <td className="p-3">
                   <button
                     onClick={() => deleteAdmission(student.id)}
-                    className="bg-red-600 text-white px-3 py-2 rounded-lg"
+                    className="admin-btn-danger"
                   >
                     Delete
                   </button>

@@ -79,9 +79,9 @@ function AnimatedStat({
             transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * 0.06 }}
             className="rounded-2xl border border-blue-100 bg-white p-6 text-center shadow-[0_18px_50px_rgba(37,99,235,0.06)]"
         >
-            <p className="text-3xl font-black text-[#2563EB] sm:text-4xl">
+            <p className="text-3xl font-black text-blue-700 sm:text-4xl">
                 {decimal ? value.toFixed(1) : value}
-                <span className="text-yellow-500">{suffix}</span>
+                <span className="text-yellow-400">{suffix}</span>
             </p>
             <p className="mt-2 text-sm font-semibold text-slate-600">{label}</p>
         </motion.div>
@@ -111,21 +111,21 @@ export default function SuccessStories() {
     }, []);
 
     return (
-        <section className="bg-[#F8FBFF] py-8 sm:py-10" id="success-stories">
+        <section className="bg-[#F8FBFF] py-6 sm:py-8" id="success-stories">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
                 <SectionHeading
                     eyebrow="Success Stories"
                     title="Real Students. Real Results."
-                    description="From hesitant speakers to confident communicators — see how our students transformed their futures."
+                    description="Shy speakers became confident speakers. Read how our students built a better future."
                 />
 
-                <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                     {STATS.map((stat, index) => (
                         <AnimatedStat key={stat.label} {...stat} index={index} />
                     ))}
                 </div>
 
-                <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {stories.map((story, index) => (
                         <motion.div
                             key={story.id || `${story.student_name}-${index}`}
@@ -137,46 +137,46 @@ export default function SuccessStories() {
                                 delay: reduceMotion ? 0 : index * 0.05,
                             }}
                             whileHover={!reduceMotion ? { y: -5 } : undefined}
-                            className="rounded-2xl border border-blue-100 bg-white p-6 shadow-[0_18px_50px_rgba(37,99,235,0.06)]"
+                            className="rounded-2xl border border-blue-100 bg-white p-5 shadow-[0_18px_50px_rgba(37,99,235,0.06)]"
                         >
-                            <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-start justify-between gap-4">
                                 <div>
                                     <h3 className="text-lg font-bold text-blue-950">
                                         {story.student_name}
                                     </h3>
-                                    <p className="text-sm font-semibold text-[#2563EB]">
+                                    <p className="text-sm font-semibold text-blue-700">
                                         {story.course}
                                     </p>
                                 </div>
                                 {story.badge ? (
-                                    <span className="rounded-full bg-yellow-400 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-blue-950">
+                                    <span className="badge-sm badge-gold rounded-full bg-yellow-400 px-3 py-1 text-blue-950">
                                         {story.badge}
                                     </span>
                                 ) : null}
                             </div>
 
-                            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                <div className="rounded-xl border border-red-100 bg-red-50 p-3">
-                                    <p className="text-[10px] font-bold uppercase tracking-wide text-red-500">
+                            <div className="grid-equal-height">
+                                <div className="h-full flex flex-col justify-between rounded-xl p-4 bg-blue-50 border border-blue-100">
+                                    <p className="badge-text font-bold uppercase tracking-wide text-secondary">
                                         Before
                                     </p>
-                                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                                    <p className="mt-1 font-body text-muted">
                                         {story.before_result || "Before joining"}
                                     </p>
                                 </div>
-                                <div className="rounded-xl border border-green-100 bg-green-50 p-3">
-                                    <p className="text-[10px] font-bold uppercase tracking-wide text-green-600">
+                                <div className="h-full flex flex-col justify-between rounded-xl p-4 bg-green-50 border border-green-100">
+                                    <p className="badge-text font-bold uppercase tracking-wide text-success">
                                         After
                                     </p>
-                                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                                    <p className="mt-1 font-body text-muted">
                                         {story.after_result || "After completing"}
                                     </p>
                                 </div>
                             </div>
 
                             {story.achievement ? (
-                                <p className="mt-4 flex items-center gap-2 text-sm font-semibold text-blue-950">
-                                    <Trophy className="h-4 w-4 text-yellow-500" />
+                                <p className="mt-4 pt-3 border-t border-blue-100 flex items-center gap-2 font-semibold text-primary">
+                                    <Trophy className="h-4 w-4 text-yellow-400" />
                                     {story.achievement}
                                 </p>
                             ) : null}

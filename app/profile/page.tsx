@@ -27,7 +27,7 @@ export default function ProfilePage() {
     return (
         <div className="p-8 bg-gray-100 min-h-screen">
             <div className="max-w-3xl bg-white rounded-xl shadow p-6">
-                <h1 className="text-2xl font-bold text-blue-900 mb-4">Profile</h1>
+                <h2 className="text-2xl font-bold text-blue-950 mb-4">Profile</h2>
 
                 <div className="flex items-center gap-4">
                     <img src={profile?.avatar_url || user.user_metadata?.avatar_url || "/public/icons/user.svg"} alt="avatar" className="w-20 h-20 rounded-full object-cover" />

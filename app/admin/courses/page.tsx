@@ -191,13 +191,13 @@ export default function CoursesPage() {
     }
 
     return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold text-blue-900 mb-6">
+        <div className="admin-page">
+            <h1 className="admin-page-title mb-6">
                 Courses Management
             </h1>
 
             {/* Add Course Form */}
-            <div className="bg-white rounded-2xl shadow-md p-6 mb-8">
+            <div className="admin-card mb-2">
                 <form onSubmit={addCourse} className="space-y-4">
 
                     <input
@@ -205,7 +205,7 @@ export default function CoursesPage() {
                         placeholder="Course Name"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
@@ -213,7 +213,7 @@ export default function CoursesPage() {
                         placeholder="Duration (Example: 3 Months)"
                         value={duration}
                         onChange={(e) => setDuration(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
@@ -221,7 +221,7 @@ export default function CoursesPage() {
                         placeholder="Fees"
                         value={fees}
                         onChange={(e) => setFees(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
@@ -229,7 +229,7 @@ export default function CoursesPage() {
                         placeholder="Eligibility (optional)"
                         value={eligibility}
                         onChange={(e) => setEligibility(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
@@ -237,7 +237,7 @@ export default function CoursesPage() {
                         placeholder="Mode (Online / Offline / Online & Offline)"
                         value={mode}
                         onChange={(e) => setMode(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
@@ -245,7 +245,7 @@ export default function CoursesPage() {
                         placeholder="Level / Audience (optional)"
                         value={level}
                         onChange={(e) => setLevel(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
@@ -253,7 +253,7 @@ export default function CoursesPage() {
                         placeholder="Sort Order"
                         value={sortOrder}
                         onChange={(e) => setSortOrder(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
@@ -261,14 +261,14 @@ export default function CoursesPage() {
                         placeholder="Course Image URL (optional)"
                         value={imageUrl}
                         onChange={(e) => setImageUrl(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
                     <input
                         type="file"
                         accept="image/*"
                         onChange={(e) => setFile(e.target.files?.[0] || null)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black file:mr-4 file:rounded file:border-0 file:bg-blue-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white"
+                        className="input-default"
                     />
 
                     <textarea
@@ -276,10 +276,10 @@ export default function CoursesPage() {
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={4}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-black placeholder:text-gray-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="input-default"
                     />
 
-                    <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                    <label className="flex items-center gap-3 text-sm font-medium text-slate-800">
                         <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
                         Active (visible on website)
                     </label>
@@ -302,19 +302,19 @@ export default function CoursesPage() {
             </div>
 
             {/* Courses Table */}
-            <div className="bg-white rounded-2xl shadow-md p-6 overflow-x-auto">
-                <h2 className="text-xl font-semibold mb-4 text-blue-900">
+            <div className="admin-table-wrap">
+                <h2 className="text-base font-semibold text-slate-900 sm:text-lg">
                     All Courses
                 </h2>
 
-                <table className="w-full border-collapse">
+                <table className="admin-table">
                     <thead>
-                        <tr className="border-b bg-gray-50 text-left text-gray-700">
+                        <tr >
                             <th className="p-3">Course</th>
                             <th className="p-3">Duration</th>
                             <th className="p-3">Fees</th>
                             <th className="p-3">Description</th>
-                            <th className="p-3 text-center">Action</th>
+                            <th className="admin-tcenter">Action</th>
                         </tr>
                     </thead>
 
@@ -323,14 +323,14 @@ export default function CoursesPage() {
                             <tr>
                                 <td
                                     colSpan={5}
-                                    className="p-6 text-center text-gray-500"
+                                    className="p-6 text-center text-slate-600"
                                 >
                                     No courses available.
                                 </td>
                             </tr>
                         ) : (
                             courses.map((course) => (
-                                <tr key={course.id} className="border-b hover:bg-gray-50">
+                                <tr key={course.id} className="border-b hover:bg-slate-50">
                                     <td className="p-3">
                                         <div className="flex items-center gap-3">
                                             {course.image_url ? (
@@ -340,17 +340,17 @@ export default function CoursesPage() {
                                                     className="h-12 w-12 rounded-lg object-cover"
                                                 />
                                             ) : (
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-[10px] font-semibold text-blue-900">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100 text-[10px] font-semibold text-blue-950">
                                                     IMG
                                                 </div>
                                             )}
-                                            <span className="font-medium text-gray-900">
+                                            <span className="admin-cell-main">
                                                 {course.title}
                                             </span>
                                         </div>
                                     </td>
 
-                                    <td className="p-3 text-gray-700">
+                                    <td className="p-3 text-slate-800">
                                         {course.duration}
                                     </td>
 
@@ -358,11 +358,11 @@ export default function CoursesPage() {
                                         ₹ {course.fees}
                                     </td>
 
-                                    <td className="p-3 text-gray-600">
+                                    <td className="p-3 text-slate-600">
                                         {course.description}
                                     </td>
 
-                                    <td className="p-3 text-center">
+                                    <td className="admin-tcenter">
                                         <div className="flex flex-wrap justify-center gap-2">
                                             <button
                                                 onClick={() => startEdit(course)}
@@ -372,7 +372,7 @@ export default function CoursesPage() {
                                             </button>
                                             <button
                                                 onClick={() => toggleCourse(course.id, !!course.is_active)}
-                                                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white ${course.is_active ? "bg-green-600 hover:bg-green-700" : "bg-gray-500 hover:bg-gray-600"}`}
+                                                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white ${course.is_active ? "bg-green-600 hover:bg-green-700" : "bg-slate-500 hover:bg-gray-600"}`}
                                             >
                                                 {course.is_active ? "Hide" : "Show"}
                                             </button>

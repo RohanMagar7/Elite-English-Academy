@@ -1,199 +1,243 @@
 @import "tailwindcss";
+@import "./ui-helpers.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================
+   ELITE ENGLISH ACADEMY - Design System
+   ============================================ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* Improve default contrast and form readability using Tailwind base utilities */
 @layer base {
-  body {
-    @apply bg-white text-gray-900 antialiased;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply text-blue-900 font-semibold;
-  }
-
-  a {
-    @apply text-blue-700;
-  }
-
-  p {
-    @apply text-gray-700;
-  }
-
-  input,
-  textarea,
-  select,
-  button {
-    color: #111827 !important;
-    @apply text-gray-900;
-  }
-
-  input::placeholder,
-  textarea::placeholder,
-  select::placeholder {
-    color: #9ca3af !important;
-  }
-
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover,
-  input:-webkit-autofill:focus,
-  input:-webkit-autofill:active,
-  textarea:-webkit-autofill,
-  textarea:-webkit-autofill:hover,
-  textarea:-webkit-autofill:focus,
-  select:-webkit-autofill,
-  select:-webkit-autofill:hover,
-  select:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-    -webkit-text-fill-color: #111827 !important;
-    color: #111827 !important;
-  }
-
-  /* Dark mode overrides */
-  @media (prefers-color-scheme: dark) {
-    body {
-      @apply bg-gray-900 text-gray-100;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      @apply text-gray-100;
-    }
-
-    p {
-      @apply text-gray-300;
-    }
-
-    input,
-    textarea,
-    select,
-    button {
-      @apply text-gray-100;
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white text-blue-950 font-sans antialiased; }
+  h1, h2, h3, h4, h5, h6 { @apply font-semibold; }
+  input, textarea, select { @apply bg-white text-blue-950; }
+  input::placeholder, textarea::placeholder { @apply text-slate-600; }
+  :focus-visible { outline: 3px solid var(--color-blue-600); outline-offset: 4px; }
+  button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+  button:not(:disabled), a { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 }
 
-/* Theme variables and utility classes */
-:root {
-  --primary-50: #eef2ff;
-  --primary-100: #e0e7ff;
-  --primary-500: #4f46e5;
-  /* indigo-600 */
-  --primary-700: #4338ca;
-  /* indigo-700 */
-  --primary-900: #312e81;
-  /* indigo-900 */
+/* ============================================
+   Design System Utilities
+   ============================================ */
 
-  --accent-400: #f59e0b;
-  /* amber-500 */
-  --muted-100: #f3f4f6;
-  --muted-200: #e5e7eb;
+/* Typography Scale */
+.font-hero { @apply text-5xl md:text-6xl; }
+.font-section { @apply text-3xl md:text-4xl; }
+.font-card { @apply text-xl; }
+.font-body { @apply text-base; }
+.font-sm { @apply text-sm; }
+.font-caption { @apply text-xs; }
+
+/* Text Colors - max 8 colors */
+.text-primary { @apply text-blue-950; }
+.text-secondary { @apply text-blue-700; }
+.text-muted { color: #475569; }
+.text-accent { color: #eab308; }
+.text-success { color: #16a34a; }
+.text-error { color: #ef4444; }
+
+/* Button Variants - 4 reusable styles */
+.btn-primary {
+  @apply inline-flex h-12 items-center justify-center rounded-xl bg-blue-600 px-6 font-semibold text-white shadow-md transition-all duration-200 hover:bg-blue-700;
 }
 
-@layer utilities {
-  .bg-primary {
-    background-color: var(--primary-700) !important;
-  }
-
-  .bg-primary-dark {
-    background-color: var(--primary-900) !important;
-  }
-
-  .text-primary {
-    color: var(--primary-700) !important;
-  }
-
-  .text-on-primary {
-    color: white !important;
-  }
-
-  .bg-accent {
-    background-color: var(--accent-400) !important;
-  }
-
-  .text-accent {
-    color: var(--accent-400) !important;
-  }
-
-  .input-default {
-    @apply w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent;
-  }
-
-  .btn-primary {
-    @apply rounded-lg px-4 py-2 font-semibold text-white;
-    background-color: var(--primary-700);
-  }
-
-  .btn-accent {
-    @apply rounded-lg px-4 py-2 font-semibold text-blue-950;
-    background-color: var(--accent-400);
-  }
-
-  .bg-hero-gradient {
-    background: linear-gradient(90deg, var(--primary-900), var(--primary-700));
-  }
-
-  @keyframes floatWhatsApp {
-
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-
-    20% {
-      transform: translateY(-6px);
-    }
-
-    40% {
-      transform: translateY(0px);
-    }
-
-    60% {
-      transform: translateY(-4px);
-    }
-
-    80% {
-      transform: translateY(0px);
-    }
-  }
-
-  .floating-whatsapp {
-    animation: floatWhatsApp 3.5s ease-in-out infinite;
-  }
+.btn-secondary {
+  @apply inline-flex h-12 items-center justify-center rounded-xl border border-blue-600 bg-white px-6 font-semibold text-blue-700 shadow-md transition-all duration-200 hover:bg-blue-50;
 }
+
+.btn-accent {
+  @apply inline-flex h-12 items-center justify-center rounded-xl bg-yellow-400 px-6 font-semibold text-blue-950 shadow-md transition-all duration-200 hover:bg-yellow-500;
+}
+
+.btn-ghost {
+  @apply inline-flex h-12 items-center justify-center rounded-xl bg-white/10 px-6 font-semibold text-white shadow-md transition-all duration-200 hover:bg-white/20;
+}
+
+.btn-mobile {
+  @apply inline-flex h-11 w-full items-center justify-center rounded-lg px-4 font-semibold transition-all duration-200;
+}
+
+/* Badge Utilities */
+.badge {
+  @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-200;
+}
+
+.badge-blue {
+  @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold border-blue-200 bg-blue-50 text-blue-700;
+}
+
+.badge-gold {
+  @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold border-yellow-300 bg-yellow-400 text-blue-950;
+}
+
+.badge-sm {
+  @apply text-xs md:text-sm;
+}
+
+/* Card Utilities — compact, consistent */
+.card {
+  @apply rounded-2xl border border-blue-100 bg-white shadow-md p-5 transition-all duration-300;
+}
+
+.card-hover {
+  @apply rounded-2xl border border-blue-100 bg-white shadow-md p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Container Utilities */
+.container-wide {
+  @apply mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14;
+}
+
+.container-narrow {
+  @apply mx-auto max-w-4xl px-5 sm:px-8;
+}
+
+.text-center-container {
+  @apply max-w-3xl mx-auto text-center;
+}
+
+/* Flex/Grid Utilities */
+.flex-equal-height {
+  @apply flex flex-col h-full;
+}
+
+.grid-equal-height {
+  @apply grid grid-cols-2 gap-4 items-stretch;
+}
+
+/* FAQ Accordion — compact */
+.faq-content {
+  @apply px-5 pb-5 pt-1 text-sm leading-6 text-slate-600;
+}
+
+.faq-question {
+  @apply px-5 py-4 text-left flex w-full items-center justify-between gap-4;
+}
+
+/* Header CTA Button - blue outline */
+.header-cta {
+  @apply inline-flex items-center gap-2 h-12 rounded-xl border border-blue-500 bg-white px-6 text-sm font-semibold text-blue-700 shadow-md transition-all duration-200 hover:bg-blue-600 hover:text-white;
+}
+
+/* Mobile Menu CTA */
+.mobile-menu-cta {
+  @apply mt-4 flex items-center justify-center gap-2 rounded-xl bg-yellow-400 py-3 font-semibold text-blue-950 shadow-md transition-all duration-200 hover:bg-yellow-300;
+}
+
+/* Image Fallback */
+.course-image-fallback {
+  @apply absolute inset-0 flex items-center justify-center bg-blue-100 text-sm font-semibold uppercase tracking-widest text-blue-950;
+}
+
+/* ============================================
+   ADMIN DESIGN SYSTEM — responsive + contrast
+   ============================================ */
+
+/* Page wrapper: use inside AdminShell <main>, replaces p-8 bg-gray-100 min-h-screen */
+.admin-page {
+  @apply mx-auto w-full max-w-6xl space-y-5 sm:space-y-6;
+}
+.admin-page-title {
+  @apply text-xl font-bold tracking-tight text-blue-950 sm:text-2xl lg:text-3xl;
+}
+.admin-page-sub {
+  @apply mt-1 text-sm leading-6 text-slate-600 sm:text-base;
+}
+.admin-header-row {
+  @apply flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between;
+}
+
+/* Cards */
+.admin-card {
+  @apply w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6;
+}
+.admin-empty {
+  @apply rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-600 sm:p-8;
+}
+
+/* Forms — single source of truth for .input-default (was undefined) */
+.input-default {
+  @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-[15px] leading-6 text-slate-900 shadow-sm transition placeholder:text-slate-500 hover:border-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/25 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500;
+}
+textarea.input-default { @apply min-h-24 resize-y; }
+select.input-default { @apply pr-9; }
+input[type="checkbox"].input-default, input[type="checkbox"] { @apply h-4 w-4 shrink-0 accent-blue-700; }
+input[type="file"].input-default {
+  @apply cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-blue-950 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-900;
+}
+.admin-label {
+  @apply mb-1.5 block text-sm font-semibold text-slate-800;
+}
+.admin-hint { @apply mt-1 text-xs leading-5 text-slate-500; }
+.admin-form-grid { @apply grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2; }
+.admin-check-row { @apply flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm font-medium text-slate-800; }
+
+/* Buttons */
+.admin-btn-primary {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-blue-950 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-slate-400;
+}
+.admin-btn-accent {
+  @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-yellow-400 px-5 py-2.5 text-sm font-semibold text-blue-950 shadow-sm transition hover:bg-yellow-300 active:scale-[0.98];
+}
+.admin-btn-danger {
+  @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 active:scale-[0.98];
+}
+.admin-btn-sm {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition active:scale-[0.97] sm:text-sm;
+}
+
+/* Tables — responsive scroll + sticky header */
+.admin-table-wrap {
+  @apply -mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:rounded-xl sm:border sm:border-slate-200 sm:bg-white sm:px-0 sm:shadow-sm;
+}
+.admin-table { @apply w-full min-w-[640px] border-collapse bg-white text-left text-sm sm:min-w-[720px] sm:rounded-xl; }
+.admin-table thead tr { @apply bg-blue-950 text-white; }
+.admin-table thead th { @apply whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider sm:px-4; }
+.admin-table thead th:first-child { @apply rounded-tl-xl; }
+.admin-table thead th:last-child { @apply rounded-tr-xl; }
+.admin-table tbody td { @apply border-b border-slate-100 px-3 py-3 align-top text-slate-800 sm:px-4; }
+.admin-table tbody tr:last-child td { @apply border-b-0; }
+.admin-table tbody tr { @apply transition hover:bg-blue-50/50; }
+.admin-cell-main { @apply font-semibold text-slate-900; }
+.admin-table tbody tr.admin-tbody-row { @apply border-b border-slate-100 transition hover:bg-blue-50/50; }
+.admin-table tbody tr.admin-tbody-row:last-child { @apply border-b-0; }
+.admin-tcenter { @apply text-center; }
+.admin-cell-sub { @apply mt-0.5 text-xs leading-5 text-slate-600 sm:text-sm; }
+
+/* Status / badges */
+.admin-badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold sm:text-xs; }
+.admin-badge-green { @apply bg-green-100 text-green-800 ring-1 ring-inset ring-green-200; }
+.admin-badge-gray { @apply bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200; }
+.admin-badge-yellow { @apply bg-yellow-100 text-yellow-900 ring-1 ring-inset ring-yellow-200; }
+.admin-select {
+  @apply rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/25;
+}
+
+/* Dashboard stat cards */
+.admin-stat-grid { @apply grid grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+::selection {
+  background: #bfdbfe;
+  color: #1e3a8a;
+}
+

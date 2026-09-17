@@ -96,9 +96,9 @@ export default function NoticesPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8 space-y-8">
+        <div className="admin-page">
 
-            <h1 className="text-3xl font-bold text-blue-900">
+            <h1 className="admin-page-title">
                 Notice Management
             </h1>
 
@@ -138,12 +138,12 @@ export default function NoticesPage() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="btn-accent text-blue-950"
+                    className="admin-btn-accent w-full sm:w-auto"
                 >
                     {loading ? "Saving..." : editing ? "Update Notice" : "Add Notice"}
                 </button>
                 {editing && (
-                    <button type="button" onClick={cancelEdit} className="btn-primary text-on-primary">
+                    <button type="button" onClick={cancelEdit} className="admin-btn-primary w-full sm:w-auto">
                         Cancel
                     </button>
                 )}
@@ -151,10 +151,10 @@ export default function NoticesPage() {
 
             <div className="bg-white rounded-xl shadow p-6 overflow-x-auto">
 
-                <table className="w-full">
+                <table className="admin-table">
 
-                    <thead className="border-b">
-                        <tr className="text-left text-gray-600">
+                    <thead className="admin-tbody-row">
+                        <tr className="text-left text-slate-600">
                             <th className="py-3">Title</th>
                             <th>Category</th>
                             <th>Status</th>
@@ -164,11 +164,11 @@ export default function NoticesPage() {
 
                     <tbody>
                         {notices.map((notice) => (
-                            <tr key={notice.id} className="border-b">
+                            <tr key={notice.id} className="admin-tbody-row">
 
                                 <td className="py-4">
                                     <h3 className="font-semibold">{notice.title}</h3>
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm text-slate-600">
                                         {notice.description}
                                     </p>
                                 </td>
@@ -186,7 +186,7 @@ export default function NoticesPage() {
                                         }
                                         className={`rounded-full px-3 py-1 text-white ${notice.is_active
                                             ? "bg-green-600"
-                                            : "bg-gray-500"
+                                            : "bg-slate-500"
                                             }`}
                                     >
                                         {notice.is_active ? "Active" : "Hidden"}
@@ -203,7 +203,7 @@ export default function NoticesPage() {
                                         </button>
                                         <button
                                             onClick={() => deleteNotice(notice.id)}
-                                            className="bg-red-600 text-white px-3 py-2 rounded-lg"
+                                            className="admin-btn-danger"
                                         >
                                             Delete
                                         </button>

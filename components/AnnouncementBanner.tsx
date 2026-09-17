@@ -50,8 +50,8 @@ export default function AnnouncementBanner() {
         >
             <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5 sm:px-6">
                 <Megaphone className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
-                <p className="flex-1 truncate text-xs text-zinc-800 font-semibold sm:text-sm">
-                    <span className="font-black uppercase tracking-wide">
+                <p className="flex-1 truncate text-xs text-blue-950 font-semibold sm:text-sm">
+                    <span className="font-black">
                         {notice.title}
                     </span>
                     {notice.description ? ` — ${notice.description}` : ""}

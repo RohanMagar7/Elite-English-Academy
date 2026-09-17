@@ -116,18 +116,18 @@ export default function TestimonialSection() {
     }
 
     return (
-        <section className="bg-white py-8 sm:py-10">
+        <section className="bg-white py-6 sm:py-8">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
-                <div className="mb-10 text-center">
-                    <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-[#2563EB]">
+                <div className="mb-6 text-center">
+                    <span className="inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
                         Student Reviews
                     </span>
-                    <h2 className="mt-4 text-3xl font-black tracking-tight text-blue-950 sm:text-4xl">
+                    <h2 className="mt-3 text-3xl font-black tracking-tight text-blue-950 sm:text-4xl">
                         What our students say
                     </h2>
                 </div>
 
-                <div className="mt-8 flex justify-center">
+                <div className="mt-6 flex justify-center">
                     <button
                         type="button"
                         onClick={() => setShowForm((prev) => !prev)}
@@ -138,7 +138,7 @@ export default function TestimonialSection() {
                 </div>
 
                 {showForm && (
-                    <div className="mt-8 rounded-[1.75rem] border border-blue-100 bg-blue-50/40 p-5 shadow-[0_12px_30px_rgba(37,99,235,0.05)] sm:p-8">
+                    <div className="mt-6 rounded-[1.75rem] border border-blue-100 bg-blue-50/40 p-5 shadow-[0_12px_30px_rgba(37,99,235,0.05)] sm:p-6">
                         <div className="mb-6 text-center">
                             <h3 className="text-2xl font-black text-blue-950">Leave a review</h3>
                             <p className="mt-2 text-sm text-slate-600">
@@ -148,7 +148,7 @@ export default function TestimonialSection() {
 
                         <form onSubmit={handleSubmit} className="mx-auto grid max-w-3xl gap-4 md:grid-cols-2">
                             <div>
-                                <label className="mb-2 block text-sm font-semibold text-slate-700">Name</label>
+                                <label className="mb-2 block text-sm font-semibold text-slate-600">Name</label>
                                 <input
                                     name="name"
                                     value={form.name}
@@ -160,7 +160,7 @@ export default function TestimonialSection() {
                             </div>
 
                             <div>
-                                <label className="mb-2 block text-sm font-semibold text-slate-700">Course</label>
+                                <label className="mb-2 block text-sm font-semibold text-slate-600">Course</label>
                                 <input
                                     name="course"
                                     value={form.course}
@@ -171,7 +171,7 @@ export default function TestimonialSection() {
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="mb-2 block text-sm font-semibold text-slate-700">Rating</label>
+                                <label className="mb-2 block text-sm font-semibold text-slate-600">Rating</label>
                                 <select
                                     name="rating"
                                     value={form.rating}
@@ -187,7 +187,7 @@ export default function TestimonialSection() {
                             </div>
 
                             <div className="md:col-span-2">
-                                <label className="mb-2 block text-sm font-semibold text-slate-700">Your review</label>
+                                <label className="mb-2 block text-sm font-semibold text-slate-600">Your review</label>
                                 <textarea
                                     name="message"
                                     value={form.message}
@@ -209,14 +209,14 @@ export default function TestimonialSection() {
                                 </button>
 
                                 {notice ? (
-                                    <p className="text-sm font-medium text-blue-900">{notice}</p>
+                                    <p className="text-sm font-medium text-blue-950">{notice}</p>
                                 ) : null}
                             </div>
                         </form>
                     </div>
                 )}
 
-                <div className="mt-8 flex items-center justify-center gap-3">
+                <div className="mt-6 flex items-center justify-center gap-3">
                     <button
                         type="button"
                         aria-label="Previous testimonial"
@@ -227,8 +227,8 @@ export default function TestimonialSection() {
                         }
                         className={`flex h-10 w-10 items-center justify-center rounded-full border transition hover:bg-blue-50 ${
                             items.length <= 1
-                                ? "border-blue-200 bg-white text-[#2563EB] opacity-40 cursor-not-allowed"
-                                : "border-blue-200 bg-white text-[#2563EB] hover:bg-blue-50"
+                                ? "border-blue-200 bg-white text-blue-700 opacity-40 cursor-not-allowed"
+                                : "border-blue-200 bg-white text-blue-700 hover:bg-blue-50"
                         }`}
                     >
                         <ChevronLeft className="h-5 w-5" />
@@ -260,15 +260,15 @@ export default function TestimonialSection() {
                         }
                         className={`flex h-10 w-10 items-center justify-center rounded-full border transition hover:bg-blue-50 ${
                             items.length <= 1
-                                ? "border-blue-200 bg-white text-[#2563EB] opacity-40 cursor-not-allowed"
-                                : "border-blue-200 bg-white text-[#2563EB] hover:bg-blue-50"
+                                ? "border-blue-200 bg-white text-blue-700 opacity-40 cursor-not-allowed"
+                                : "border-blue-200 bg-white text-blue-700 hover:bg-blue-50"
                         }`}
                     >
                         <ChevronRight className="h-5 w-5" />
                     </button>
                 </div>
 
-                <div ref={listRef} className="mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4 scroll-smooth">
+                <div ref={listRef} className="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 scroll-smooth">
                     {items.length === 0 ? (
                         <div className="md:col-span-3 w-full rounded-[1.5rem] border border-dashed border-blue-200 bg-blue-50/60 p-8 text-center text-slate-600">
                             No reviews yet. Be the first to share your experience.
@@ -291,20 +291,20 @@ export default function TestimonialSection() {
                                         className="h-14 w-14 rounded-full object-cover ring-3 ring-blue-100"
                                     />
                                     <div>
-                                        <h3 className="text-lg font-bold text-blue-950">{item.name}</h3>
-                                        <p className="text-sm font-medium text-[#2563EB]">{item.course}</p>
+                                        <h3 className="font-card font-bold text-primary">{item.name}</h3>
+                                        <p className="font-sm text-secondary">{item.course}</p>
                                     </div>
                                 </div>
 
-                                <div className="mb-4 flex items-center gap-1 text-lg text-amber-400" aria-label={`${item.rating || 5} star rating`}>
+                                <div className="mb-4 flex items-center gap-1 text-lg text-yellow-400" aria-label={`${item.rating || 5} star rating`}>
                                     {Array.from({ length: 5 }).map((_, starIndex) => (
-                                        <span key={starIndex} className={starIndex < (item.rating || 5) ? "text-amber-400" : "text-slate-200"}>
+                                        <span key={starIndex} className={starIndex < (item.rating || 5) ? "text-yellow-400" : "text-blue-100"}>
                                             ★
                                         </span>
                                     ))}
                                 </div>
 
-                                <p className="text-base leading-7 text-slate-600">“{item.message}”</p>
+                                <p className="font-body text-muted">“{item.message}”</p>
                             </motion.article>
                         ))
                     )}

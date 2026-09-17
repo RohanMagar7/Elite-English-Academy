@@ -75,7 +75,7 @@ function LoginForm() {
 
             <div className="min-h-screen flex items-center justify-center p-8 bg-blue-50">
                 <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow">
-                    <h1 className="text-2xl font-bold text-blue-900 mb-4">Admin Login</h1>
+                    <h2 className="text-2xl font-bold text-blue-950 mb-4">Admin Login</h2>
 
                     {error && <div className="mb-4 rounded-md bg-red-50 p-3 text-red-700">{error}</div>}
 

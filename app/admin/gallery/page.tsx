@@ -155,8 +155,8 @@ export default function GalleryPage() {
     }
 
     return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold text-blue-900 mb-6">
+        <div className="admin-page">
+            <h1 className="admin-page-title mb-6">
                 Gallery Management
             </h1>
 
@@ -195,7 +195,7 @@ export default function GalleryPage() {
                     required={!editing}
                 />
 
-                <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <label className="flex items-center gap-3 text-sm font-medium text-slate-800">
                     <input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} />
                     Active (visible on website)
                 </label>
@@ -204,12 +204,12 @@ export default function GalleryPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="btn-primary text-on-primary"
+                        className="admin-btn-primary w-full sm:w-auto"
                     >
                         {loading ? "Saving..." : editing ? "Update Image" : "Upload Image"}
                     </button>
                     {editing && (
-                        <button type="button" onClick={cancelEdit} className="btn-accent text-blue-950">
+                        <button type="button" onClick={cancelEdit} className="admin-btn-accent w-full sm:w-auto">
                             Cancel
                         </button>
                     )}
@@ -227,14 +227,14 @@ export default function GalleryPage() {
 
                         <div className="p-4 flex items-center justify-between gap-4">
                             <div>
-                                <h3 className="font-semibold text-black">{img.title}</h3>
-                                <p className="text-gray-500">{img.category}</p>
+                                <h3 className="font-semibold text-slate-900">{img.title}</h3>
+                                <p className="text-slate-600">{img.category}</p>
                             </div>
                         </div>
 
                         <div className="flex flex-wrap gap-2 p-4 pt-0">
-                            <button onClick={() => startEdit(img)} className="btn-accent text-blue-950">Edit</button>
-                            <button onClick={() => toggleImage(img.id, !!img.is_active)} className={`rounded-lg px-3 py-2 text-sm font-semibold text-white ${img.is_active ? "bg-green-600" : "bg-gray-500"}`}>
+                            <button onClick={() => startEdit(img)} className="admin-btn-accent w-full sm:w-auto">Edit</button>
+                            <button onClick={() => toggleImage(img.id, !!img.is_active)} className={`rounded-lg px-3 py-2 text-sm font-semibold text-white ${img.is_active ? "bg-green-600" : "bg-slate-500"}`}>
                                 {img.is_active ? "Hide" : "Show"}
                             </button>
                             <button onClick={() => deleteImage(img.id, img.image_url)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>

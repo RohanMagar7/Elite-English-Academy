@@ -75,8 +75,8 @@ export default function FaqsAdmin() {
     }
 
     return (
-        <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-blue-900">FAQs</h1>
+        <div className="admin-page">
+            <h1 className="admin-page-title">FAQs</h1>
 
             <form onSubmit={submit} className="grid gap-4 rounded-xl bg-white p-6 shadow">
                 <input name="question" placeholder="Question" value={form.question} onChange={change} className="input-default" required />
@@ -88,11 +88,11 @@ export default function FaqsAdmin() {
                     </label>
                 </div>
                 <div className="flex gap-3">
-                    <button disabled={loading} className="btn-primary text-on-primary">
+                    <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">
                         {loading ? "Saving..." : editing ? "Update FAQ" : "Add FAQ"}
                     </button>
                     {editing && (
-                        <button type="button" onClick={() => { setEditing(null); setForm(EMPTY); }} className="btn-accent text-blue-950">Cancel
+                        <button type="button" onClick={() => { setEditing(null); setForm(EMPTY); }} className="admin-btn-accent w-full sm:w-auto">Cancel
                     </button>
                     )}
                 </div>
@@ -100,25 +100,25 @@ export default function FaqsAdmin() {
 
             <div className="space-y-3">
                 {items.map((faq) => (
-                    <div key={faq.id} className="rounded-xl border bg-white p-4 shadow">
+                    <div key={faq.id} className="admin-card">
                         <div className="flex items-center justify-between gap-3">
-                            <h3 className="font-semibold text-blue-900">{faq.question}</h3>
-                            <span className={`rounded-full px-3 py-1 text-xs text-white ${faq.is_active ? "bg-green-600" : "bg-gray-500"}`}>
+                            <h3 className="font-semibold text-blue-950">{faq.question}</h3>
+                            <span className={`rounded-full px-3 py-1 text-xs text-white ${faq.is_active ? "bg-green-600" : "bg-slate-500"}`}>
                                 {faq.is_active ? "Active" : "Hidden"}
                             </span>
                         </div>
-                        <p className="mt-2 text-sm text-gray-600">{faq.answer}</p>
-                        <div className="mt-3 flex gap-2">
-                            <button onClick={() => startEdit(faq)} className="btn-accent text-blue-950">Edit</button>
-                            <button onClick={() => toggle(faq.id, !!faq.is_active)} className="rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-blue-950">
+                        <p className="mt-2 text-sm text-slate-600">{faq.answer}</p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                            <button onClick={() => startEdit(faq)} className="admin-btn-accent w-full sm:w-auto">Edit</button>
+                            <button onClick={() => toggle(faq.id, !!faq.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {faq.is_active ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => remove(faq.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700">Delete</button>
+                            <button onClick={() => remove(faq.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
                         </div>
                     </div>
                 ))}
                 {items.length === 0 && (
-                    <div className="rounded-xl border border-dashed border-blue-200 bg-white p-8 text-center text-gray-500">No FAQs yet. Add your first FAQ above.</div>
+                    <div className="rounded-xl border border-dashed border-blue-200 bg-white p-8 text-center text-slate-600">No FAQs yet. Add your first FAQ above.</div>
                 )}
             </div>
         </div>

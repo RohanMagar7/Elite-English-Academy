@@ -61,62 +61,62 @@ export default function FooterAdmin() {
     return (
         <div className="space-y-10">
             <div>
-                <h1 className="text-3xl font-bold text-blue-900">Footer & Social Links</h1>
-                <p className="text-gray-600">Manage footer link columns and social media links.</p>
+                <h1 className="admin-page-title">Footer & Social Links</h1>
+                <p className="text-slate-600">Manage footer link columns and social media links.</p>
             </div>
 
             <div>
-                <h2 className="mb-3 text-xl font-bold text-blue-900">Footer Links</h2>
-                <form onSubmit={submitLink} className="grid gap-4 rounded-xl bg-white p-6 shadow md:grid-cols-2">
+                <h2 className="mb-3 text-xl font-bold text-blue-950">Footer Links</h2>
+                <form onSubmit={submitLink} className="admin-card admin-form-grid">
                     <input name="group_name" placeholder="Group (quick_links / courses / legal)" value={linkForm.group_name} onChange={changeLink} className="input-default" />
                     <input name="label" placeholder="Label" value={linkForm.label} onChange={changeLink} className="input-default" required />
                     <input name="href" placeholder="Link" value={linkForm.href} onChange={changeLink} className="input-default" />
                     <input name="sort_order" type="number" placeholder="Order" value={linkForm.sort_order} onChange={changeLink} className="input-default" />
                     <label className="flex items-center gap-3"><input type="checkbox" name="is_active" checked={linkForm.is_active} onChange={changeLink} /> Active</label>
                     <div className="flex gap-3 md:col-span-2">
-                        <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Saving..." : editingLink ? "Update Link" : "Add Link"}</button>
-                        {editingLink && <button type="button" onClick={() => { setEditingLink(null); setLinkForm(EMPTY_LINK); }} className="btn-accent text-blue-950">Cancel</button>}
+                        <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Saving..." : editingLink ? "Update Link" : "Add Link"}</button>
+                        {editingLink && <button type="button" onClick={() => { setEditingLink(null); setLinkForm(EMPTY_LINK); }} className="admin-btn-accent w-full sm:w-auto">Cancel</button>}
                     </div>
                 </form>
                 <div className="mt-4 space-y-3">
                     {links.map((l) => (
                         <div key={l.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4 shadow">
-                            <div><p className="font-semibold text-blue-900">{l.label}</p><p className="text-sm text-gray-500">{l.group_name} • {l.href}</p></div>
+                            <div><p className="font-semibold text-blue-950">{l.label}</p><p className="text-sm text-slate-600">{l.group_name} • {l.href}</p></div>
                             <div className="flex gap-2">
-                                <button onClick={() => { setEditingLink(l.id); setLinkForm({ group_name: l.group_name, label: l.label, href: l.href || "#", sort_order: l.sort_order || 0, is_active: l.is_active ?? true }); }} className="btn-accent text-blue-950">Edit</button>
-                                <button onClick={async () => { await supabase.from("footer_links").update({ is_active: !l.is_active }).eq("id", l.id); load(); }} className="rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-blue-950">{l.is_active ? "Hide" : "Show"}</button>
+                                <button onClick={() => { setEditingLink(l.id); setLinkForm({ group_name: l.group_name, label: l.label, href: l.href || "#", sort_order: l.sort_order || 0, is_active: l.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
+                                <button onClick={async () => { await supabase.from("footer_links").update({ is_active: !l.is_active }).eq("id", l.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{l.is_active ? "Hide" : "Show"}</button>
                                 <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("footer_links").delete().eq("id", l.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                             </div>
                         </div>
                     ))}
-                    {links.length === 0 && <p className="rounded-xl border border-dashed bg-white p-8 text-center text-gray-500">No footer links yet.</p>}
+                    {links.length === 0 && <p className="admin-empty">No footer links yet.</p>}
                 </div>
             </div>
             <div>
-                <h2 className="mb-3 text-xl font-bold text-blue-900">Social Media Links</h2>
-                <form onSubmit={submitSocial} className="grid gap-4 rounded-xl bg-white p-6 shadow md:grid-cols-2">
+                <h2 className="mb-3 text-xl font-bold text-blue-950">Social Media Links</h2>
+                <form onSubmit={submitSocial} className="admin-card admin-form-grid">
                     <input name="platform" placeholder="Platform (WhatsApp / Instagram / Facebook / YouTube)" value={socialForm.platform} onChange={changeSocial} className="input-default" required />
                     <input name="label" placeholder="Label (optional)" value={socialForm.label} onChange={changeSocial} className="input-default" />
                     <input name="url" placeholder="URL" value={socialForm.url} onChange={changeSocial} className="input-default md:col-span-2" required />
                     <input name="sort_order" type="number" placeholder="Order" value={socialForm.sort_order} onChange={changeSocial} className="input-default" />
                     <label className="flex items-center gap-3"><input type="checkbox" name="is_active" checked={socialForm.is_active} onChange={changeSocial} /> Active</label>
                     <div className="flex gap-3 md:col-span-2">
-                        <button disabled={loading} className="btn-primary text-on-primary">{loading ? "Saving..." : editingSocial ? "Update Social Link" : "Add Social Link"}</button>
-                        {editingSocial && <button type="button" onClick={() => { setEditingSocial(null); setSocialForm(EMPTY_SOCIAL); }} className="btn-accent text-blue-950">Cancel</button>}
+                        <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Saving..." : editingSocial ? "Update Social Link" : "Add Social Link"}</button>
+                        {editingSocial && <button type="button" onClick={() => { setEditingSocial(null); setSocialForm(EMPTY_SOCIAL); }} className="admin-btn-accent w-full sm:w-auto">Cancel</button>}
                     </div>
                 </form>
                 <div className="mt-4 space-y-3">
                     {socials.map((s) => (
                         <div key={s.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-white p-4 shadow">
-                            <div><p className="font-semibold text-blue-900">{s.platform}</p><p className="text-sm text-gray-500 break-all">{s.url}</p></div>
+                            <div><p className="font-semibold text-blue-950">{s.platform}</p><p className="text-sm text-slate-600 break-all">{s.url}</p></div>
                             <div className="flex gap-2">
-                                <button onClick={() => { setEditingSocial(s.id); setSocialForm({ platform: s.platform, label: s.label || "", url: s.url, sort_order: s.sort_order || 0, is_active: s.is_active ?? true }); }} className="btn-accent text-blue-950">Edit</button>
-                                <button onClick={async () => { await supabase.from("social_links").update({ is_active: !s.is_active }).eq("id", s.id); load(); }} className="rounded-lg bg-yellow-400 px-3 py-2 text-sm font-semibold text-blue-950">{s.is_active ? "Hide" : "Show"}</button>
+                                <button onClick={() => { setEditingSocial(s.id); setSocialForm({ platform: s.platform, label: s.label || "", url: s.url, sort_order: s.sort_order || 0, is_active: s.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
+                                <button onClick={async () => { await supabase.from("social_links").update({ is_active: !s.is_active }).eq("id", s.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{s.is_active ? "Hide" : "Show"}</button>
                                 <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("social_links").delete().eq("id", s.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                             </div>
                         </div>
                     ))}
-                    {socials.length === 0 && <p className="rounded-xl border border-dashed bg-white p-8 text-center text-gray-500">No social links yet.</p>}
+                    {socials.length === 0 && <p className="admin-empty">No social links yet.</p>}
                 </div>
             </div>
 

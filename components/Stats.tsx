@@ -41,9 +41,9 @@ export default function Stats() {
     }, []);
 
     return (
-        <section className="bg-[#F8FBFF] py-8 sm:py-10">
+        <section className="bg-[#F8FBFF] py-6 sm:py-8">
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                     {stats.map(({ icon, value, suffix, label }) => {
                         const Icon = ICONS[icon || "Sparkles"] || Sparkles;
                         return (
@@ -54,18 +54,18 @@ export default function Stats() {
                             viewport={{ once: true, amount: 0.3 }}
                             transition={{ duration: reduceMotion ? 0 : 0.5, ease: "easeOut" }}
                             whileHover={reduceMotion ? undefined : { y: -4 }}
-                            className="group rounded-2xl border border-blue-100 bg-white p-6 shadow-[0_20px_50px_rgba(37,99,235,0.08)] transition-transform duration-300 hover:-translate-y-1"
+                            className="course-card group"
                         >
                             <div className="mb-5 flex items-center justify-between">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-[#2563EB]">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-secondary">
                                     <Icon size={22} strokeWidth={2.2} />
                                 </div>
-                                <ArrowUpRight className="h-5 w-5 text-blue-400 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                                <ArrowUpRight className="h-5 w-5 text-secondary transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                             </div>
 
                             <AnimatedNumber value={Number(value)} suffix={suffix || ""} />
 
-                            <p className="mt-3 text-sm font-medium text-slate-600 sm:text-base">
+                            <p className="mt-3 font-sm font-semibold text-muted sm:text-base">
                                 {label}
                             </p>
                         </motion.div>
