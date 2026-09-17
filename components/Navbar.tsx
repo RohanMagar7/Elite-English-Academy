@@ -42,7 +42,6 @@ export default function Navbar() {
     })();
   }, []);
   const logoUrl = settings.logo_url || "/vercel.png";
-  const showImg = !!logoUrl && logoUrl !== "/vercel.png";
   return (
     <header
       className={
@@ -58,22 +57,18 @@ export default function Navbar() {
           className="flex items-center gap-3 min-w-0"
           aria-label="Home"
         >
-          {showImg ? (
-            <img
-              src={logoUrl}
-              alt="Logo"
-              className="h-11 w-11 shrink-0 rounded-xl bg-white object-contain p-1 shadow-md"
-            />
-          ) : (
-            <div className="shrink-0 rounded-xl bg-yellow-400 p-2 text-blue-950 shadow-md">
-              <GraduationCap size={24} />
-            </div>
-          )}
+
+          <img
+            src={logoUrl}
+            alt="Logo"
+            className="h-11 w-11 shrink-0 rounded-xl bg-white object-contain p-1 shadow-md"
+          />
+
           <div className="min-w-0">
             <div className="truncate text-sm sm:text-base lg:text-lg font-extrabold tracking-wide text-yellow-400">
               {settings.academy_name}
             </div>
-                        <p className="truncate text-xs sm:text-sm tracking-wide text-blue-200">
+            <p className="truncate text-xs sm:text-sm tracking-wide text-blue-200">
               {settings.tagline}
             </p>
           </div>
