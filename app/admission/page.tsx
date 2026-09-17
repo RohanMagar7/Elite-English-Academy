@@ -66,7 +66,7 @@ export default function AdmissionPage() {
                         <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]">
                             Admissions Open
                         </span>
-                        <h2 className="mt-4 font-section font-black text-primary sm:text-4xl lg:text-5xl">Limited Seats Available</h2>
+                        <h2 className="mt-4 font-section font-black  sm:text-4xl lg:text-5xl">Limited Seats Available</h2>
                         <p className="mt-4 max-w-2xl font-body text-blue-100 sm:text-lg">
                             Join Elite English Academy for practical speaking training, personalized mentoring, and confidence-building classes guided by Prof. J. M. Wagh-Dhotre.
                         </p>
@@ -207,7 +207,7 @@ export default function AdmissionPage() {
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Address</p>
-                                    <p className="mt-2 text-base leading-6 text-slate-600">{settings.address}</p>
+                                    <p className="mt-2 text-base leading-7 text-slate-600">{settings.address}</p>
                                 </div>
                             </div>
                         </aside>
