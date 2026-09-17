@@ -1,16 +1,40 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import FeedbackHost from "@/components/ui/FeedbackHost";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
 });
+
+/**
+ * Prevents the "flash of wrong theme" before hydration.
+ * Runs before paint: applies the `.dark` class on <html> based on the
+ * stored preference ("light" | "dark" | "system") or the OS preference.
+ */
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem("elite-theme");
+    var dark =
+      stored === "dark" ||
+      ((!stored || stored === "system") &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.classList.toggle("dark", dark);
+    document.documentElement.style.colorScheme = dark ? "dark" : "light";
+  } catch (e) {}
+})();
+`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eliteenglishacademy.magarohan8.workers.dev"),
@@ -90,9 +114,16 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${inter.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <ThemeProvider>
+          {children}
+          <FeedbackHost />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

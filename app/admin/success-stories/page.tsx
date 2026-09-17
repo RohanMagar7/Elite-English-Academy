@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -49,7 +51,7 @@ export default function SuccessStoriesAdmin() {
     async function submit(e: React.FormEvent) {
         e.preventDefault();
         if (!form.student_name || !form.course) {
-            alert("Please provide the student name and course.");
+            notify.warning("Please provide the student name and course.");
             return;
         }
         setLoading(true);
@@ -66,8 +68,8 @@ export default function SuccessStoriesAdmin() {
             ? await supabase.from("success_stories").update(payload).eq("id", editing)
             : await supabase.from("success_stories").insert([payload]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-        alert(editing ? "Story updated." : "Story added.");
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
+        notify.success(editing ? "Story updated." : "Story added.");
         setForm(EMPTY);
         setEditing(null);
         load();
@@ -92,7 +94,7 @@ export default function SuccessStoriesAdmin() {
     }
 
     async function remove(id: string) {
-        if (!confirm("Delete this story?")) return;
+        if (!(await confirmDialog({ message: "Delete this story?", tone: "danger" }))) return;
         await supabase.from("success_stories").delete().eq("id", id);
         load();
     }

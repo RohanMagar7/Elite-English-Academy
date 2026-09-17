@@ -1,4 +1,5 @@
 "use client";
+import { notify } from "@/components/ui/notify";
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -18,8 +19,8 @@ export default function AddTestimonial() {
         setLoading(true);
         const { error } = await supabase.from("testimonials").insert([{ name: form.name, message: form.message, course: form.course, avatar: form.avatar, is_active: form.is_active }]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-        alert("Testimonial added.");
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
+        notify.success("Testimonial added.");
         setForm({ name: "", message: "", course: "", avatar: "", is_active: true });
     }
 
@@ -32,7 +33,7 @@ export default function AddTestimonial() {
                 <input name="course" placeholder="Course" value={form.course} onChange={change} className="input-default" />
                 <input name="avatar" placeholder="Avatar URL" value={form.avatar} onChange={change} className="input-default" />
                 <textarea name="message" rows={4} placeholder="Message" value={form.message} onChange={change} className="input-default" />
-                <label className="flex items-center gap-3"><input type="checkbox" name="is_active" checked={form.is_active} onChange={change as any} /> Active</label>
+                <label className="flex items-center gap-3"><input type="checkbox" name="is_active" checked={form.is_active} onChange={change} /> Active</label>
 
                 <button disabled={loading} className="admin-btn-primary w-full sm:w-auto">{loading ? "Saving..." : "Add Testimonial"}</button>
             </form>

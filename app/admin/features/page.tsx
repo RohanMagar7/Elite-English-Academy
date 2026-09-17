@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -23,12 +25,12 @@ export default function FeaturesAdmin() {
     }
     async function submit(e: React.FormEvent) {
         e.preventDefault();
-        if (!form.title) return alert("Title required");
+        if (!form.title) { notify.warning("Title required"); return; }
         setLoading(true);
         const payload = { section_slug: form.section_slug || "why-choose-us", title: form.title, description: form.description || null, icon: form.icon || "BadgeCheck", sort_order: Number(form.sort_order) || 0, is_active: form.is_active };
         const { error } = editing ? await supabase.from("features").update(payload).eq("id", editing) : await supabase.from("features").insert([payload]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
         setForm(EMPTY); setEditing(null); load();
     }
     return (
@@ -60,7 +62,7 @@ export default function FeaturesAdmin() {
                         <div className="mt-3 flex flex-wrap gap-2">
                             <button onClick={() => { setEditing(f.id); setForm({ section_slug: f.section_slug || "why-choose-us", title: f.title, description: f.description || "", icon: f.icon || "BadgeCheck", sort_order: f.sort_order || 0, is_active: f.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                             <button onClick={async () => { await supabase.from("features").update({ is_active: !f.is_active }).eq("id", f.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{f.is_active ? "Hide" : "Show"}</button>
-                            <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("features").delete().eq("id", f.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={async () => { if (await confirmDialog({ message: "Delete?", tone: "danger" })) { await supabase.from("features").delete().eq("id", f.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}

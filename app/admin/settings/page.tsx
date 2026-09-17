@@ -1,4 +1,5 @@
 "use client";
+import { notify } from "@/components/ui/notify";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -61,13 +62,13 @@ export default function SettingsPage() {
             const { error } = await supabase.from("settings").upsert(rows, { onConflict: "key" });
             if (error) {
                 setLoading(false);
-                alert(safeClientMessage(error, "Save failed. Please try again."));
+                notify.error(safeClientMessage(error, "Save failed. Please try again."));
                 return;
             }
         }
         setLoading(false);
         setSaved(true);
-        alert("Settings saved!");
+        notify.success("Settings saved!");
     }
 
     async function uploadLogo(file: File) {
@@ -87,9 +88,9 @@ export default function SettingsPage() {
             }
             if (!url) throw new Error(lastErr || "Upload failed");
             change("logo_url", url);
-            alert("Logo uploaded! Click Save Settings to apply.");
+            notify.success("Logo uploaded! Click Save Settings to apply.");
         } catch (e) {
-            alert(safeClientMessage(e, "Upload failed"));
+            notify.error(safeClientMessage(e, "Upload failed"));
         } finally {
             setUploading(false);
         }

@@ -76,7 +76,7 @@ export default function TestimonialSection() {
     }, []);
 
     function handleChange(
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) {
         const target = e.target as HTMLInputElement;
         const value = target.type === "number" ? Number(target.value) : target.value;
@@ -189,7 +189,7 @@ export default function TestimonialSection() {
                                 <select
                                     name="rating"
                                     value={form.rating}
-                                    onChange={handleChange as any}
+                                    onChange={handleChange}
                                     className="w-full rounded-xl border border-blue-200 bg-white px-4 py-3 outline-none transition focus:border-blue-500"
                                 >
                                     <option value={5}>5 Stars</option>

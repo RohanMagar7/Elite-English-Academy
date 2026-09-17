@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -23,12 +25,12 @@ export default function StatsAdmin() {
     }
     async function submit(e: React.FormEvent) {
         e.preventDefault();
-        if (!form.label) return alert("Label required");
+        if (!form.label) { notify.warning("Label required"); return; }
         setLoading(true);
         const payload = { label: form.label, value: Number(form.value) || 0, suffix: form.suffix || "", icon: form.icon || "Sparkles", sort_order: Number(form.sort_order) || 0, is_active: form.is_active };
         const { error } = editing ? await supabase.from("stats").update(payload).eq("id", editing) : await supabase.from("stats").insert([payload]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
         setForm(EMPTY); setEditing(null); load();
     }
     return (
@@ -56,7 +58,7 @@ export default function StatsAdmin() {
                         <div className="flex gap-2">
                             <button onClick={() => { setEditing(s.id); setForm({ label: s.label, value: String(s.value), suffix: s.suffix || "", icon: s.icon || "Sparkles", sort_order: s.sort_order || 0, is_active: s.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                             <button onClick={async () => { await supabase.from("stats").update({ is_active: !s.is_active }).eq("id", s.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{s.is_active ? "Hide" : "Show"}</button>
-                            <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("stats").delete().eq("id", s.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={async () => { if (await confirmDialog({ message: "Delete?", tone: "danger" })) { await supabase.from("stats").delete().eq("id", s.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}

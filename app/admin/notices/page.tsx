@@ -1,5 +1,7 @@
 
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -50,11 +52,11 @@ export default function NoticesPage() {
         setLoading(false);
 
         if (error) {
-            alert(safeClientMessage(error, "Save failed. Please try again."));
+            notify.error(safeClientMessage(error, "Save failed. Please try again."));
             return;
         }
 
-        alert(editing ? "Notice updated!" : "Notice Added!");
+        notify.success(editing ? "Notice updated!" : "Notice Added!");
 
         setTitle("");
         setDescription("");
@@ -80,7 +82,7 @@ export default function NoticesPage() {
     }
 
     async function deleteNotice(id: string) {
-        if (!confirm("Delete notice?")) return;
+        if (!(await confirmDialog({ message: "Delete notice?", tone: "danger" }))) return;
 
         await supabase.from("notices").delete().eq("id", id);
 

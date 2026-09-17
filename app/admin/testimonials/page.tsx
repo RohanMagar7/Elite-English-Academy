@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -41,7 +43,7 @@ export default function TestimonialsAdmin() {
     async function submit(e: React.FormEvent) {
         e.preventDefault();
         if (!form.name || !form.message) {
-            alert("Name and message are required.");
+            notify.warning("Name and message are required.");
             return;
         }
         setLoading(true);
@@ -59,14 +61,14 @@ export default function TestimonialsAdmin() {
             const { error } = editing
                 ? await supabase.from("testimonials").update(payload).eq("id", editing)
                 : await supabase.from("testimonials").insert([payload]);
-            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-            alert(editing ? "Testimonial updated." : "Testimonial added.");
+            if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
+            notify.success(editing ? "Testimonial updated." : "Testimonial added.");
             setForm(EMPTY);
             setFile(null);
             setEditing(null);
             load();
         } catch (err) {
-            alert(safeClientMessage(err, "Save failed."));
+            notify.error(safeClientMessage(err, "Save failed."));
         } finally {
             setLoading(false);
         }
@@ -93,12 +95,12 @@ export default function TestimonialsAdmin() {
 
     async function toggle(id: string, active: boolean) {
         const { error } = await supabase.from("testimonials").update({ is_active: !active }).eq("id", id);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
         load();
     }
 
     async function remove(id: string) {
-        if (!confirm("Delete this testimonial?")) return;
+        if (!(await confirmDialog({ message: "Delete this testimonial?", tone: "danger" }))) return;
         await supabase.from("testimonials").delete().eq("id", id);
         load();
     }

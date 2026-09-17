@@ -1,11 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
+type ProfileRow = {
+    avatar_url?: string | null;
+    full_name?: string | null;
+    phone?: string | null;
+    role?: string | null;
+};
+
 export default function ProfilePage() {
-    const [user, setUser] = useState<any>(null);
-    const [profile, setProfile] = useState<any>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [profile, setProfile] = useState<ProfileRow | null>(null);
 
     useEffect(() => {
         async function load() {
@@ -25,8 +33,8 @@ export default function ProfilePage() {
     if (!user) return <p className="text-gray-600">Not signed in.</p>;
 
     return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <div className="max-w-3xl bg-white rounded-xl shadow p-6">
+        <div className="bg-gray-100 p-4 sm:p-8 min-h-screen">
+            <div className="max-w-3xl rounded-xl bg-white p-4 shadow sm:p-6">
                 <h2 className="text-2xl font-bold text-blue-950 mb-4">Profile</h2>
 
                 <div className="flex items-center gap-4">

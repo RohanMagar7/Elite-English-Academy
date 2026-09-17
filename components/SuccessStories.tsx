@@ -156,26 +156,26 @@ export default function SuccessStories() {
                             </div>
 
                             <div className="grid-equal-height">
-                                <div className="h-full flex flex-col justify-between rounded-xl p-4 bg-blue-50 border border-blue-100">
-                                    <p className="badge-text font-bold uppercase tracking-wide text-secondary">
+                                <div className="h-full flex flex-col justify-between rounded-xl p-4 bg-blue-50 border border-blue-100 dark:bg-white/5 dark:border-white/10">
+                                    <p className="badge-text font-bold uppercase tracking-wide text-blue-700 dark:text-blue-300">
                                         Before
                                     </p>
-                                    <p className="mt-1 font-body text-muted">
+                                    <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
                                         {story.before_result || "Before joining"}
                                     </p>
                                 </div>
-                                <div className="h-full flex flex-col justify-between rounded-xl p-4 bg-green-50 border border-green-100">
-                                    <p className="badge-text font-bold uppercase tracking-wide text-success">
+                                <div className="h-full flex flex-col justify-between rounded-xl p-4 bg-green-50 border border-green-100 dark:bg-emerald-400/5 dark:border-emerald-400/20">
+                                    <p className="badge-text font-bold uppercase tracking-wide text-green-700 dark:text-emerald-300">
                                         After
                                     </p>
-                                    <p className="mt-1 font-body text-muted">
+                                    <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
                                         {story.after_result || "After completing"}
                                     </p>
                                 </div>
                             </div>
 
                             {story.achievement ? (
-                                <p className="mt-4 pt-3 border-t border-blue-100 flex items-center gap-2 font-semibold text-primary">
+                                <p className="mt-4 pt-3 border-t border-blue-100 flex items-center gap-2 font-semibold text-brand-blue dark:text-blue-300">
                                     <Trophy className="h-4 w-4 text-yellow-400" />
                                     {story.achievement}
                                 </p>

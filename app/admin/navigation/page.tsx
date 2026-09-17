@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -23,12 +25,12 @@ export default function NavigationAdmin() {
     }
     async function submit(e: React.FormEvent) {
         e.preventDefault();
-        if (!form.label || !form.href) return alert("Label and link required");
+        if (!form.label || !form.href) { notify.warning("Label and link required"); return; }
         setLoading(true);
         const payload = { label: form.label, href: form.href, sort_order: Number(form.sort_order) || 0, is_active: form.is_active };
         const { error } = editing ? await supabase.from("navigation_links").update(payload).eq("id", editing) : await supabase.from("navigation_links").insert([payload]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
         setForm(EMPTY); setEditing(null); load();
     }
     return (
@@ -51,7 +53,7 @@ export default function NavigationAdmin() {
                     <div className="flex gap-2">
                         <button onClick={() => { setEditing(n.id); setForm({ label: n.label, href: n.href, sort_order: n.sort_order || 0, is_active: n.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                         <button onClick={async () => { await supabase.from("navigation_links").update({ is_active: !n.is_active }).eq("id", n.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{n.is_active ? "Hide" : "Show"}</button>
-                        <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("navigation_links").delete().eq("id", n.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                        <button onClick={async () => { if (await confirmDialog({ message: "Delete?", tone: "danger" })) { await supabase.from("navigation_links").delete().eq("id", n.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                     </div>
                 </div>))}
                 {items.length === 0 && <p className="admin-empty">No links yet.</p>}

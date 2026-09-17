@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 import { Menu } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -35,7 +36,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     }, [mobileOpen]);
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-[#0c1230] dark:text-slate-100">
             {/* Mobile top bar */}
             <header className="sticky top-0 z-40 border-b border-blue-900/20 bg-blue-950 text-white md:hidden">
                 <div className="flex items-center justify-between gap-3 px-4 py-3">
@@ -52,6 +53,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
                     <span className="rounded-full bg-yellow-400 px-2.5 py-1 text-[11px] font-bold text-blue-950">
                         ADMIN
                     </span>
+                    <ThemeToggle className="!border-white/20 !bg-white/10 !text-slate-100" />
                 </div>
             </header>
 

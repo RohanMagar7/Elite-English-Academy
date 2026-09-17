@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -28,16 +30,16 @@ export default function HeroAdmin() {
 
     async function submit(e: React.FormEvent) {
         e.preventDefault();
-        if (!form.title) return alert("Title required");
+        if (!form.title) { notify.warning("Title required"); return; }
         setLoading(true);
         try {
             let img = form.image_url.trim() || null;
             if (file) img = await uploadSiteImage(file, "hero");
             const payload = { badge: form.badge || null, title: form.title, description: form.description || null, image_url: img, primary_button_text: form.primary_button_text || null, primary_button_link: form.primary_button_link || null, secondary_button_text: form.secondary_button_text || null, secondary_button_link: form.secondary_button_link || null, sort_order: Number(form.sort_order) || 0, is_active: form.is_active };
             const { error } = editing ? await supabase.from("hero_slides").update(payload).eq("id", editing) : await supabase.from("hero_slides").insert([payload]);
-            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+            if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
             setForm(EMPTY); setFile(null); setEditing(null); load();
-        } catch (err) { alert(safeClientMessage(err, "Save failed")); }
+        } catch (err) { notify.error(safeClientMessage(err, "Save failed")); }
         finally { setLoading(false); }
     }
 
@@ -75,7 +77,7 @@ export default function HeroAdmin() {
                         <div className="mt-3 flex flex-wrap gap-2">
                             <button onClick={() => { setEditing(h.id); setForm({ badge: h.badge || "", title: h.title, description: h.description || "", image_url: h.image_url || "", primary_button_text: h.primary_button_text || "", primary_button_link: h.primary_button_link || "", secondary_button_text: h.secondary_button_text || "", secondary_button_link: h.secondary_button_link || "", sort_order: h.sort_order || 0, is_active: h.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                             <button onClick={async () => { await supabase.from("hero_slides").update({ is_active: !h.is_active }).eq("id", h.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{h.is_active ? "Hide" : "Show"}</button>
-                            <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("hero_slides").delete().eq("id", h.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={async () => { if (await confirmDialog({ message: "Delete?", tone: "danger" })) { await supabase.from("hero_slides").delete().eq("id", h.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}

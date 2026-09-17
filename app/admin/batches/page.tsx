@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -55,7 +57,7 @@ export default function BatchesAdmin() {
     async function submit(e: React.FormEvent) {
         e.preventDefault();
         if (!form.name || !form.time) {
-            alert("Please enter a batch name and time.");
+            notify.warning("Please enter a batch name and time.");
             return;
         }
         setLoading(true);
@@ -76,9 +78,9 @@ export default function BatchesAdmin() {
             : await supabase.from("batches").insert([payload]);
 
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
 
-        alert(editing ? "Batch updated." : "Batch added.");
+        notify.success(editing ? "Batch updated." : "Batch added.");
         setForm(EMPTY);
         setEditing(null);
         load();
@@ -105,7 +107,7 @@ export default function BatchesAdmin() {
     }
 
     async function remove(id: string) {
-        if (!confirm("Delete this batch?")) return;
+        if (!(await confirmDialog({ message: "Delete this batch?", tone: "danger" }))) return;
         await supabase.from("batches").delete().eq("id", id);
         load();
     }

@@ -1,4 +1,5 @@
 "use client";
+import { notify } from "@/components/ui/notify";
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -17,8 +18,8 @@ export default function UploadGallery() {
         setLoading(true);
         const { error } = await supabase.from("gallery").insert([{ title: form.title, image_url: form.image_url }]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-        alert("Image added to gallery.");
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
+        notify.success("Image added to gallery.");
         setForm({ title: "", image_url: "" });
     }
 

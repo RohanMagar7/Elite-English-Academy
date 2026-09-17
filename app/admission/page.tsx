@@ -1,4 +1,5 @@
 "use client";
+import { notify } from "@/components/ui/notify";
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
@@ -35,7 +36,7 @@ export default function AdmissionPage() {
         // (instant feedback; the server re-validates and rejects).
         const parsed = admissionSchema.safeParse(form);
         if (!parsed.success) {
-            alert(parsed.error.issues[0]?.message ?? "Please check the form fields.");
+            notify.error(parsed.error.issues[0]?.message ?? "Please check the form fields.");
             return;
         }
 
@@ -59,11 +60,11 @@ export default function AdmissionPage() {
         setLoading(false);
 
         if (!ok) {
-            alert(errText);
+            notify.success(errText);
             return;
         }
 
-        alert("Admission enquiry submitted successfully!");
+        notify.success("Admission enquiry submitted successfully!");
 
         setForm({
             student_name: "",
@@ -83,7 +84,7 @@ export default function AdmissionPage() {
 
             <div className="min-h-screen bg-[#F8FBFF] py-6 sm:py-8">
                 <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-10 xl:px-14">
-                    <div className="mb-8 rounded-[2rem] bg-gradient-to-r from-[#0F172A] via-[#1D4ED8] to-[#2563EB] p-8 text-white shadow-[0_25px_60px_rgba(37,99,235,0.35)]">
+                    <div className="mb-8 rounded-[2rem] bg-gradient-to-r from-[#0F172A] via-[#1D4ED8] to-[#2563EB] p-6 text-white shadow-[0_25px_60px_rgba(37,99,235,0.35)] sm:p-8">
                         <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]">
                             Admissions Open
                         </span>
@@ -92,13 +93,13 @@ export default function AdmissionPage() {
                             Join Elite English Academy for practical speaking training, personalized mentoring, and confidence-building classes guided by Prof. J. M. Wagh-Dhotre.
                         </p>
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                            <a href={settings.phone_href} className="btn-ghost">Call: {settings.phone_display}</a>
-                            <a href={`mailto:${settings.email}`} className="btn-secondary">Email: {settings.email}</a>
+                            <a href={settings.phone_href} className="btn-gold">{settings.phone_display}</a>
+                            <a href={`mailto:${settings.email}`} className="btn-gold">{settings.email}</a>
                         </div>
                     </div>
 
                     <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-                        <div className="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-[0_18px_40px_rgba(37,99,235,0.08)]">
+                        <div className="rounded-[2rem] border border-blue-100 bg-white p-5 shadow-[0_18px_40px_rgba(37,99,235,0.08)] sm:p-8">
                             <h2 className="text-3xl font-black text-blue-950">Admission Enquiry</h2>
                             <p className="mt-2 text-base text-slate-600">Fill out the form below and our team will contact you soon.</p>
 
@@ -196,7 +197,7 @@ export default function AdmissionPage() {
                                     className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                                 />
 
-                                                                <button
+                                <button
                                     disabled={loading}
                                     className="btn-primary w-full"
                                 >
@@ -207,7 +208,7 @@ export default function AdmissionPage() {
                                     href={whatsappLink(settings.whatsapp_number, `Hello ${settings.academy_name}, I'd like to know more about the "${form.course || "course"}" (${form.preferred_batch || "batch"}).`)}
                                     target="_blank"
                                     rel="noreferrer"
-                                                                    className="btn-secondary w-full flex items-center justify-center"
+                                    className="btn-secondary w-full flex items-center justify-center"
                                 >
                                     <MessageCircle className="h-5 w-5" />
                                     Enquire on WhatsApp
@@ -215,7 +216,7 @@ export default function AdmissionPage() {
                             </form>
                         </div>
 
-                        <aside className="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-[0_18px_40px_rgba(37,99,235,0.08)]">
+                        <aside className="rounded-[2rem] border border-blue-100 bg-white p-5 shadow-[0_18px_40px_rgba(37,99,235,0.08)] sm:p-8">
                             <h3 className="text-2xl font-black text-blue-950">Contact Details</h3>
                             <div className="mt-6 space-y-5 text-slate-600">
                                 <div>

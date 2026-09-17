@@ -55,8 +55,8 @@ function LoginForm() {
 
                 if (adminErr) {
                     // ignore and proceed to attempt sign-in using provided value as email
-                } else if (adminData && (adminData as any).email) {
-                    emailToUse = (adminData as any).email;
+                } else if (adminData && (adminData as { email?: string } | null)?.email) {
+                    emailToUse = (adminData as { email?: string }).email as string;
                 } else {
                     setLoading(false);
                     setError("Unknown login id");
@@ -106,8 +106,8 @@ function LoginForm() {
         <>
             <Navbar />
 
-            <div className="min-h-screen flex items-center justify-center p-8 bg-blue-50">
-                <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow">
+            <div className="flex min-h-screen items-center justify-center bg-blue-50 p-5 sm:p-8">
+                <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow sm:p-8">
                     <h2 className="text-2xl font-bold text-blue-950 mb-4">Admin Login</h2>
 
                     {error && <div className="mb-4 rounded-md bg-red-50 p-3 text-red-700">{error}</div>}

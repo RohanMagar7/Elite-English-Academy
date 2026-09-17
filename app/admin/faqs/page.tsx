@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -55,7 +57,7 @@ export default function FaqsAdmin() {
         // STRICT client check with the same schema the server enforces.
         const parsed = faqSchema.safeParse({ ...form, sort_order: Number(form.sort_order) });
         if (!parsed.success) {
-            alert(parsed.error.issues[0]?.message ?? "Please check the form fields.");
+            notify.error(parsed.error.issues[0]?.message ?? "Please check the form fields.");
             return;
         }
         setLoading(true);
@@ -63,8 +65,8 @@ export default function FaqsAdmin() {
             ? await mutate("update", { id: editing, data: parsed.data })
             : await mutate("create", { data: parsed.data });
         setLoading(false);
-        if (err) return alert(err);
-        alert(editing ? "FAQ updated." : "FAQ added.");
+        if (err) { notify.success(err); return; }
+        notify.success(editing ? "FAQ updated." : "FAQ added.");
         setForm(EMPTY);
         setEditing(null);
         load();
@@ -76,17 +78,17 @@ export default function FaqsAdmin() {
     }
 
     async function toggle(id: string, active: boolean) {
-        if (!idSchema.safeParse(id).success) return alert("Invalid id.");
+        if (!idSchema.safeParse(id).success) { notify.error("Invalid id."); return; }
         const err = await mutate("toggle", { id, is_active: active });
-        if (err) return alert(err);
+        if (err) { notify.success(err); return; }
         load();
     }
 
     async function remove(id: string) {
-        if (!confirm("Delete this FAQ?")) return;
-        if (!idSchema.safeParse(id).success) return alert("Invalid id.");
+        if (!(await confirmDialog({ message: "Delete this FAQ?", tone: "danger" }))) return;
+        if (!idSchema.safeParse(id).success) { notify.error("Invalid id."); return; }
         const err = await mutate("delete", { id });
-        if (err) return alert(err);
+        if (err) { notify.success(err); return; }
         load();
     }
 

@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -46,7 +48,7 @@ export default function GalleryPage() {
         e.preventDefault();
 
         if (!editing && !file) {
-            alert("Please select an image.");
+            notify.warning("Please select an image.");
             return;
         }
 
@@ -63,7 +65,7 @@ export default function GalleryPage() {
 
                 if (uploadError) {
                     console.error(uploadError);
-                    alert(safeClientMessage(uploadError, "Upload failed. Please try again."));
+                    notify.error(safeClientMessage(uploadError, "Upload failed. Please try again."));
                     return;
                 }
                 imageUrl = supabase.storage.from("gallery").getPublicUrl(fileName).data.publicUrl;
@@ -83,11 +85,11 @@ export default function GalleryPage() {
 
             if (dbError) {
                 console.error(dbError);
-                alert(safeClientMessage(dbError, "Save failed. Please try again."));
+                notify.error(safeClientMessage(dbError, "Save failed. Please try again."));
                 return;
             }
 
-            alert(editing ? "Image updated!" : "Image Uploaded Successfully!");
+            notify.success(editing ? "Image updated!" : "Image Uploaded Successfully!");
 
             setTitle("");
             setCategory("");
@@ -127,7 +129,7 @@ export default function GalleryPage() {
     }
 
     async function deleteImage(id: string, imageUrl: string) {
-        if (!confirm("Delete this image?")) return;
+        if (!(await confirmDialog({ message: "Delete this image?", tone: "danger" }))) return;
 
         setLoading(true);
 
@@ -150,7 +152,7 @@ export default function GalleryPage() {
 
         setLoading(false);
 
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
 
         setImages((prev) => prev.filter((i) => i.id !== id));
     }

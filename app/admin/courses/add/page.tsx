@@ -1,4 +1,5 @@
 "use client";
+import { notify } from "@/components/ui/notify";
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -52,12 +53,12 @@ export default function AddCourse() {
                 image_url: imageUrl,
             };
             const { error } = await supabase.from("courses").insert([payload]);
-            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-            alert("Course added.");
+            if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
+            notify.success("Course added.");
             setForm({ title: "", duration: "", fees: "", description: "", eligibility: "", image_url: "" });
             setFile(null);
         } catch (error) {
-            alert(safeClientMessage(error, "Unable to upload course image."));
+            notify.error(safeClientMessage(error, "Unable to upload course image."));
         } finally {
             setLoading(false);
         }

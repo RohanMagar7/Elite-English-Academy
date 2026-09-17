@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -40,23 +42,23 @@ export default function FooterAdmin() {
 
     async function submitLink(e: React.FormEvent) {
         e.preventDefault();
-        if (!linkForm.label) return alert("Label required");
+        if (!linkForm.label) { notify.warning("Label required"); return; }
         setLoading(true);
         const payload = { group_name: linkForm.group_name || "quick_links", label: linkForm.label, href: linkForm.href || "#", sort_order: Number(linkForm.sort_order) || 0, is_active: linkForm.is_active };
         const { error } = editingLink ? await supabase.from("footer_links").update(payload).eq("id", editingLink) : await supabase.from("footer_links").insert([payload]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
         setLinkForm(EMPTY_LINK); setEditingLink(null); load();
     }
 
     async function submitSocial(e: React.FormEvent) {
         e.preventDefault();
-        if (!socialForm.platform || !socialForm.url) return alert("Platform and URL required");
+        if (!socialForm.platform || !socialForm.url) { notify.warning("Platform and URL required"); return; }
         setLoading(true);
         const payload = { platform: socialForm.platform, label: socialForm.label || socialForm.platform, url: socialForm.url, sort_order: Number(socialForm.sort_order) || 0, is_active: socialForm.is_active };
         const { error } = editingSocial ? await supabase.from("social_links").update(payload).eq("id", editingSocial) : await supabase.from("social_links").insert([payload]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
         setSocialForm(EMPTY_SOCIAL); setEditingSocial(null); load();
     }
     return (
@@ -86,7 +88,7 @@ export default function FooterAdmin() {
                             <div className="flex gap-2">
                                 <button onClick={() => { setEditingLink(l.id); setLinkForm({ group_name: l.group_name, label: l.label, href: l.href || "#", sort_order: l.sort_order || 0, is_active: l.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                                 <button onClick={async () => { await supabase.from("footer_links").update({ is_active: !l.is_active }).eq("id", l.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{l.is_active ? "Hide" : "Show"}</button>
-                                <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("footer_links").delete().eq("id", l.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                                <button onClick={async () => { if (await confirmDialog({ message: "Delete?", tone: "danger" })) { await supabase.from("footer_links").delete().eq("id", l.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                             </div>
                         </div>
                     ))}
@@ -113,7 +115,7 @@ export default function FooterAdmin() {
                             <div className="flex gap-2">
                                 <button onClick={() => { setEditingSocial(s.id); setSocialForm({ platform: s.platform, label: s.label || "", url: s.url, sort_order: s.sort_order || 0, is_active: s.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                                 <button onClick={async () => { await supabase.from("social_links").update({ is_active: !s.is_active }).eq("id", s.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{s.is_active ? "Hide" : "Show"}</button>
-                                <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("social_links").delete().eq("id", s.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                                <button onClick={async () => { if (await confirmDialog({ message: "Delete?", tone: "danger" })) { await supabase.from("social_links").delete().eq("id", s.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                             </div>
                         </div>
                     ))}

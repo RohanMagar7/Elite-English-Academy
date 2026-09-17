@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -78,7 +80,7 @@ export default function CoursesPage() {
         e.preventDefault();
 
         if (!title || !duration || !fees) {
-            alert("Please fill all required fields.");
+            notify.warning("Please fill all required fields.");
             return;
         }
 
@@ -110,11 +112,11 @@ export default function CoursesPage() {
 
             if (error) {
                 console.error(error);
-                alert(safeClientMessage(error, "Save failed. Please try again."));
+                notify.error(safeClientMessage(error, "Save failed. Please try again."));
                 return;
             }
 
-            alert(editing ? "Course Updated Successfully!" : "Course Added Successfully!");
+            notify.success(editing ? "Course Updated Successfully!" : "Course Added Successfully!");
 
             setTitle("");
             setDuration("");
@@ -131,7 +133,7 @@ export default function CoursesPage() {
             getCourses();
         } catch (error) {
             console.error(error);
-            alert(safeClientMessage(error, "Unable to upload course image."));
+            notify.error(safeClientMessage(error, "Unable to upload course image."));
         } finally {
             setLoading(false);
         }
@@ -175,7 +177,7 @@ export default function CoursesPage() {
 
     // Delete Course
     async function deleteCourse(id: string) {
-        const confirmDelete = confirm("Delete this course?");
+        const confirmDelete = await confirmDialog({ message: "Delete this course?", tone: "danger" });
         if (!confirmDelete) return;
 
         const { error } = await supabase
@@ -184,7 +186,7 @@ export default function CoursesPage() {
             .eq("id", id);
 
         if (error) {
-            alert(safeClientMessage(error, "Save failed. Please try again."));
+            notify.error(safeClientMessage(error, "Save failed. Please try again."));
             return;
         }
 

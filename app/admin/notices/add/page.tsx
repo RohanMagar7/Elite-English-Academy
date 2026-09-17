@@ -1,4 +1,5 @@
 "use client";
+import { notify } from "@/components/ui/notify";
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -18,8 +19,8 @@ export default function AddNotice() {
         setLoading(true);
         const { error } = await supabase.from("notices").insert([{ title: form.title, description: form.description, category: form.category, is_active: form.is_active }]);
         setLoading(false);
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-        alert("Notice published.");
+        if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
+        notify.success("Notice published.");
         setForm({ title: "", description: "", category: "General", is_active: true });
     }
 

@@ -8,6 +8,8 @@ import { MessageCircle, Sparkles } from "lucide-react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
 import { useSiteSettings, whatsappLink } from "@/hooks/useSiteSettings";
+import { CardGridSkeleton } from "@/components/ui/Skeleton";
+import { BookOpen } from "lucide-react";
 
 interface Course {
   id: string;
@@ -22,6 +24,7 @@ interface Course {
 
 export default function CoursesSection() {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
   const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
   const reduceMotion = useSafeReducedMotion();
   const { settings } = useSiteSettings();
@@ -36,6 +39,7 @@ export default function CoursesSection() {
         .order("created_at", { ascending: false });
 
       if (!error && data) setCourses(data);
+      setLoading(false);
     }
 
     loadCourses();
@@ -59,7 +63,22 @@ export default function CoursesSection() {
           </p>
         </div>
 
-        {/* Course Grid */}
+        {/* Course Grid / Skeleton / Empty state */}
+        {loading ? (
+          <CardGridSkeleton count={6} />
+        ) : courses.length === 0 ? (
+          <div className="mx-auto max-w-md rounded-3xl border-2 border-dashed border-blue-200 bg-white/60 p-10 text-center dark:border-white/15 dark:bg-white/5">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-brand-blue dark:bg-blue-400/10 dark:text-blue-300">
+              <BookOpen className="h-7 w-7" />
+            </div>
+            <h3 className="mt-4 font-display text-lg font-bold text-blue-950 dark:text-slate-100">
+              New courses coming soon
+            </h3>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              We&apos;re preparing something great. Call us to learn about current batches.
+            </p>
+          </div>
+        ) : (
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {courses.map((course, index) => (
             <motion.div
@@ -161,6 +180,7 @@ export default function CoursesSection() {
             </motion.div>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

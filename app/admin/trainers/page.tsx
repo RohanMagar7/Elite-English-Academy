@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -65,7 +67,7 @@ export default function TrainersAdmin() {
     async function submit(e: React.FormEvent) {
         e.preventDefault();
         if (!form.name || !form.qualification) {
-            alert("Please provide the trainer name and qualification.");
+            notify.warning("Please provide the trainer name and qualification.");
             return;
         }
         setLoading(true);
@@ -86,14 +88,14 @@ export default function TrainersAdmin() {
             const { error } = editing
                 ? await supabase.from("trainers").update(payload).eq("id", editing)
                 : await supabase.from("trainers").insert([payload]);
-            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-            alert(editing ? "Trainer updated." : "Trainer added.");
+            if (error) { notify.error(safeClientMessage(error, "Save failed. Please try again.")); return; }
+            notify.success(editing ? "Trainer updated." : "Trainer added.");
             setForm(EMPTY);
             setFile(null);
             setEditing(null);
             load();
         } catch (err) {
-            alert(safeClientMessage(err, "Upload failed."));
+            notify.error(safeClientMessage(err, "Upload failed."));
         } finally {
             setLoading(false);
         }
@@ -118,7 +120,7 @@ export default function TrainersAdmin() {
     }
 
     async function remove(id: string) {
-        if (!confirm("Delete this trainer?")) return;
+        if (!(await confirmDialog({ message: "Delete this trainer?", tone: "danger" }))) return;
         await supabase.from("trainers").delete().eq("id", id);
         load();
     }

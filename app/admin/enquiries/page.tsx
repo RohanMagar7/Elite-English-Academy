@@ -1,4 +1,6 @@
 "use client";
+import { notify } from "@/components/ui/notify";
+import { confirmDialog } from "@/components/ui/ConfirmDialog";
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -83,7 +85,7 @@ export default function EnquiriesPage() {
     async function updateStatus(id: string, status: string) {
         const { error } = await supabase.from("enquiries").update({ status }).eq("id", id);
         if (error) {
-            alert(safeClientMessage(error, "Save failed. Please try again."));
+            notify.error(safeClientMessage(error, "Save failed. Please try again."));
             return;
         }
         setEnquiries((prev) => prev.map((item) => (item.id === id ? { ...item, status } : item)));
@@ -91,10 +93,10 @@ export default function EnquiriesPage() {
     }
 
     async function deleteEnquiry(id: string) {
-        if (!confirm("Delete this enquiry?")) return;
+        if (!(await confirmDialog({ message: "Delete this enquiry?", tone: "danger" }))) return;
         const { error } = await supabase.from("enquiries").delete().eq("id", id);
         if (error) {
-            alert(safeClientMessage(error, "Save failed. Please try again."));
+            notify.error(safeClientMessage(error, "Save failed. Please try again."));
             return;
         }
         setEnquiries((prev) => prev.filter((item) => item.id !== id));
