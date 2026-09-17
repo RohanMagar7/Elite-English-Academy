@@ -50,7 +50,7 @@ function AnimatedNumber({
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="text-2xl sm:text-3xl font-black text-blue-950"
+      className="font-display text-2xl font-bold text-pencil sm:text-3xl"
     >
       {value}
       {suffix}
@@ -75,12 +75,16 @@ export default function Stats() {
   }, []);
 
   return (
-    <section className="bg-[#F8FBFF] py-4 sm:py-6">
+    <section className="py-4 sm:py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Stats Grid */}
+        {/* Stats Grid — organic shapes, deliberately not perfect circles */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          {stats.map(({ icon, value, suffix, label }) => {
+          {stats.map(({ icon, value, suffix, label }, idx) => {
             const Icon = ICONS[icon || "Sparkles"] || Sparkles;
+            const shape = idx % 2 === 0
+              ? "48% 52% 44% 56% / 56% 48% 52% 44%"
+              : "56% 44% 52% 48% / 48% 56% 44% 52%";
+            const tilt = idx % 2 === 0 ? "-rotate-1" : "rotate-1";
 
             return (
               <motion.div
@@ -96,12 +100,16 @@ export default function Stats() {
                   duration: reduceMotion ? 0 : 0.4,
                   ease: "easeOut",
                 }}
-                whileHover={reduceMotion ? undefined : { y: -4 }}
-                className="group rounded-2xl border border-blue-100 bg-white p-4 text-center shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-lg"
+                whileHover={reduceMotion ? undefined : { rotate: idx % 2 === 0 ? 1 : -1 }}
+                className={`group border-2 border-pencil bg-white p-4 text-center shadow-[4px_4px_0px_0px_#2d2d2d] transition-transform duration-100 ${tilt}`}
+                style={{ borderRadius: shape }}
               >
-                {/* Icon */}
-                <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                  <Icon size={20} strokeWidth={2.2} />
+                {/* Icon in a rough circle */}
+                <div
+                  className="mx-auto flex h-11 w-11 items-center justify-center border-2 border-pencil bg-postit text-pencil"
+                  style={{ borderRadius: shape }}
+                >
+                  <Icon size={20} strokeWidth={2.5} />
                 </div>
 
                 {/* Number */}
@@ -113,13 +121,13 @@ export default function Stats() {
                 </div>
 
                 {/* Label */}
-                <p className="mt-2 text-sm font-semibold leading-5 text-slate-600">
+                <p className="mt-2 text-sm font-bold leading-5 text-pencil/70">
                   {label}
                 </p>
 
                 {/* Arrow */}
                 <div className="mt-3 flex justify-center">
-                  <ArrowUpRight className="h-4 w-4 text-blue-600 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
+                  <ArrowUpRight className="h-4 w-4 text-marker transition-transform duration-100 group-hover:translate-x-1 group-hover:-translate-y-1" strokeWidth={2.5} />
                 </div>
               </motion.div>
             );

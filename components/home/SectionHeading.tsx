@@ -17,14 +17,12 @@ export default function SectionHeading({
 
     return (
         <div className={`${alignment} ${className}`.trim()}>
-            <span className="badge-text inline-flex rounded-full border border-blue-200 bg-blue-50 px-4 py-2 font-semibold text-secondary">
-                {eyebrow}
-            </span>
-            <h2 className="mt-4 font-section font-black text-primary sm:text-4xl">
+            <span className="sticky-tag">{eyebrow}</span>
+            <h2 className="mt-4 font-section text-pencil">
                 {title}
             </h2>
             {description ? (
-                <p className="mx-auto mt-4 max-w-2xl font-body text-muted sm:text-lg">
+                <p className="mx-auto mt-4 max-w-2xl text-pencil/75 sm:text-lg">
                     {description}
                 </p>
             ) : null}

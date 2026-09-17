@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
-import ThemeToggle from "@/components/theme/ThemeToggle";
 import { Menu } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -36,24 +35,23 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     }, [mobileOpen]);
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900 dark:bg-[#0c1230] dark:text-slate-100">
+        <div className="min-h-screen bg-paper text-pencil">
             {/* Mobile top bar */}
-            <header className="sticky top-0 z-40 border-b border-blue-900/20 bg-blue-950 text-white md:hidden">
+            <header className="sticky top-0 z-40 border-b-2 border-dashed border-pencil bg-postit text-pencil md:hidden">
                 <div className="flex items-center justify-between gap-3 px-4 py-3">
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setMobileOpen(true)}
-                            className="rounded-lg p-2 transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-yellow-400"
+                            className="rounded-lg border-2 border-pencil bg-white p-2 transition hover:bg-erased focus-visible:outline-2 focus-visible:outline-ballpoint"
                             aria-label="Open admin menu"
                         >
-                            <Menu size={22} />
+                            <Menu size={22} strokeWidth={2.5} />
                         </button>
-                        <div className="text-base font-bold tracking-tight">Elite Admin</div>
+                        <div className="font-display text-base font-bold tracking-tight">Elite Admin</div>
                     </div>
-                    <span className="rounded-full bg-yellow-400 px-2.5 py-1 text-[11px] font-bold text-blue-950">
+                    <span className="border-2 border-pencil bg-white px-2.5 py-1 font-display text-[11px] font-bold text-pencil" style={{ borderRadius: "15px 155px 15px 155px / 155px 15px 155px 15px" }}>
                         ADMIN
                     </span>
-                    <ThemeToggle className="!border-white/20 !bg-white/10 !text-slate-100" />
                 </div>
             </header>
 

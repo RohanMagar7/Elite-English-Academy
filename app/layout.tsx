@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { Inter, Poppins, Kalam, Patrick_Hand } from "next/font/google";
 import FeedbackHost from "@/components/ui/FeedbackHost";
 import "./globals.css";
 
+// Kept as fallbacks for the handwritten faces
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -17,24 +17,21 @@ const poppins = Poppins({
   display: "swap",
 });
 
-/**
- * Prevents the "flash of wrong theme" before hydration.
- * Runs before paint: applies the `.dark` class on <html> based on the
- * stored preference ("light" | "dark" | "system") or the OS preference.
- */
-const themeInitScript = `
-(function () {
-  try {
-    var stored = localStorage.getItem("elite-theme");
-    var dark =
-      stored === "dark" ||
-      ((!stored || stored === "system") &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.classList.toggle("dark", dark);
-    document.documentElement.style.colorScheme = dark ? "dark" : "light";
-  } catch (e) {}
-})();
-`;
+// Handwritten faces — Kalam for headings (felt-tip marker),
+// Patrick Hand for body (legible pencil notes).
+const kalam = Kalam({
+  variable: "--font-kalam",
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  display: "swap",
+});
+
+const patrickHand = Patrick_Hand({
+  variable: "--font-patrick",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://eliteenglishacademy.magarohan8.workers.dev"),
@@ -115,14 +112,11 @@ export default function RootLayout({
       lang="en"
       data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${inter.variable} ${poppins.variable} h-full antialiased`}
+      className={`${kalam.variable} ${patrickHand.variable} ${inter.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-        <ThemeProvider>
-          {children}
-          <FeedbackHost />
-        </ThemeProvider>
+        {children}
+        <FeedbackHost />
       </body>
     </html>
   );

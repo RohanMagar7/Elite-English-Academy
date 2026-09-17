@@ -33,12 +33,9 @@ export default function Hero() {
     }, []);
 
     return (
-        <section className="relative overflow-hidden bg-white pt-12 pb-20" onContextMenu={(e) => e.preventDefault()} onCopy={(e) => e.preventDefault()}>
-            {/* Background elements */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_-20%,_rgba(30,58,138,0.08),_transparent_50%),radial-gradient(circle_at_0%_100%,_rgba(251,191,36,0.05),_transparent_50%)]" />
-
+        <section className="relative overflow-hidden pt-12 pb-20" onContextMenu={(e) => e.preventDefault()} onCopy={(e) => e.preventDefault()}>
             <div className="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14">
-                <div className="grid lg:grid-cols-12 gap-12 items-center">
+                <div className="grid gap-12 items-center lg:grid-cols-12">
                     {/* Content Column */}
                     <motion.div
                         initial={reduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
@@ -52,31 +49,34 @@ export default function Hero() {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2 }}
                             >
-                                <span className="badge-gold">
-                                    <span className="relative flex h-2 w-2 mr-2">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-indigo opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-indigo"></span>
+                                <span className="badge-gold -rotate-2 text-sm">
+                                    <span className="relative mr-2 flex h-2 w-2">
+                                        <span className="absolute inline-flex h-full w-full rounded-full bg-marker opacity-75 animate-ping"></span>
+                                        <span className="relative inline-flex h-2 w-2 rounded-full bg-marker"></span>
                                     </span>
                                     {slide.badge || "Admissions Open 2026"}
                                 </span>
                             </motion.div>
 
-                            <h1 className="font-hero text-brand-indigo">
+                            <h1 className="font-hero text-pencil">
                                 {slide.title.split('. ').map((part, i) => (
                                     <span key={i} className="block">
                                         {part}{i === 0 ? '.' : ''}
+                                        {i === slide.title.split('. ').length - 1 && (
+                                            <span className="inline-block text-marker rotate-6 animate-bounce [animation-duration:3s]">!</span>
+                                        )}
                                     </span>
                                 ))}
                             </h1>
 
-                            <p className="text-xl text-slate-600 leading-relaxed max-w-2xl font-medium">
+                            <p className="text-lg md:text-xl text-pencil/80 leading-relaxed max-w-2xl">
                                 {slide.description}
                             </p>
 
-                            <div className="flex flex-wrap gap-4 pt-4">
+                            <div className="flex flex-wrap items-center gap-6 pt-4">
                                 <Link
                                     href={slide.primary_button_link || "/admission"}
-                                    className="btn-gold !h-14 px-10 text-lg group"
+                                    className="btn-gold !h-14 px-10 text-lg md:text-2xl group"
                                 >
                                     {slide.primary_button_text}
                                     <motion.span
@@ -92,23 +92,46 @@ export default function Hero() {
                                 >
                                     {slide.secondary_button_text}
                                 </Link>
+
+                                {/* Hand-drawn arrow pointing to the CTA (desktop only) */}
+                                <svg
+                                    className="hidden md:block h-12 w-24 -rotate-12 text-ballpoint"
+                                    viewBox="0 0 100 50"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M95 8 C 70 4, 40 12, 12 34"
+                                        stroke="currentColor"
+                                        strokeWidth="3"
+                                        strokeLinecap="round"
+                                        strokeDasharray="7 6"
+                                    />
+                                    <path
+                                        d="M22 22 L 11 35 L 28 38"
+                                        stroke="currentColor"
+                                        strokeWidth="3"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    />
+                                </svg>
                             </div>
 
                             {/* Trust Badge / Mini Stats */}
-                            <div className="pt-8 flex items-center gap-6 border-t border-slate-100">
-                                <div className="flex -space-x-3">
+                            <div className="pt-8 flex items-center gap-6 border-t-2 border-dashed border-erased">
+                                <div className="flex -space-x-4">
                                     {[1, 2, 3, 4].map((i) => (
-                                        <div key={i} className="h-10 w-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden shadow-sm">
+                                        <div key={i} className="h-10 w-10 overflow-hidden border-2 border-pencil bg-erased" style={{ borderRadius: "45% 55% 48% 52% / 52% 46% 54% 48%" }}>
                                             <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="Student" />
                                         </div>
                                     ))}
-                                    <div className="h-10 w-10 rounded-full border-2 border-white bg-brand-blue flex items-center justify-center text-[10px] font-bold text-white shadow-sm">
+                                    <div className="h-10 w-10 border-2 border-pencil bg-ballpoint flex items-center justify-center text-[10px] font-bold text-white" style={{ borderRadius: "45% 55% 48% 52% / 52% 46% 54% 48%" }}>
                                         500+
                                     </div>
                                 </div>
                                 <div className="text-sm">
-                                    <p className="font-bold text-brand-indigo">Trusted by 500+ Students</p>
-                                    <div className="flex text-brand-gold">
+                                    <p className="font-bold text-pencil">Trusted by 500+ Students</p>
+                                    <div className="flex text-marker">
                                         {[1, 2, 3, 4, 5].map(s => <span key={s}>★</span>)}
                                     </div>
                                 </div>
@@ -116,37 +139,51 @@ export default function Hero() {
                         </div>
                     </motion.div>
 
-                    {/* Image Column - Bento Style */}
+                    {/* Image Column — taped polaroid with corner frame marks */}
                     <motion.div
                         initial={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                        className="lg:col-span-5 relative"
+                        className="relative lg:col-span-5"
                     >
-                        <div className="relative z-10 rounded-[3rem] overflow-hidden shadow-2xl shadow-brand-blue/20 bg-brand-blue aspect-[4/5]">
+                        {/* Bouncing decorative scribble circle (desktop only) */}
+                        <div className="absolute -top-8 -left-8 hidden md:flex h-14 w-14 animate-bounce items-center justify-center [animation-duration:3s]" aria-hidden="true">
+                            <svg viewBox="0 0 50 50" fill="none" className="h-14 w-14 text-marker">
+                                <circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="3" strokeDasharray="6 5" strokeLinecap="round" />
+                            </svg>
+                        </div>
+
+                        <div
+                            className="relative z-10 overflow-hidden border-[3px] border-pencil bg-white aspect-[4/5] -rotate-1 shadow-[8px_8px_0px_0px_#2d2d2d]"
+                            style={{ borderRadius: "15px 155px 15px 155px / 155px 15px 155px 15px" }}
+                        >
                             <img
                                 src={slide.image_url || "/hero/Teacher-portrait.png"}
                                 alt="Elite English Academy"
                                 className="w-full h-full object-cover object-top"
                             />
 
-                            {/* Floating Card */}
+                            {/* Corner frame marks */}
+                            <svg className="pointer-events-none absolute inset-0 h-full w-full text-pencil/60" viewBox="0 0 60 90" preserveAspectRatio="none" fill="none" aria-hidden="true">
+                                <path d="M12 28 L12 10 L30 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                <path d="M40 10 L58 10 L58 28" stroke="currentColor" strokeWidth="3" strokeLinecap="round" transform="translate(-20 0)" />
+                                <path d="M12 62 L12 80 L30 80" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                <path d="M38 80 L56 80 L56 62" stroke="currentColor" strokeWidth="3" strokeLinecap="round" transform="translate(-20 0)" />
+                            </svg>
+
+                            {/* Tape strip on top */}
+                            <div className="absolute -top-3 left-1/2 z-20 h-7 w-28 -translate-x-1/2 rotate-2 bg-erased/80 border border-pencil/20" aria-hidden="true" />
+
+                            {/* Floating Card — taped note */}
                             <motion.div
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                                className="absolute bottom-8 left-10 glass-card p-6 rounded-3xl hidden md:block max-w-[200px]"
+                                className="glass-card absolute bottom-8 left-10 hidden max-w-[200px] rotate-2 p-5 md:block"
                             >
-                                <div className="bg-brand-gold/20 h-10 w-10 rounded-xl flex items-center justify-center mb-3">
-                                    <span className="text-xl">🏆</span>
-                                </div>
-                                <p className="text-xs font-bold uppercase tracking-wider text-brand-indigo mb-1">Top Rated</p>
-                                <p className="text-sm font-medium text-slate-700">#1 Academy in the region</p>
+                                <p className="font-display text-sm font-bold text-pencil">🏆 Top Rated</p>
+                                <p className="text-sm text-pencil/80">#1 Academy in the region</p>
                             </motion.div>
                         </div>
-
-                        {/* Decorative background shapes */}
-                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-gold/10 rounded-full blur-3xl -z-10" />
-                        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-brand-blue/5 rounded-full blur-3xl -z-10" />
                     </motion.div>
                 </div>
             </div>

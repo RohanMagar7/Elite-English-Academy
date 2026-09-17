@@ -1,0 +1,168 @@
+/* ============================================
+   HAND-DRAWN COMPONENT UTILITIES (public site)
+   Every class name here existed in the old Swiss
+   system — restyled, not renamed, so all pages
+   pick up the new aesthetic automatically.
+   ============================================ */
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  @apply inline-flex h-12 min-w-[44px] cursor-pointer items-center justify-center border-[3px] border-pencil bg-white px-8 text-pencil transition-transform duration-100;
+  border-radius: var(--wobbly);
+  box-shadow: 4px 4px 0px 0px var(--pencil);
+}
+.btn-primary:hover {
+  background-color: var(--marker);
+  color: #ffffff;
+  box-shadow: 2px 2px 0px 0px var(--pencil);
+  transform: translate(2px, 2px);
+}
+.btn-primary:active {
+  box-shadow: none;
+  transform: translate(4px, 4px);
+}
+
+.btn-secondary {
+  @apply inline-flex h-12 min-w-[44px] cursor-pointer items-center justify-center border-[3px] border-pencil bg-erased px-8 text-pencil transition-transform duration-100;
+  border-radius: var(--wobbly);
+  box-shadow: 4px 4px 0px 0px var(--pencil);
+}
+.btn-secondary:hover {
+  background-color: var(--ballpoint);
+  color: #ffffff;
+  box-shadow: 2px 2px 0px 0px var(--pencil);
+  transform: translate(2px, 2px);
+}
+.btn-secondary:active {
+  box-shadow: none;
+  transform: translate(4px, 4px);
+}
+
+.btn-gold {
+  @apply inline-flex h-12 min-w-[44px] cursor-pointer items-center justify-center border-[3px] border-pencil bg-postit px-8 text-pencil transition-transform duration-100;
+  border-radius: var(--wobbly);
+  box-shadow: 4px 4px 0px 0px var(--pencil);
+}
+.btn-gold:hover {
+  background-color: var(--marker);
+  color: #ffffff;
+  box-shadow: 2px 2px 0px 0px var(--pencil);
+  transform: translate(2px, 2px);
+}
+.btn-gold:active {
+  box-shadow: none;
+  transform: translate(4px, 4px);
+}
+
+/* ---------- Badges ---------- */
+.badge-premium {
+  @apply inline-flex items-center gap-1.5 border-2 border-dashed border-ballpoint bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-ballpoint;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+}
+.badge-gold {
+  @apply inline-flex items-center gap-1.5 border-2 border-pencil bg-postit px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-pencil;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+  box-shadow: 3px 3px 0px 0px rgba(45, 45, 45, 0.15);
+}
+.badge-sm { @apply text-xs md:text-sm; }
+
+/* ---------- Cards ---------- */
+.card {
+  @apply border-2 border-pencil bg-white p-5 transition-transform duration-100 hover:-rotate-1;
+  border-radius: var(--wobbly-md);
+  box-shadow: 3px 3px 0px 0px rgba(45, 45, 45, 0.1);
+}
+.card-hover {
+  @apply border-2 border-pencil bg-white p-5 transition-transform duration-100 hover:-rotate-1;
+  border-radius: var(--wobbly-md);
+  box-shadow: 3px 3px 0px 0px rgba(45, 45, 45, 0.1);
+}
+.card-hover:hover {
+  box-shadow: 6px 6px 0px 0px var(--pencil);
+  transform: rotate(1deg);
+}
+
+/* Bento legacy names → sketch cards */
+.bento-grid {
+  @apply grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4;
+}
+.bento-card {
+  @apply border-2 border-pencil bg-white p-6 transition-transform duration-100 hover:rotate-1 md:p-8;
+  border-radius: var(--wobbly-md);
+  box-shadow: 4px 4px 0px 0px var(--pencil);
+}
+.glass-card {
+  @apply border-2 border-pencil bg-white;
+  border-radius: var(--wobbly-md);
+  box-shadow: 4px 4px 0px 0px var(--pencil);
+}
+
+/* ---------- Containers / layout ---------- */
+.container-wide {
+  @apply mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14;
+}
+.container-narrow {
+  @apply mx-auto max-w-4xl px-5 sm:px-8;
+}
+.text-center-container {
+  @apply mx-auto max-w-3xl text-center;
+}
+.flex-equal-height { @apply flex h-full flex-col; }
+.grid-equal-height { @apply grid grid-cols-2 items-stretch gap-4; }
+
+/* ---------- FAQ ---------- */
+.faq-content {
+  @apply px-5 pb-5 pt-1 text-base leading-7 text-pencil/80;
+}
+.faq-question {
+  @apply flex w-full items-center justify-between gap-4 px-5 py-4 text-left;
+}
+
+/* ---------- Header / mobile menu ---------- */
+.header-cta {
+  @apply inline-flex h-11 items-center gap-2 border-2 border-pencil bg-white px-6 font-bold text-pencil transition-transform duration-100;
+  border-radius: var(--wobbly);
+  box-shadow: 3px 3px 0px 0px var(--pencil);
+}
+.header-cta:hover {
+  background-color: var(--ballpoint);
+  color: #ffffff;
+  box-shadow: 1px 1px 0px 0px var(--pencil);
+  transform: translate(2px, 2px);
+}
+.mobile-menu-cta {
+  @apply mt-4 flex items-center justify-center gap-2 border-[3px] border-pencil bg-postit py-3 font-bold text-pencil;
+  border-radius: var(--wobbly);
+  box-shadow: 4px 4px 0px 0px var(--pencil);
+}
+.mobile-menu-cta:hover {
+  background-color: var(--marker);
+  color: #ffffff;
+  box-shadow: 2px 2px 0px 0px var(--pencil);
+  transform: translate(2px, 2px);
+}
+
+/* ---------- Course imagery ---------- */
+.course-image-fallback {
+  @apply absolute inset-0 flex items-center justify-center bg-erased text-sm font-bold uppercase tracking-widest text-pencil/70;
+}
+.course-img-placeholder {
+  @apply absolute inset-0 flex items-center justify-center bg-erased text-sm font-bold text-pencil/70;
+}
+
+/* ============================================
+   LEGACY CLASS COMPATIBILITY (light mode)
+   Maps old slate/blue utility classes used across
+   page components onto the hand-drawn palette.
+   ============================================ */
+.text-slate-950, .text-slate-900, .text-slate-800 { color: var(--pencil); }
+.text-slate-700, .text-slate-600 { color: rgb(45 45 45 / 0.8); }
+.text-slate-500, .text-slate-400 { color: rgb(45 45 45 / 0.6); }
+.text-blue-950, .text-blue-900, .text-blue-800, .text-blue-700, .text-blue-600 { color: var(--ballpoint); }
+.bg-slate-50, .bg-slate-100 { background-color: var(--erased); }
+.bg-blue-50, .bg-blue-100 { background-color: var(--erased); }
+.bg-blue-950, .bg-blue-900 { background-color: var(--ballpoint); }
+.border-slate-100, .border-slate-200, .border-slate-300,
+.border-blue-100, .border-blue-200 { border-color: rgb(45 45 45 / 0.5); }
+.ring-slate-200, .ring-blue-200 { --tw-ring-color: rgb(45 45 45 / 0.4); }
+

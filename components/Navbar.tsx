@@ -1,11 +1,10 @@
 "use client";
 import Link from "next/link";
-import { Menu, X, Phone, GraduationCap } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import ThemeToggle from "@/components/theme/ThemeToggle";
 type NavLink = { id?: string; label: string; href: string };
 const FALLBACK_MENU: NavLink[] = [
   { label: "Home", href: "/" },
@@ -57,47 +56,49 @@ export default function Navbar() {
   return (
     <header
       className={
-        "sticky top-0 z-50 w-full transition-all duration-500 " +
+        "sticky top-0 z-50 w-full transition-all duration-300 " +
         (scrolled
-          ? "bg-white/80 backdrop-blur-xl shadow-2xl shadow-brand-blue/5 border-b border-slate-100 py-3 dark:bg-[#0c1230]/80 dark:border-white/10"
+          ? "border-b-2 border-dashed border-pencil bg-paper/90 py-3 backdrop-blur-sm"
           : "bg-transparent py-5")
       }
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="flex min-w-0 shrink items-center gap-2.5 sm:gap-4 group"
+          className="group flex min-w-0 shrink items-center gap-2.5 sm:gap-4"
           aria-label="Home"
         >
             <img
               src={logoUrl}
               alt="Logo"
-              className="h-12 w-12 shrink-0 rounded-2xl bg-white object-contain p-1 shadow-xl transition-transform group-hover:scale-110"
+              className="h-12 w-12 shrink-0 border-2 border-pencil bg-white object-contain p-1 shadow-[3px_3px_0px_0px_#2d2d2d] transition-transform duration-100 group-hover:-rotate-6"
+              style={{ borderRadius: "45% 55% 48% 52% / 52% 46% 54% 48%" }}
             />
-        
+
           <div className="min-w-0">
-            <div className={`truncate text-lg sm:text-xl font-display font-black tracking-tighter transition-colors ${scrolled ? 'text-brand-blue' : 'text-brand-blue'}`}>
+            <div className={`truncate font-display text-lg font-bold sm:text-xl transition-colors text-pencil`}>
               {settings.academy_name}
             </div>
-            <p className={`truncate text-xs font-bold uppercase tracking-widest transition-colors ${scrolled ? 'text-brand-gold' : 'text-brand-gold'}`}>
+            <p className={`truncate text-xs font-bold uppercase tracking-widest text-marker`}>
               {settings.tagline}
             </p>
           </div>
         </Link>
 
-        <div className="hidden lg:flex shrink-0 items-center gap-0.5 bg-slate-100/50 p-1 rounded-2xl border border-slate-200/50 dark:bg-white/5 dark:border-white/10">
-          {menu.map((item) => {
+        <div className="hidden items-center gap-1 lg:flex lg:shrink-0">
+          {menu.map((item, i) => {
             const active = pathname === item.href;
             return (
               <Link
                 key={item.label + item.href}
                 href={item.href}
                 className={
-                  "whitespace-nowrap px-3 py-2 text-sm font-bold rounded-xl transition-all xl:px-5 " +
+                  "whitespace-nowrap px-3 py-1.5 font-bold transition-transform duration-100 xl:px-4 " +
                   (active
-                    ? "bg-white text-brand-blue shadow-sm dark:bg-white/10 dark:text-blue-200"
-                    : "text-slate-600 hover:text-brand-blue hover:bg-white/50 dark:text-slate-300 dark:hover:text-blue-200 dark:hover:bg-white/5")
+                    ? "bg-postit -rotate-1 border-2 border-pencil shadow-[2px_2px_0px_0px_#2d2d2d]"
+                    : "text-pencil/70 hover:text-pencil hover:underline hover:decoration-wavy hover:decoration-ballpoint hover:underline-offset-4 hover:-rotate-1")
                 }
+                style={{ borderRadius: active ? "15px 155px 15px 155px / 155px 15px 155px 15px" : undefined }}
               >
                 {item.label}
               </Link>
@@ -105,13 +106,12 @@ export default function Navbar() {
           })}
         </div>
 
-        <div className="hidden lg:flex shrink-0 items-center gap-4">
-          {/* <ThemeToggle /> */}
+        <div className="hidden shrink-0 items-center gap-4 lg:flex">
           <a
             href={settings.phone_href || "tel:+918888711228"}
             className="btn-primary !h-11 whitespace-nowrap px-4 text-sm xl:px-6"
           >
-            <Phone size={16} className="mr-2" />
+            <Phone size={16} strokeWidth={2.5} className="mr-2" />
             Enquire Now
           </a>
         </div>
@@ -119,16 +119,17 @@ export default function Navbar() {
         <button
           aria-label="Toggle navigation menu"
           onClick={() => setOpen(!open)}
-          className={`shrink-0 rounded-2xl p-2.5 transition-colors lg:hidden ${scrolled ? 'bg-slate-100 text-brand-blue dark:bg-white/10 dark:text-slate-100' : 'bg-brand-blue text-white'}`}
+          className="shrink-0 border-2 border-pencil bg-white p-2.5 text-pencil shadow-[3px_3px_0px_0px_#2d2d2d] transition-transform duration-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_#2d2d2d] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none lg:hidden"
+          style={{ borderRadius: "45% 55% 48% 52% / 52% 46% 54% 48%" }}
         >
-          {open ? <X size={24} /> : <Menu size={24} />}
+          {open ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
         </button>
       </nav>
 
       <div
         className={
-          "absolute top-full left-0 w-full overflow-hidden bg-white/95 backdrop-blur-2xl transition-all duration-500 lg:hidden dark:bg-[#0c1230]/95 " +
-          (open ? "max-h-[80vh] overflow-y-auto border-b border-slate-200 shadow-2xl dark:border-white/10" : "max-h-0")
+          "absolute left-0 top-full w-full bg-paper transition-all duration-300 lg:hidden " +
+          (open ? "max-h-[80vh] overflow-y-auto border-b-2 border-dashed border-pencil" : "max-h-0 overflow-hidden")
         }
       >
         <div className="space-y-2 px-4 py-6">
@@ -140,11 +141,12 @@ export default function Navbar() {
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className={
-                  "block rounded-2xl px-5 py-4 text-base font-bold transition-all " +
+                  "block px-5 py-4 font-bold transition-transform duration-100 " +
                   (active
-                    ? "bg-brand-blue text-white shadow-xl shadow-brand-blue/20"
-                    : "text-slate-600 hover:bg-slate-50")
+                    ? "border-2 border-pencil bg-postit -rotate-1 shadow-[3px_3px_0px_0px_#2d2d2d]"
+                    : "text-pencil/70 hover:bg-white hover:-rotate-1")
                 }
+                style={{ borderRadius: "125px 10px 155px 10px / 10px 155px 10px 125px" }}
               >
                 {item.label}
               </Link>

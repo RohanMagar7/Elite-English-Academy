@@ -1,0 +1,121 @@
+/* ============================================
+   ADMIN — same sketchbook, more rules
+   ============================================ */
+.admin-page { @apply mx-auto w-full max-w-6xl space-y-5 sm:space-y-6; }
+.admin-page-title { @apply font-display text-xl font-bold tracking-tight text-pencil sm:text-2xl lg:text-3xl; }
+.admin-page-sub { @apply mt-1 text-base leading-6 text-pencil/70; }
+.admin-header-row { @apply flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between; }
+
+.admin-card {
+  @apply w-full border-2 border-dashed border-pencil bg-white p-4 sm:p-6;
+  border-radius: var(--wobbly-md);
+  box-shadow: 3px 3px 0px 0px rgba(45, 45, 45, 0.1);
+}
+.admin-empty {
+  @apply rounded-xl border-2 border-dashed border-pencil/40 bg-white/60 p-6 text-center text-sm text-pencil/70 sm:p-8;
+}
+
+.input-default {
+  @apply w-full border-2 border-pencil bg-white px-3.5 py-2.5 text-[15px] leading-6 text-pencil transition placeholder:text-pencil/40 focus:border-ballpoint focus:outline-none focus:ring-2 focus:ring-ballpoint/20 disabled:cursor-not-allowed disabled:bg-erased/50 disabled:text-pencil/50;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+}
+textarea.input-default { @apply min-h-24 resize-y; }
+select.input-default { @apply cursor-pointer pr-9; }
+input[type="checkbox"].input-default,
+input[type="checkbox"] { @apply h-4 w-4 shrink-0 accent-ballpoint; border-radius: 4px; }
+input[type="file"].input-default {
+  @apply cursor-pointer py-2 file:mr-3 file:border-0 file:bg-pencil file:px-3 file:py-2 file:text-sm file:font-bold file:text-white hover:file:bg-marker;
+}
+
+.admin-label { @apply mb-1.5 block font-bold text-pencil; }
+.admin-hint { @apply mt-1 text-xs leading-5 text-pencil/60; }
+.admin-form-grid { @apply grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2; }
+.admin-check-row {
+  @apply flex items-center gap-2.5 border-2 border-pencil/60 bg-paper px-3.5 py-2.5 text-sm font-medium text-pencil;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+}
+
+.admin-btn-primary {
+  @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 border-2 border-pencil bg-pencil px-5 py-2.5 text-sm font-bold text-white transition-transform duration-100;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+  box-shadow: 3px 3px 0px 0px rgba(45, 45, 45, 0.4);
+}
+.admin-btn-primary:hover { background-color: var(--ballpoint); border-color: var(--ballpoint); transform: translate(1px, 1px); box-shadow: 2px 2px 0px 0px rgba(45, 45, 45, 0.4); }
+.admin-btn-primary:active { box-shadow: none; transform: translate(3px, 3px); }
+
+.admin-btn-accent {
+  @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 border-2 border-pencil bg-postit px-5 py-2.5 text-sm font-bold text-pencil transition-transform duration-100;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+  box-shadow: 3px 3px 0px 0px var(--pencil);
+}
+.admin-btn-accent:hover { background-color: var(--marker); color: #fff; transform: translate(1px, 1px); box-shadow: 2px 2px 0px 0px var(--pencil); }
+.admin-btn-accent:active { box-shadow: none; transform: translate(3px, 3px); }
+
+.admin-btn-danger {
+  @apply inline-flex min-h-10 cursor-pointer items-center justify-center gap-2 border-2 border-pencil bg-marker px-4 py-2 text-sm font-bold text-white transition-transform duration-100;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+  box-shadow: 3px 3px 0px 0px var(--pencil);
+}
+.admin-btn-danger:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0px 0px var(--pencil); }
+.admin-btn-danger:active { box-shadow: none; transform: translate(3px, 3px); }
+
+.admin-btn-sm {
+  @apply inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-bold transition-transform duration-100 sm:text-sm;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+  box-shadow: 2px 2px 0px 0px var(--pencil);
+}
+.admin-btn-sm:hover { transform: translate(1px, 1px); box-shadow: 1px 1px 0px 0px var(--pencil); }
+.admin-btn-sm:active { box-shadow: none; transform: translate(2px, 2px); }
+
+.admin-table-wrap {
+  @apply -mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:border-2 sm:border-pencil sm:bg-white sm:px-0;
+  border-radius: var(--wobbly-md);
+  box-shadow: 3px 3px 0px 0px rgba(45, 45, 45, 0.1);
+}
+.admin-table {
+  @apply w-full min-w-[640px] border-collapse bg-white text-left text-sm sm:min-w-[720px];
+}
+.admin-table thead tr { @apply bg-pencil text-white; }
+.admin-table thead th {
+  @apply whitespace-nowrap px-3 py-3 text-left font-display text-xs font-bold uppercase tracking-wider sm:px-4;
+}
+.admin-table thead th:first-child { @apply rounded-tl-2xl; }
+.admin-table thead th:last-child { @apply rounded-tr-2xl; }
+.admin-table tbody td {
+  @apply border-b border-dashed border-erased px-3 py-3 align-top text-pencil sm:px-4;
+}
+.admin-table tbody tr:last-child td { @apply border-b-0; }
+.admin-table tbody tr { @apply transition hover:bg-postit/40; }
+.admin-cell-main { @apply font-bold text-pencil; }
+.admin-cell-sub { @apply text-sm text-pencil/60; }
+.admin-tbody-row { @apply border-b border-dashed border-erased; }
+
+.admin-badge-green {
+  @apply bg-white text-pencil ring-1 ring-inset ring-pencil/40;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+}
+.admin-badge-gray {
+  @apply bg-erased text-pencil/70 ring-1 ring-inset ring-pencil/30;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+}
+.admin-badge-yellow {
+  @apply bg-postit text-pencil ring-1 ring-inset ring-pencil/40;
+  border-radius: 15px 155px 15px 155px / 155px 15px 155px 15px;
+}
+
+.admin-select {
+  @apply cursor-pointer rounded-lg border-2 border-pencil bg-white px-2.5 py-1.5 text-sm font-bold text-pencil focus:border-ballpoint focus:outline-none focus:ring-2 focus:ring-ballpoint/20;
+}
+
+.admin-stat-grid { @apply grid grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 2xl:grid-cols-4; }
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper); }
+::-webkit-scrollbar-thumb {
+  background: var(--erased);
+  border: 2px solid var(--pencil);
+  border-radius: 8px 4px 8px 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--postit); }
+
