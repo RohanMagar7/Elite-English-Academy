@@ -22,6 +22,12 @@ const DEFAULTS: SettingsMap = {
     copyright_text: "All Rights Reserved.",
     announcement_title: "Admissions Open 2026",
     announcement_text: "Book your free demo class today and start speaking English with confidence!",
+    mission_title: "Confident Communicators",
+    mission_text:
+        "We help every learner speak with ease. You build strong English basics and the confidence to use them in class, at work, and in daily life.",
+    vision_title: "Lifelong Success",
+    vision_text:
+        "We aim to be the most trusted English academy in the region. Here you learn English, find your strengths, and build a career you can be proud of.",
 };
 
 export function whatsappLink(number?: string, message?: string) {

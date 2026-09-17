@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 type Feature = { id: string; section_slug: string; title: string; description: string | null; icon: string | null; sort_order: number; is_active: boolean };
 const EMPTY = { section_slug: "why-choose-us", title: "", description: "", icon: "BadgeCheck", sort_order: 0, is_active: true };
@@ -27,7 +28,7 @@ export default function FeaturesAdmin() {
         const payload = { section_slug: form.section_slug || "why-choose-us", title: form.title, description: form.description || null, icon: form.icon || "BadgeCheck", sort_order: Number(form.sort_order) || 0, is_active: form.is_active };
         const { error } = editing ? await supabase.from("features").update(payload).eq("id", editing) : await supabase.from("features").insert([payload]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         setForm(EMPTY); setEditing(null); load();
     }
     return (

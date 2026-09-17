@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { idSchema, statusSchema } from "@/lib/validation";
 
 interface Admission {
   id: string;
@@ -33,21 +34,44 @@ export default function AdmissionsPage() {
   }, []);
 
   async function updateStatus(id: string, status: string) {
-    await supabase
-      .from("admissions")
-      .update({ status })
-      .eq("id", id);
+    // STRICT client check with the same rules the server enforces; rejects bad input.
+    if (!idSchema.safeParse(id).success || !statusSchema.safeParse(status).success) {
+      alert("Invalid status update.");
+      return;
+    }
+    try {
+      const res = await fetch("/api/admin/admissions", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert((data.error as string) ?? "Update failed.");
+      }
+    } catch {
+      alert("Unable to reach the server.");
+    }
 
     getAdmissions();
   }
 
   async function deleteAdmission(id: string) {
     if (!confirm("Delete enquiry?")) return;
-
-    await supabase
-      .from("admissions")
-      .delete()
-      .eq("id", id);
+    // STRICT: UUID required — rejected, never coerced.
+    if (!idSchema.safeParse(id).success) {
+      alert("Invalid id.");
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/admissions?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert((data.error as string) ?? "Delete failed.");
+      }
+    } catch {
+      alert("Unable to reach the server.");
+    }
 
     getAdmissions();
   }

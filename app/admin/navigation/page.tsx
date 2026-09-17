@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 type Nav = { id: string; label: string; href: string; sort_order: number; is_active: boolean };
 const EMPTY = { label: "", href: "", sort_order: 0, is_active: true };
@@ -27,7 +28,7 @@ export default function NavigationAdmin() {
         const payload = { label: form.label, href: form.href, sort_order: Number(form.sort_order) || 0, is_active: form.is_active };
         const { error } = editing ? await supabase.from("navigation_links").update(payload).eq("id", editing) : await supabase.from("navigation_links").insert([payload]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         setForm(EMPTY); setEditing(null); load();
     }
     return (

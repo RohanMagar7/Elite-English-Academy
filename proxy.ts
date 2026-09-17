@@ -1,16 +1,39 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient, parseCookieHeader } from "@supabase/ssr";
+import {
+  checkAuthenticatedRateLimit,
+  checkPublicRateLimit,
+  getClientIp,
+  applyRateLimitHeaders,
+} from "@/lib/rate-limit";
+
+function limited(message: string, retryAfter: number) {
+  const res = NextResponse.json({ error: message }, { status: 429 });
+  res.headers.set("Retry-After", String(retryAfter));
+  return res;
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const ip = getClientIp(request);
 
-  // Protect admin pages and admin APIs only
+  const isLoginPage = pathname === "/login";
+  const isAuthApi = pathname.startsWith("/api/auth/");
   const isAdminPage = pathname.startsWith("/admin");
   const isAdminApi = pathname.startsWith("/api/admin");
 
-  // Allow login page without authentication
-  if (pathname === "/login") {
+  // Moderate limits on public API endpoints (non-admin /api/*, excluding
+  // /api/auth/* which enforces its own strict per-IP + per-account tier).
+  if (pathname.startsWith("/api/") && !isAdminApi && !isAuthApi) {
+    const d = checkPublicRateLimit(ip);
+    if (!d.allowed) return limited("Too many requests. Please slow down.", d.retryAfter);
+  }
+
+  // Allow login page and auth APIs through — /api/auth/* route handlers
+  // enforce the strict auth tier (per-IP + per-account backoff) where the
+  // account identifier is known. Enforcing here too would double-count.
+  if (isLoginPage || isAuthApi) {
     return NextResponse.next();
   }
 
@@ -61,9 +84,19 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Loose per-user limit on authenticated admin traffic.
+  const d = checkAuthenticatedRateLimit(user.id, true);
+  if (!d.allowed) {
+    if (isAdminApi) return limited("Too many requests. Please slow down.", d.retryAfter);
+    applyRateLimitHeaders(response, d);
+    response.headers.set("Retry-After", String(d.retryAfter));
+    return response;
+  }
+  applyRateLimitHeaders(response, d);
+
   return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/login", "/api/auth/:path*", "/admin/:path*", "/api/:path*"],
 };

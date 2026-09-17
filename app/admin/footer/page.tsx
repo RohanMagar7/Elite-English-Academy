@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 type FooterLink = { id: string; group_name: string; label: string; href: string; sort_order: number; is_active: boolean };
 type Social = { id: string; platform: string; label: string | null; url: string; sort_order: number; is_active: boolean };
@@ -44,7 +45,7 @@ export default function FooterAdmin() {
         const payload = { group_name: linkForm.group_name || "quick_links", label: linkForm.label, href: linkForm.href || "#", sort_order: Number(linkForm.sort_order) || 0, is_active: linkForm.is_active };
         const { error } = editingLink ? await supabase.from("footer_links").update(payload).eq("id", editingLink) : await supabase.from("footer_links").insert([payload]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         setLinkForm(EMPTY_LINK); setEditingLink(null); load();
     }
 
@@ -55,7 +56,7 @@ export default function FooterAdmin() {
         const payload = { platform: socialForm.platform, label: socialForm.label || socialForm.platform, url: socialForm.url, sort_order: Number(socialForm.sort_order) || 0, is_active: socialForm.is_active };
         const { error } = editingSocial ? await supabase.from("social_links").update(payload).eq("id", editingSocial) : await supabase.from("social_links").insert([payload]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         setSocialForm(EMPTY_SOCIAL); setEditingSocial(null); load();
     }
     return (

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 export default function AddCourse() {
     const [form, setForm] = useState({ title: "", duration: "", fees: "", description: "", eligibility: "", image_url: "" });
@@ -51,12 +52,12 @@ export default function AddCourse() {
                 image_url: imageUrl,
             };
             const { error } = await supabase.from("courses").insert([payload]);
-            if (error) return alert(error.message);
+            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
             alert("Course added.");
             setForm({ title: "", duration: "", fees: "", description: "", eligibility: "", image_url: "" });
             setFile(null);
         } catch (error) {
-            alert(error instanceof Error ? error.message : "Unable to upload course image.");
+            alert(safeClientMessage(error, "Unable to upload course image."));
         } finally {
             setLoading(false);
         }
@@ -85,4 +86,3 @@ export default function AddCourse() {
         </div>
     );
 }
-

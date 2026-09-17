@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
+import { loginIdSchema } from "@/lib/validation";
 
 function LoginForm() {
     const [form, setForm] = useState({ email: "", password: "" });
@@ -24,10 +25,25 @@ function LoginForm() {
         setLoading(true);
         setError(null);
 
+        const rawIdentifier = form.email.trim();
+        const rawPassword = form.password;
+        // STRICT client check with the same rules the server enforces.
+        if (!loginIdSchema.safeParse(rawIdentifier).success || typeof rawPassword !== "string" || rawPassword.length === 0 || rawPassword.length > 128) {
+            setLoading(false);
+            setError("Please enter a valid login id and password.");
+            return;
+        }
+
         // allow login by email or by admin login id/username
-        let emailToUse = form.email;
+        let emailToUse = rawIdentifier;
 
         if (!emailToUse.includes("@")) {
+            const idCheck = loginIdSchema.safeParse(emailToUse);
+            if (!idCheck.success) {
+                setLoading(false);
+                setError("Unknown login id");
+                return;
+            }
             // try to look up admin email by login id in common admin table columns
             try {
                 const { data: adminData, error: adminErr } = await supabase
@@ -53,17 +69,34 @@ function LoginForm() {
             }
         }
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: emailToUse,
-            password: form.password,
-        });
-
-        setLoading(false);
-
-        if (error) {
-            setError(error.message);
+        // Route through the server-side login API so the strict per-IP +
+        // per-account rate limit with exponential backoff is enforced.
+        // HTTP 429 responses carry a Retry-After header.
+        let data: { error?: string };
+        try {
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: emailToUse, password: form.password }),
+            });
+            data = await res.json();
+            if (!res.ok) {
+                if (res.status === 429) {
+                    const retry = res.headers.get("Retry-After");
+                    setError(data.error ?? "Too many attempts." + (retry ? ` Try again in ${retry}s.` : ""));
+                } else {
+                    setError(data.error ?? "Login failed");
+                }
+                setLoading(false);
+                return;
+            }
+        } catch {
+            setLoading(false);
+            setError("Unable to reach the login service");
             return;
         }
+
+        setLoading(false);
 
         // On successful sign in, navigate to the originally requested page (or /admin)
         router.push(redirectTo);

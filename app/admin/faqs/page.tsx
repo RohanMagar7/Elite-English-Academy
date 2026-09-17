@@ -2,6 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { faqSchema, idSchema } from "@/lib/validation";
+
+async function mutate(op: "create" | "update" | "delete" | "toggle", payload: Record<string, unknown>): Promise<string | null> {
+    try {
+        const res = await fetch("/api/admin/content", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ op, table: "faqs", ...payload }),
+        });
+        if (res.ok) return null;
+        const data = await res.json().catch(() => ({}));
+        return (data.error as string) ?? "Save failed.";
+    } catch {
+        return "Unable to reach the server.";
+    }
+}
 
 interface Faq {
     id: string;
@@ -36,22 +52,18 @@ export default function FaqsAdmin() {
 
     async function submit(e: React.FormEvent) {
         e.preventDefault();
-        if (!form.question || !form.answer) {
-            alert("Please fill in both question and answer.");
+        // STRICT client check with the same schema the server enforces.
+        const parsed = faqSchema.safeParse({ ...form, sort_order: Number(form.sort_order) });
+        if (!parsed.success) {
+            alert(parsed.error.issues[0]?.message ?? "Please check the form fields.");
             return;
         }
         setLoading(true);
-        const payload = {
-            question: form.question,
-            answer: form.answer,
-            sort_order: Number(form.sort_order) || 0,
-            is_active: form.is_active,
-        };
-        const { error } = editing
-            ? await supabase.from("faqs").update(payload).eq("id", editing)
-            : await supabase.from("faqs").insert([payload]);
+        const err = editing
+            ? await mutate("update", { id: editing, data: parsed.data })
+            : await mutate("create", { data: parsed.data });
         setLoading(false);
-        if (error) return alert(error.message);
+        if (err) return alert(err);
         alert(editing ? "FAQ updated." : "FAQ added.");
         setForm(EMPTY);
         setEditing(null);
@@ -64,13 +76,17 @@ export default function FaqsAdmin() {
     }
 
     async function toggle(id: string, active: boolean) {
-        await supabase.from("faqs").update({ is_active: !active }).eq("id", id);
+        if (!idSchema.safeParse(id).success) return alert("Invalid id.");
+        const err = await mutate("toggle", { id, is_active: active });
+        if (err) return alert(err);
         load();
     }
 
     async function remove(id: string) {
         if (!confirm("Delete this FAQ?")) return;
-        await supabase.from("faqs").delete().eq("id", id);
+        if (!idSchema.safeParse(id).success) return alert("Invalid id.");
+        const err = await mutate("delete", { id });
+        if (err) return alert(err);
         load();
     }
 

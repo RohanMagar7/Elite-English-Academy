@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 interface Notice {
     id: string;
@@ -49,7 +50,7 @@ export default function NoticesPage() {
         setLoading(false);
 
         if (error) {
-            alert(error.message);
+            alert(safeClientMessage(error, "Save failed. Please try again."));
             return;
         }
 

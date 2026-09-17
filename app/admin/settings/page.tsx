@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
-const KEY_GROUPS: { key: string; label: string; placeholder: string; type?: string }[] = [
+const KEY_GROUPS: { key: string; label: string; placeholder: string; type?: string; textarea?: boolean }[] = [
     { key: "academy_name", label: "Academy Name", placeholder: "Elite's English Academy" },
     { key: "tagline", label: "Tagline", placeholder: "Learn English • Teach English • Build Your Career" },
     { key: "logo_url", label: "Logo Image URL (upload below or paste URL)", placeholder: "https://..." },
@@ -18,6 +19,10 @@ const KEY_GROUPS: { key: string; label: string; placeholder: string; type?: stri
     { key: "youtube_url", label: "YouTube URL", placeholder: "https://youtube.com/..." },
     { key: "footer_about", label: "Footer About Text", placeholder: "Short about text in footer" },
     { key: "copyright_text", label: "Copyright Line", placeholder: "All Rights Reserved." },
+    { key: "mission_title", label: "Mission Title (About page)", placeholder: "Confident Communicators" },
+    { key: "mission_text", label: "Mission Statement (About page)", placeholder: "What the academy aims to do every day…", textarea: true },
+    { key: "vision_title", label: "Vision Title (About page)", placeholder: "Lifelong Success" },
+    { key: "vision_text", label: "Vision Statement (About page)", placeholder: "The long-term goal of the academy…", textarea: true },
 ];
 
 export default function SettingsPage() {
@@ -56,7 +61,7 @@ export default function SettingsPage() {
             const { error } = await supabase.from("settings").upsert(rows, { onConflict: "key" });
             if (error) {
                 setLoading(false);
-                alert(error.message);
+                alert(safeClientMessage(error, "Save failed. Please try again."));
                 return;
             }
         }
@@ -84,7 +89,7 @@ export default function SettingsPage() {
             change("logo_url", url);
             alert("Logo uploaded! Click Save Settings to apply.");
         } catch (e) {
-            alert(e instanceof Error ? e.message : "Upload failed");
+            alert(safeClientMessage(e, "Upload failed"));
         } finally {
             setUploading(false);
         }
@@ -111,12 +116,24 @@ export default function SettingsPage() {
                 {KEY_GROUPS.map((g) => (
                     <label key={g.key} className="block">
                         <span className="mb-1 block text-sm font-semibold text-slate-600">{g.label}</span>
-                        <input
-                            value={values[g.key] || ""}
-                            onChange={(e) => change(g.key, e.target.value)}
-                            placeholder={g.placeholder}
-                            className="input-default"
-                        />
+                        {g.textarea ? (
+                            <textarea
+                                value={values[g.key] || ""}
+                                onChange={(e) => change(g.key, e.target.value)}
+                                placeholder={g.placeholder}
+                                rows={4}
+                                maxLength={5000}
+                                className="input-default"
+                            />
+                        ) : (
+                            <input
+                                value={values[g.key] || ""}
+                                onChange={(e) => change(g.key, e.target.value)}
+                                placeholder={g.placeholder}
+                                maxLength={2000}
+                                className="input-default"
+                            />
+                        )}
                     </label>
                 ))}
 
@@ -130,4 +147,3 @@ export default function SettingsPage() {
         </div>
     );
 }
-

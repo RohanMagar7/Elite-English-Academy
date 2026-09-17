@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 interface Story {
     id: string;
@@ -65,7 +66,7 @@ export default function SuccessStoriesAdmin() {
             ? await supabase.from("success_stories").update(payload).eq("id", editing)
             : await supabase.from("success_stories").insert([payload]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         alert(editing ? "Story updated." : "Story added.");
         setForm(EMPTY);
         setEditing(null);

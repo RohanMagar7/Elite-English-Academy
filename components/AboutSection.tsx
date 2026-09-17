@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const aboutContent = {
     eyebrow: "About Elite English Academy",
@@ -25,6 +26,7 @@ const features = [
 export default function AboutSection() {
     // SSR-safe: false during SSR + first client render, so markup matches.
     const reduceMotion = useSafeReducedMotion();
+    const { settings } = useSiteSettings();
 
     return (
         <section className="bg-white py-6 sm:py-8">
@@ -95,19 +97,17 @@ export default function AboutSection() {
                 </motion.div>
             </div>
 
-            {/* Mission & Vision */}
+            {/* Mission & Vision — managed from the admin dashboard (settings) */}
             <div className="mx-auto mt-6 grid max-w-7xl gap-5 md:grid-cols-2 px-5 sm:px-8 lg:px-10 xl:px-14">
                 <div className="rounded-2xl border border-blue-100 bg-[#F8FBFF] p-5 sm:p-6">
                     <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-blue-700">
                         Our Mission
                     </span>
                     <h3 className="mt-4 text-2xl font-black text-blue-950">
-                        Confident Communicators
+                        {settings.mission_title}
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
-                        We help every learner speak with ease. You build
-                        strong English basics and the confidence to use them
-                        in class, at work, and in daily life.
+                        {settings.mission_text}
                     </p>
                 </div>
 
@@ -116,12 +116,10 @@ export default function AboutSection() {
                         Our Vision
                     </span>
                     <h3 className="mt-4 text-2xl font-black text-white">
-                        Lifelong Success
+                        {settings.vision_title}
                     </h3>
                     <p className="mt-3 text-sm leading-6 text-blue-100 sm:text-base">
-                        We aim to be the most trusted English academy in the
-                        region. Here you learn English, find your strengths,
-                        and build a career you can be proud of.
+                        {settings.vision_text}
                     </p>
                 </div>
             </div>

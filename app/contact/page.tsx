@@ -5,7 +5,7 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { supabase } from "@/lib/supabase";
+import { enquirySchema } from "@/lib/validation";
 
 export default function ContactPage() {
     const { settings } = useSiteSettings();
@@ -17,7 +17,7 @@ export default function ContactPage() {
         message: "",
     });
     const [loading, setLoading] = useState(false);
-    const [toast, setToast] = useState("");
+    const [toast, setToast] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
     function change(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,22 +25,37 @@ export default function ContactPage() {
 
     async function submit(e: React.FormEvent) {
         e.preventDefault();
-        setLoading(true);
-        const { error } = await supabase.from("contacts").insert([
-            {
-                full_name: form.full_name.trim(),
-                email: form.email.trim(),
-                phone: form.phone.trim(),
-                subject: form.subject.trim() || "General Enquiry",
-                message: form.message.trim(),
-            },
-        ]);
-        setLoading(false);
-        if (error) {
-            setToast(error.message || "Unable to send your message right now.");
+
+        // Client-side check with the SAME strict schema the server enforces
+        // (instant feedback; the server re-validates and rejects).
+        const parsed = enquirySchema.safeParse(form);
+        if (!parsed.success) {
+            setToast({ type: "error", text: parsed.error.issues[0]?.message ?? "Please check the highlighted fields." });
             return;
         }
-        setToast("Thanks! Your message has been sent successfully.");
+        const { full_name: fullName, phone, email, subject, message } = parsed.data;
+
+        setLoading(true);
+        let ok = false;
+        let errText = "Unable to send your message right now. Please try again.";
+        try {
+            const res = await fetch("/api/enquiries", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(parsed.data),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) ok = true;
+            else errText = data.error ?? errText;
+        } catch {
+            /* network failure -> errText below */
+        }
+        setLoading(false);
+        if (!ok) {
+            setToast({ type: "error", text: errText });
+            return;
+        }
+        setToast({ type: "success", text: "Your enquiry has been sent successfully." });
         setForm({ full_name: "", email: "", phone: "", subject: "", message: "" });
     }
 
@@ -197,6 +212,7 @@ export default function ContactPage() {
                                         name="subject"
                                         value={form.subject}
                                         onChange={change}
+                                        required
                                         placeholder="Subject"
                                         className="w-full rounded-xl border border-blue-200 bg-white px-4 py-3 text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none"
                                     />
@@ -221,8 +237,11 @@ export default function ContactPage() {
                                 </button>
 
                                 {toast && (
-                                    <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm font-medium text-blue-950">
-                                        {toast}
+                                    <div
+                                        role={toast.type === "error" ? "alert" : "status"}
+                                        className={`rounded-xl border px-4 py-3 text-sm font-medium ${toast.type === "error" ? "border-red-200 bg-red-50 text-red-800" : "border-blue-200 bg-blue-50 text-blue-950"}`}
+                                    >
+                                        {toast.text}
                                     </div>
                                 )}
                             </form>

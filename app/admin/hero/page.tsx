@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { uploadSiteImage } from "@/hooks/useSiteSettings";
+import { safeClientMessage } from "@/lib/client-errors";
 
 type Hero = { id: string; badge: string | null; title: string; description: string | null; image_url: string | null; primary_button_text: string | null; primary_button_link: string | null; secondary_button_text: string | null; secondary_button_link: string | null; sort_order: number; is_active: boolean };
 const EMPTY = { badge: "", title: "", description: "", image_url: "", primary_button_text: "Free Demo Class", primary_button_link: "/admission", secondary_button_text: "View Courses", secondary_button_link: "/courses", sort_order: 0, is_active: true };
@@ -34,9 +35,9 @@ export default function HeroAdmin() {
             if (file) img = await uploadSiteImage(file, "hero");
             const payload = { badge: form.badge || null, title: form.title, description: form.description || null, image_url: img, primary_button_text: form.primary_button_text || null, primary_button_link: form.primary_button_link || null, secondary_button_text: form.secondary_button_text || null, secondary_button_link: form.secondary_button_link || null, sort_order: Number(form.sort_order) || 0, is_active: form.is_active };
             const { error } = editing ? await supabase.from("hero_slides").update(payload).eq("id", editing) : await supabase.from("hero_slides").insert([payload]);
-            if (error) return alert(error.message);
+            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
             setForm(EMPTY); setFile(null); setEditing(null); load();
-        } catch (err) { alert(err instanceof Error ? err.message : "Save failed"); }
+        } catch (err) { alert(safeClientMessage(err, "Save failed")); }
         finally { setLoading(false); }
     }
 

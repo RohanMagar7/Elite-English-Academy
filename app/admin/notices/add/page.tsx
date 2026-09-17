@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 export default function AddNotice() {
     const [form, setForm] = useState({ title: "", description: "", category: "General", is_active: true });
@@ -17,7 +18,7 @@ export default function AddNotice() {
         setLoading(true);
         const { error } = await supabase.from("notices").insert([{ title: form.title, description: form.description, category: form.category, is_active: form.is_active }]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         alert("Notice published.");
         setForm({ title: "", description: "", category: "General", is_active: true });
     }
@@ -43,4 +44,3 @@ export default function AddNotice() {
         </div>
     );
 }
-

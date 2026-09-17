@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 interface GalleryImage {
     id: string;
@@ -62,7 +63,7 @@ export default function GalleryPage() {
 
                 if (uploadError) {
                     console.error(uploadError);
-                    alert(uploadError.message);
+                    alert(safeClientMessage(uploadError, "Upload failed. Please try again."));
                     return;
                 }
                 imageUrl = supabase.storage.from("gallery").getPublicUrl(fileName).data.publicUrl;
@@ -82,7 +83,7 @@ export default function GalleryPage() {
 
             if (dbError) {
                 console.error(dbError);
-                alert(dbError.message);
+                alert(safeClientMessage(dbError, "Save failed. Please try again."));
                 return;
             }
 
@@ -149,7 +150,7 @@ export default function GalleryPage() {
 
         setLoading(false);
 
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
 
         setImages((prev) => prev.filter((i) => i.id !== id));
     }

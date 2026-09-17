@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { MessageCircle } from "lucide-react";
 import { useSiteSettings, whatsappLink } from "@/hooks/useSiteSettings";
-import { supabase } from "@/lib/supabase";
+import { admissionSchema } from "@/lib/validation";
 
 export default function AdmissionPage() {
     const { settings } = useSiteSettings();
@@ -31,14 +31,35 @@ export default function AdmissionPage() {
     async function submitForm(e: React.FormEvent) {
         e.preventDefault();
 
+        // Client-side check with the SAME strict schema the server enforces
+        // (instant feedback; the server re-validates and rejects).
+        const parsed = admissionSchema.safeParse(form);
+        if (!parsed.success) {
+            alert(parsed.error.issues[0]?.message ?? "Please check the form fields.");
+            return;
+        }
+
         setLoading(true);
 
-        const { error } = await supabase.from("admissions").insert([form]);
+        let ok = false;
+        let errText = "Unable to submit right now. Please try again.";
+        try {
+            const res = await fetch("/api/admissions", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(parsed.data),
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok) ok = true;
+            else errText = data.error ?? errText;
+        } catch {
+            /* network failure -> errText below */
+        }
 
         setLoading(false);
 
-        if (error) {
-            alert(error.message);
+        if (!ok) {
+            alert(errText);
             return;
         }
 

@@ -1,8 +1,9 @@
 import { requireAdminApi } from "@/lib/api-auth";
 import { NextResponse } from "next/server";
+import { rateLimitHeaders } from "@/lib/rate-limit";
 
 export async function GET() {
-    const { user, response } = await requireAdminApi();
+    const { user, response, rateLimit } = await requireAdminApi();
 
     if (response) {
         return response;
@@ -12,8 +13,8 @@ export async function GET() {
         ok: true,
         message: "Admin API is secure and working.",
         user: {
-            id: user.id,
-            email: user.email,
+            id: user!.id,
+            email: user!.email,
         },
-    });
+    }, rateLimit ? { headers: rateLimitHeaders(rateLimit) } : undefined);
 }

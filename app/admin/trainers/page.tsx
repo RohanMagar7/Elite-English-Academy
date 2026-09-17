@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 interface Trainer {
     id: string;
@@ -85,14 +86,14 @@ export default function TrainersAdmin() {
             const { error } = editing
                 ? await supabase.from("trainers").update(payload).eq("id", editing)
                 : await supabase.from("trainers").insert([payload]);
-            if (error) return alert(error.message);
+            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
             alert(editing ? "Trainer updated." : "Trainer added.");
             setForm(EMPTY);
             setFile(null);
             setEditing(null);
             load();
         } catch (err) {
-            alert(err instanceof Error ? err.message : "Upload failed.");
+            alert(safeClientMessage(err, "Upload failed."));
         } finally {
             setLoading(false);
         }

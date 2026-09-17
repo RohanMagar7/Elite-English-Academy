@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 interface Course {
     id: string;
@@ -109,7 +110,7 @@ export default function CoursesPage() {
 
             if (error) {
                 console.error(error);
-                alert(error.message);
+                alert(safeClientMessage(error, "Save failed. Please try again."));
                 return;
             }
 
@@ -130,7 +131,7 @@ export default function CoursesPage() {
             getCourses();
         } catch (error) {
             console.error(error);
-            alert(error instanceof Error ? error.message : "Unable to upload course image.");
+            alert(safeClientMessage(error, "Unable to upload course image."));
         } finally {
             setLoading(false);
         }
@@ -183,7 +184,7 @@ export default function CoursesPage() {
             .eq("id", id);
 
         if (error) {
-            alert(error.message);
+            alert(safeClientMessage(error, "Save failed. Please try again."));
             return;
         }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { uploadSiteImage } from "@/hooks/useSiteSettings";
+import { safeClientMessage } from "@/lib/client-errors";
 
 interface Testimonial {
     id: string;
@@ -58,14 +59,14 @@ export default function TestimonialsAdmin() {
             const { error } = editing
                 ? await supabase.from("testimonials").update(payload).eq("id", editing)
                 : await supabase.from("testimonials").insert([payload]);
-            if (error) return alert(error.message);
+            if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
             alert(editing ? "Testimonial updated." : "Testimonial added.");
             setForm(EMPTY);
             setFile(null);
             setEditing(null);
             load();
         } catch (err) {
-            alert(err instanceof Error ? err.message : "Save failed.");
+            alert(safeClientMessage(err, "Save failed."));
         } finally {
             setLoading(false);
         }
@@ -92,7 +93,7 @@ export default function TestimonialsAdmin() {
 
     async function toggle(id: string, active: boolean) {
         const { error } = await supabase.from("testimonials").update({ is_active: !active }).eq("id", id);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         load();
     }
 
@@ -157,6 +158,5 @@ export default function TestimonialsAdmin() {
         </div>
     );
 }
-
 
 

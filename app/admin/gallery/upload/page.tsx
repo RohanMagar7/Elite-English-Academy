@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 export default function UploadGallery() {
     const [form, setForm] = useState({ title: "", image_url: "" });
@@ -16,7 +17,7 @@ export default function UploadGallery() {
         setLoading(true);
         const { error } = await supabase.from("gallery").insert([{ title: form.title, image_url: form.image_url }]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         alert("Image added to gallery.");
         setForm({ title: "", image_url: "" });
     }
@@ -33,4 +34,3 @@ export default function UploadGallery() {
         </div>
     );
 }
-

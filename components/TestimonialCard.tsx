@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
+import { testimonialSubmitSchema } from "@/lib/validation";
 
 type Testimonial = {
     id: string;
@@ -87,26 +88,39 @@ export default function TestimonialSection() {
         setLoading(true);
         setNotice("");
 
-        const payload = {
-            name: form.name.trim(),
+        // Client-side check with the SAME strict schema the server enforces
+        // (instant feedback; the server re-validates and rejects).
+        const parsed = testimonialSubmitSchema.safeParse({
+            name: form.name,
             course: form.course.trim() || "General English",
-            message: form.message.trim(),
-            rating: Number(form.rating) || 5,
-            is_active: true,
-        };
-
-        if (!payload.name || !payload.message) {
-            setNotice("Please enter your name and review.");
+            message: form.message,
+            rating: form.rating,
+        });
+        if (!parsed.success) {
+            setNotice(parsed.error.issues[0]?.message ?? "Please check the highlighted fields.");
             setLoading(false);
             return;
         }
 
-        const { error } = await supabase.from("testimonials").insert([payload]);
+        let errText: string | null = null;
+        try {
+            const res = await fetch("/api/testimonials", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(parsed.data),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                errText = data.error ?? "Unable to submit your review right now.";
+            }
+        } catch {
+            errText = "Unable to submit your review right now.";
+        }
 
         setLoading(false);
 
-        if (error) {
-            setNotice(error.message || "Unable to submit your review right now.");
+        if (errText) {
+            setNotice(errText);
             return;
         }
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { safeClientMessage } from "@/lib/client-errors";
 
 export default function AddTestimonial() {
     const [form, setForm] = useState({ name: "", message: "", course: "", avatar: "", is_active: true });
@@ -17,7 +18,7 @@ export default function AddTestimonial() {
         setLoading(true);
         const { error } = await supabase.from("testimonials").insert([{ name: form.name, message: form.message, course: form.course, avatar: form.avatar, is_active: form.is_active }]);
         setLoading(false);
-        if (error) return alert(error.message);
+        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
         alert("Testimonial added.");
         setForm({ name: "", message: "", course: "", avatar: "", is_active: true });
     }
@@ -38,4 +39,3 @@ export default function AddTestimonial() {
         </div>
     );
 }
-
