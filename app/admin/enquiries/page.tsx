@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -172,7 +177,7 @@ export default function EnquiriesPage() {
                             </TableRow>
                         ) : (
                             pagedEnquiries.map((enquiry) => (
-                                <TableRow key={enquiry.id} className="admin-tbody-row">
+                                <TableRow key={enquiry.id}>
                                     <Td>
                                         <div className="admin-cell-main">{enquiry.full_name}</div>
                                         <div className="admin-cell-sub">{enquiry.email}</div>

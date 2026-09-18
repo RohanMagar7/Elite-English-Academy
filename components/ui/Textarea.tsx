@@ -1,9 +1,14 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 "use client";
 
-import { forwardRef, useId } from "react";
+import { forwardRef } from "react";
 import type { TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
-import { Field } from "./Input";
+import { Field, useFieldIds } from "./Field";
 
 export type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 	label?: string;
@@ -17,25 +22,25 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 		{ label, hint, error, required, wrapperClassName, className, id, ...props },
 		ref,
 	) {
-		const autoId = useId();
-		const textareaId = id ?? autoId;
+		const { fieldId, messageId } = useFieldIds(id);
+		const describedBy = error || hint ? messageId : undefined;
 
 		return (
 			<Field
 				label={label}
-				hint={!error ? hint : undefined}
+				hint={hint}
 				error={error}
 				required={required}
-				htmlFor={textareaId}
+				htmlFor={fieldId}
 				className={wrapperClassName}
-				describedBy={error || hint ? `${textareaId}-desc` : undefined}
+				describedBy={describedBy}
 			>
 				<textarea
 					ref={ref}
-					id={textareaId}
+					id={fieldId}
 					required={required}
 					aria-invalid={error ? true : undefined}
-					aria-describedby={error || hint ? `${textareaId}-desc` : undefined}
+					aria-describedby={describedBy}
 					className={cn(
 						"input-default min-h-24 resize-y",
 						error && "border-red-500 focus:border-red-500 focus:ring-red-500/25",

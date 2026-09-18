@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CoursesSection from "@/components/CoursesSection";

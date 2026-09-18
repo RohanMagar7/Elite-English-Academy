@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import type { ReactNode } from "react";
 import { AlertTriangle, CheckCircle2, Info, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";

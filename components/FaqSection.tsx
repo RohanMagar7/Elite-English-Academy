@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 "use client";
 
 import { useState, useEffect } from "react";

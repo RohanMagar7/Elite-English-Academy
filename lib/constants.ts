@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 /** Single source of truth for app-wide constants. */
 
 export const NAV_FALLBACK = [

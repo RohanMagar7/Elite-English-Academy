@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 export const academy = {
     name: "Elite's English Academy",
     tagline: "Learn English • Teach English • Build Your Career",

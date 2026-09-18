@@ -1,0 +1,19 @@
+{
+  // app/globals.css uses Tailwind CSS v4 at-rules (@theme, @apply, @layer).
+  // VS Code's built-in CSS validator does not know them and reports
+  // "Unknown at rule" warnings — silence only that rule.
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+
+  // Tailwind IntelliSense: gives completions + hover previews in CSS files.
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"]
+  ]
+}

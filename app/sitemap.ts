@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import type { MetadataRoute } from "next";
 
 const siteUrl = "https://eliteenglishacademy.magarohan8.workers.dev";

@@ -1,10 +1,15 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 "use client";
 
-import { forwardRef, useId } from "react";
+import { forwardRef } from "react";
 import type { SelectHTMLAttributes } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Field } from "./Input";
+import { Field, useFieldIds } from "./Field";
 
 export type SelectOption = { label: string; value: string; disabled?: boolean };
 
@@ -23,26 +28,26 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 		{ label, hint, error, required, options, placeholder, wrapperClassName, className, id, children, ...props },
 		ref,
 	) {
-		const autoId = useId();
-		const selectId = id ?? autoId;
+		const { fieldId, messageId } = useFieldIds(id);
+		const describedBy = error || hint ? messageId : undefined;
 
 		return (
 			<Field
 				label={label}
-				hint={!error ? hint : undefined}
+				hint={hint}
 				error={error}
 				required={required}
-				htmlFor={selectId}
+				htmlFor={fieldId}
 				className={wrapperClassName}
-				describedBy={error || hint ? `${selectId}-desc` : undefined}
+				describedBy={describedBy}
 			>
 				<span className="relative block">
 					<select
 						ref={ref}
-						id={selectId}
+						id={fieldId}
 						required={required}
 						aria-invalid={error ? true : undefined}
-						aria-describedby={error || hint ? `${selectId}-desc` : undefined}
+						aria-describedby={describedBy}
 						className={cn(
 							"input-default appearance-none",
 							error && "border-red-500 focus:border-red-500 focus:ring-red-500/25",

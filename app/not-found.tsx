@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import Link from "next/link";
 
 /** Generic 404 — no internal paths disclosed. */

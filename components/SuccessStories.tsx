@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -149,7 +154,7 @@ export default function SuccessStories() {
                                     </p>
                                 </div>
                                 {story.badge ? (
-                                    <span className="badge-sm badge-gold rounded-full bg-yellow-400 px-3 py-1 text-blue-950">
+                                    <span className="badge-text badge-gold rounded-full bg-yellow-400 px-3 py-1 text-blue-950">
                                         {story.badge}
                                     </span>
                                 ) : null}

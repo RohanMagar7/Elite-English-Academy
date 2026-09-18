@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 /**
  * Central strict input validation (zod v4).
  * Policy: REJECT anything that doesn't match — never sanitize/escape and

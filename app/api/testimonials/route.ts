@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { checkPublicRateLimit, getClientIp, applyRateLimitHeaders, rateLimitedResponse } from "@/lib/rate-limit";

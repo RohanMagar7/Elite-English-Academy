@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdminApi } from "@/lib/api-auth";

@@ -1,3 +1,8 @@
+/* ============================================
+          ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 
 "use client";
 
@@ -104,7 +109,7 @@ export default function AdmissionsPage() {
 
           <TableBody>
             {admissions.map((student) => (
-              <TableRow key={student.id} className="admin-tbody-row">
+              <TableRow key={student.id}>
 
                 <Td className="p-3">
                   <div className="font-semibold">

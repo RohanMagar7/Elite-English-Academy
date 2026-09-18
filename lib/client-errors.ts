@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 /**
  * Client-side error helper: convert unknown/supabase errors into a
  * generic, user-safe message. Never surfaces stack traces, file paths,

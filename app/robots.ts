@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {

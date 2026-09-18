@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import type { HTMLAttributes, ReactNode, ThHTMLAttributes, TdHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +31,7 @@ export function TableBody({ children }: { children: ReactNode }) {
 }
 
 export function TableRow({ children, className }: { children: ReactNode; className?: string }) {
-	return <tr className={cn("admin-tbody-row", className)}>{children}</tr>;
+	return <tr className={className}>{children}</tr>;
 }
 
 export function Th({ children, className, scope = "col", ...props }: ThHTMLAttributes<HTMLTableCellElement>) {

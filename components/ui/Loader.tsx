@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -6,8 +11,7 @@ export type LoaderBlockProps = {
 	label?: string;
 };
 
-/** Centered inline spinner. Use for sections and buttons. */
-/** Full-block loader for page/card areas. */
+/** Full-block loader for page, card and section areas. */
 export function LoaderBlock({ label = "Loading", className }: LoaderBlockProps) {
 	return (
 		<div role="status" aria-label={label} className={cn("flex items-center justify-center py-12", className)}>

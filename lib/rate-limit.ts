@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 /**
  * Tiered, configurable rate limiter for the App Router.
  * Tiers: `auth` (strict, IP + per-account exponential backoff),

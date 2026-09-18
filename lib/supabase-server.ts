@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 

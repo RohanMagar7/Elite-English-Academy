@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 
 "use client";
 
@@ -169,7 +174,7 @@ export default function NoticesPage() {
 
                     <TableBody>
                         {notices.map((notice) => (
-                            <TableRow key={notice.id} className="admin-tbody-row">
+                            <TableRow key={notice.id}>
 
                                 <Td className="py-4">
                                     <h3 className="font-semibold">{notice.title}</h3>

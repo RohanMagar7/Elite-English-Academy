@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 type SectionHeadingProps = {
 	eyebrow: string;
 	title: string;

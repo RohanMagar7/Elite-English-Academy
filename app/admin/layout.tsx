@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 import { requireAdmin } from "@/lib/auth";
 import AdminShell from "./AdminShell";
 

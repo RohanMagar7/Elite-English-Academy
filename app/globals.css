@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
 /* ============================================
-   ELITE ENGLISH ACADEMY - Design System
-   Royal Blue + Gold theme (single source of truth)
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
    ============================================ */
+
+/* Royal Blue + Gold theme — single source of truth for design tokens. */
 
 @theme inline {
   --font-sans: var(--font-geist-sans);
@@ -53,17 +55,14 @@
 .font-card { @apply text-xl; }
 .font-body { @apply text-base; }
 .font-sm { @apply text-sm; }
-.font-caption { @apply text-xs; }
 
-/* Text Colors - max 8 colors */
+/* Semantic text hierarchy — 4 roles, palette-driven (no ad-hoc hex) */
 .text-primary { @apply text-blue-950; }
 .text-secondary { @apply text-blue-700; }
-.text-muted { color: #475569; }
-.text-accent { color: #eab308; }
-.text-success { color: #16a34a; }
-.text-error { color: #ef4444; }
+.text-muted { @apply text-slate-600; }
+.text-success { @apply text-green-600; }
 
-/* Button Variants - 4 reusable styles */
+/* Button variants — public site (admin buttons live below) */
 .btn-primary {
   @apply inline-flex h-12 items-center justify-center rounded-xl bg-blue-600 px-6 font-semibold text-white shadow-md transition-all duration-200 hover:bg-blue-700;
 }
@@ -72,88 +71,26 @@
   @apply inline-flex h-12 items-center justify-center rounded-xl border border-blue-600 bg-white px-6 font-semibold text-blue-700 shadow-md transition-all duration-200 hover:bg-blue-50;
 }
 
-.btn-accent {
-  @apply inline-flex h-12 items-center justify-center rounded-xl bg-yellow-400 px-6 font-semibold text-blue-950 shadow-md transition-all duration-200 hover:bg-yellow-500;
-}
-
 .btn-ghost {
   @apply inline-flex h-12 items-center justify-center rounded-xl bg-white/10 px-6 font-semibold text-white shadow-md transition-all duration-200 hover:bg-white/20;
 }
 
-.btn-mobile {
-  @apply inline-flex h-11 w-full items-center justify-center rounded-lg px-4 font-semibold transition-all duration-200;
-}
-
-/* Badge Utilities */
-.badge {
-  @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold transition-all duration-200;
-}
-
-.badge-blue {
-  @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold border-blue-200 bg-blue-50 text-blue-700;
-}
-
+/* Badge utilities */
 .badge-gold {
   @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold border-yellow-300 bg-yellow-400 text-blue-950;
 }
 
-.badge-sm {
-  @apply text-xs md:text-sm;
-}
+/* Badge text scale */
+.badge-text { @apply text-xs md:text-sm font-semibold; }
 
-/* Card Utilities — compact, consistent */
-.card {
-  @apply rounded-2xl border border-blue-100 bg-white shadow-md p-5 transition-all duration-300;
-}
-
-.card-hover {
-  @apply rounded-2xl border border-blue-100 bg-white shadow-md p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
-}
-
-/* Container Utilities */
-.container-wide {
-  @apply mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-14;
-}
-
-.container-narrow {
-  @apply mx-auto max-w-4xl px-5 sm:px-8;
-}
-
-.text-center-container {
-  @apply max-w-3xl mx-auto text-center;
-}
-
-/* Flex/Grid Utilities */
-.flex-equal-height {
-  @apply flex flex-col h-full;
-}
-
+/* Grid helper */
 .grid-equal-height {
   @apply grid grid-cols-2 gap-4 items-stretch;
-}
-
-/* FAQ Accordion — compact */
-.faq-content {
-  @apply px-5 pb-5 pt-1 text-sm leading-6 text-slate-600;
-}
-
-.faq-question {
-  @apply px-5 py-4 text-left flex w-full items-center justify-between gap-4;
 }
 
 /* Header CTA Button - blue outline */
 .header-cta {
   @apply inline-flex items-center gap-2 h-12 rounded-xl border border-blue-500 bg-white px-6 text-sm font-semibold text-blue-700 shadow-md transition-all duration-200 hover:bg-blue-600 hover:text-white;
-}
-
-/* Mobile Menu CTA */
-.mobile-menu-cta {
-  @apply mt-4 flex items-center justify-center gap-2 rounded-xl bg-yellow-400 py-3 font-semibold text-blue-950 shadow-md transition-all duration-200 hover:bg-yellow-300;
-}
-
-/* Image Fallback */
-.course-image-fallback {
-  @apply absolute inset-0 flex items-center justify-center bg-blue-100 text-sm font-semibold uppercase tracking-widest text-blue-950;
 }
 
 /* ============================================
@@ -178,17 +115,14 @@
 .admin-card {
   @apply w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6;
 }
-.admin-empty {
-  @apply rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-600 sm:p-8;
-}
 
-/* Forms — single source of truth for .input-default (was undefined) */
+/* Forms — canonical text input, textarea and select styling */
 .input-default {
   @apply w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-[15px] leading-6 text-slate-900 shadow-sm transition placeholder:text-slate-500 hover:border-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/25 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500;
 }
 textarea.input-default { @apply min-h-24 resize-y; }
 select.input-default { @apply pr-9; }
-input[type="checkbox"].input-default, input[type="checkbox"] { @apply h-4 w-4 shrink-0 accent-blue-700; }
+input[type="checkbox"] { @apply h-4 w-4 shrink-0 accent-blue-700; }
 input[type="file"].input-default {
   @apply cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-blue-950 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-900;
 }
@@ -213,7 +147,7 @@ input[type="file"].input-default {
   @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition active:scale-[0.97] sm:text-sm;
 }
 
-/* Tables — responsive scroll + sticky header */
+/* Tables — responsive scroll container + admin row/header styling */
 .admin-table-wrap {
   @apply -mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:rounded-xl sm:border sm:border-slate-200 sm:bg-white sm:px-0 sm:shadow-sm;
 }
@@ -222,20 +156,16 @@ input[type="file"].input-default {
 .admin-table thead th { @apply whitespace-nowrap px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider sm:px-4; }
 .admin-table thead th:first-child { @apply rounded-tl-xl; }
 .admin-table thead th:last-child { @apply rounded-tr-xl; }
+.admin-table tbody tr { @apply transition hover:bg-blue-50/50; }
 .admin-table tbody td { @apply border-b border-slate-100 px-3 py-3 align-top text-slate-800 sm:px-4; }
 .admin-table tbody tr:last-child td { @apply border-b-0; }
-.admin-table tbody tr { @apply transition hover:bg-blue-50/50; }
 .admin-cell-main { @apply font-semibold text-slate-900; }
-.admin-table tbody tr.admin-tbody-row { @apply border-b border-slate-100 transition hover:bg-blue-50/50; }
-.admin-table tbody tr.admin-tbody-row:last-child { @apply border-b-0; }
 .admin-tcenter { @apply text-center; }
 .admin-cell-sub { @apply mt-0.5 text-xs leading-5 text-slate-600 sm:text-sm; }
 
 /* Status / badges */
 .admin-badge { @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold sm:text-xs; }
-.admin-badge-green { @apply bg-green-100 text-green-800 ring-1 ring-inset ring-green-200; }
 .admin-badge-gray { @apply bg-slate-100 text-slate-700 ring-1 ring-inset ring-slate-200; }
-.admin-badge-yellow { @apply bg-yellow-100 text-yellow-900 ring-1 ring-inset ring-yellow-200; }
 .admin-select {
   @apply rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/25;
 }
@@ -245,26 +175,12 @@ input[type="file"].input-default {
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #64748b; }
+::-webkit-scrollbar-track { @apply bg-slate-100; }
+::-webkit-scrollbar-thumb { @apply rounded bg-slate-400; }
+::-webkit-scrollbar-thumb:hover { @apply bg-slate-500; }
 
-::selection {
-  background: #bfdbfe;
-  color: #1e3a8a;
-}
+::selection { @apply bg-blue-200 text-blue-900; }
 
-
-/* ============================================
-   Shared component helpers (merged from ui-helpers.css)
-   ============================================ */
-
-.badge-text { @apply text-xs md:text-sm font-semibold; }
-.course-card { @apply flex h-full flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-md; }
-.course-img-placeholder { @apply absolute inset-0 flex items-center justify-center bg-blue-100 text-sm font-semibold text-blue-950; }
-.faq-question-btn { @apply flex w-full items-center justify-between gap-4 px-5 py-4 text-left; }
-.faq-answer-content { @apply px-5 pb-5 pt-1 text-base leading-6 text-slate-600; }
-.text-dark-mode { @apply text-slate-100; }
 
 /* Floating action buttons */
 .floating-whatsapp { @apply shadow-[0_18px_30px_rgba(37,211,102,0.35)]; }

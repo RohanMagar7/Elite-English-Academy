@@ -1,3 +1,8 @@
+/* ============================================
+   ELITE ENGLISH ACADEMY
+          Developer : Rohan Magar
+   ============================================ */
+
 "use client";
 
 import { Camera, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
