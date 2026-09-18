@@ -79,7 +79,7 @@ export default function CoursesSection() {
               {/* Image */}
               <Link
                 href={`/courses/${course.id}`}
-                className="relative block aspect-[16/9] overflow-hidden"
+                className="relative block aspect-[16/9] overflow-hidden bg-blue-50"
                 aria-label={`View details of ${course.title}`}
               >
                 <Image
@@ -92,7 +92,7 @@ export default function CoursesSection() {
                   fill
                   unoptimized
                   sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-contain p-2 sm:p-3 transition-transform duration-500 group-hover:scale-105"
                   onError={() =>
                     setFailedImages((prev) => ({
                       ...prev,
