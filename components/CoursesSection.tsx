@@ -77,7 +77,11 @@ export default function CoursesSection() {
               className="group flex h-full flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-lg"
             >
               {/* Image */}
-              <div className="relative aspect-[16/9] overflow-hidden">
+              <Link
+                href={`/courses/${course.id}`}
+                className="relative block aspect-[16/9] overflow-hidden"
+                aria-label={`View details of ${course.title}`}
+              >
                 <Image
                   src={
                     !failedImages[course.id] && course.image_url
@@ -96,14 +100,16 @@ export default function CoursesSection() {
                     }))
                   }
                 />
-              </div>
+              </Link>
 
               {/* Content */}
               <div className="flex flex-1 flex-col p-2.5">
                 {/* Title */}
-                <h3 className="line-clamp-2 text-base font-bold leading-tight text-blue-950">
-                  {course.title}
-                </h3>
+                <Link href={`/courses/${course.id}`} className="w-fit">
+                  <h3 className="line-clamp-2 text-base font-bold leading-tight text-blue-950 transition hover:text-blue-700">
+                    {course.title}
+                  </h3>
+                </Link>
 
                 {/* Mode Badge */}
                 <span className="mt-1 inline-flex w-fit rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">

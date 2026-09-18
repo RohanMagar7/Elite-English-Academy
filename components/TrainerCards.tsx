@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { BadgeCheck, GraduationCap, Award } from "lucide-react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
@@ -83,12 +84,19 @@ export default function TrainerCards() {
               className="group overflow-hidden rounded-xl border border-blue-100 bg-white shadow-sm transition-all duration-300 hover:border-blue-200 hover:shadow-lg"
             >
               {/* Trainer Image */}
-              <div className="relative aspect-[4/4] overflow-hidden bg-blue-50">
-                <img
-                  src={trainer.photo_url || fallbackPhoto(trainer.name)}
-                  alt={trainer.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+              <Link
+                href={`/trainers/${trainer.id}`}
+                className="relative block aspect-[4/3] overflow-hidden bg-blue-50"
+                aria-label={`View details of ${trainer.name}`}
+              >
+                <div className="flex h-full w-full items-center justify-center p-3 sm:p-4">
+                  <img
+                    src={trainer.photo_url || fallbackPhoto(trainer.name)}
+                    alt={trainer.name}
+                    loading="lazy"
+                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
 
                 {/* Role Badge */}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-blue-950/80 to-transparent p-2">
@@ -97,13 +105,15 @@ export default function TrainerCards() {
                     {trainer.role || "Faculty"}
                   </span>
                 </div>
-              </div>
+              </Link>
 
               {/* Trainer Info */}
               <div className="p-3">
-                <h3 className="text-base font-bold leading-tight text-blue-950">
-                  {trainer.name}
-                </h3>
+                <Link href={`/trainers/${trainer.id}`} className="w-fit">
+                  <h3 className="text-base font-bold leading-tight text-blue-950 transition hover:text-blue-700">
+                    {trainer.name}
+                  </h3>
+                </Link>
 
                 <div className="mt-2 space-y-1.5 text-[13px] leading-5 text-slate-600">
                   <p className="flex items-start gap-2">
