@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { uploadSiteImage } from "@/hooks/useSiteSettings";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 type Hero = { id: string; badge: string | null; title: string; description: string | null; image_url: string | null; primary_button_text: string | null; primary_button_link: string | null; secondary_button_text: string | null; secondary_button_link: string | null; sort_order: number; is_active: boolean };
 const EMPTY = { badge: "", title: "", description: "", image_url: "", primary_button_text: "Free Demo Class", primary_button_link: "/admission", secondary_button_text: "View Courses", secondary_button_link: "/courses", sort_order: 0, is_active: true };
@@ -20,6 +22,10 @@ export default function HeroAdmin() {
         setItems((data as Hero[]) || []);
     }
     useEffect(() => { load(); }, []);
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => { await supabase.from("hero_slides").delete().eq("id", id); load(); },
+        "Delete this hero slide?",
+    );
 
     function change(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const t = e.target as HTMLInputElement;
@@ -43,6 +49,7 @@ export default function HeroAdmin() {
 
     return (
         <div className="admin-page">
+            {dialog}
             <div>
                 <h1 className="admin-page-title">Banners / Hero</h1>
                 <p className="text-slate-600">Manage homepage banner text, images and buttons.</p>
@@ -75,11 +82,11 @@ export default function HeroAdmin() {
                         <div className="mt-3 flex flex-wrap gap-2">
                             <button onClick={() => { setEditing(h.id); setForm({ badge: h.badge || "", title: h.title, description: h.description || "", image_url: h.image_url || "", primary_button_text: h.primary_button_text || "", primary_button_link: h.primary_button_link || "", secondary_button_text: h.secondary_button_text || "", secondary_button_link: h.secondary_button_link || "", sort_order: h.sort_order || 0, is_active: h.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                             <button onClick={async () => { await supabase.from("hero_slides").update({ is_active: !h.is_active }).eq("id", h.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{h.is_active ? "Hide" : "Show"}</button>
-                            <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("hero_slides").delete().eq("id", h.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={() => requestDelete(h.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}
-                {items.length === 0 && <p className="admin-empty md:col-span-2">No banners yet.</p>}
+                {items.length === 0 && <EmptyState title="md:col-span-2" className="p" />}
             </div>
         </div>
     );

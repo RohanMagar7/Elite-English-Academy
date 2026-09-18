@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { TableHead, TableBody, TableRow, Th, Td, Pagination } from "@/components/ui";
+import { PAGE_SIZE } from "@/lib/constants";
 
 interface Enquiry {
     id: string;
@@ -33,6 +36,7 @@ export default function EnquiriesPage() {
     const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+    const [page, setPage] = useState(1);
     const [statusFilter, setStatusFilter] = useState("All");
     const [selected, setSelected] = useState<Enquiry | null>(null);
 
@@ -80,6 +84,14 @@ export default function EnquiriesPage() {
         });
     }, [enquiries, search, statusFilter]);
 
+    // Client-side pagination over the filtered rows (no extra fetches).
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    const safePage = Math.min(page, totalPages);
+    const pagedEnquiries = filtered.slice(
+        (safePage - 1) * PAGE_SIZE,
+        safePage * PAGE_SIZE,
+    );
+
     async function updateStatus(id: string, status: string) {
         const { error } = await supabase.from("enquiries").update({ status }).eq("id", id);
         if (error) {
@@ -90,8 +102,8 @@ export default function EnquiriesPage() {
         setSelected((prev) => (prev && prev.id === id ? { ...prev, status } : prev));
     }
 
-    async function deleteEnquiry(id: string) {
-        if (!confirm("Delete this enquiry?")) return;
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         const { error } = await supabase.from("enquiries").delete().eq("id", id);
         if (error) {
             alert(safeClientMessage(error, "Save failed. Please try again."));
@@ -99,9 +111,12 @@ export default function EnquiriesPage() {
         }
         setEnquiries((prev) => prev.filter((item) => item.id !== id));
         setSelected((prev) => (prev && prev.id === id ? null : prev));
-    }
+        },
+        "Delete this enquiry?",
+    );
     return (
         <div className="admin-page">
+            {dialog}
             <div className="admin-header-row">
                 <div className="min-w-0">
                     <h1 className="admin-page-title">Enquiries</h1>
@@ -136,36 +151,36 @@ export default function EnquiriesPage() {
             </div>
             <div className="admin-table-wrap">
                 <table className="admin-table">
-                    <thead>
+                    <TableHead>
                         <tr>
-                            <th>Name</th>
-                            <th>Contact</th>
-                            <th>Subject</th>
-                            <th>Submitted</th>
-                            <th>Status</th>
-                            <th className="admin-tcenter">Actions</th>
+                            <Th>Name</Th>
+                            <Th>Contact</Th>
+                            <Th>Subject</Th>
+                            <Th>Submitted</Th>
+                            <Th>Status</Th>
+                            <Th className="admin-tcenter">Actions</Th>
                         </tr>
-                    </thead>
-                    <tbody>
+                    </TableHead>
+                    <TableBody>
                         {loading ? (
-                            <tr>
-                                <td colSpan={6} className="p-6 text-center text-slate-600">Loading enquiries...</td>
-                            </tr>
+                            <TableRow>
+                                <Td colSpan={6} className="p-6 text-center text-slate-600">Loading enquiries...</Td>
+                            </TableRow>
                         ) : filtered.length === 0 ? (
-                            <tr>
-                                <td colSpan={6} className="p-6 text-center text-slate-600">No enquiries found.</td>
-                            </tr>
+                            <TableRow>
+                                <Td colSpan={6} className="p-6 text-center text-slate-600">No enquiries found.</Td>
+                            </TableRow>
                         ) : (
-                            filtered.map((enquiry) => (
-                                <tr key={enquiry.id} className="admin-tbody-row">
-                                    <td>
+                            pagedEnquiries.map((enquiry) => (
+                                <TableRow key={enquiry.id} className="admin-tbody-row">
+                                    <Td>
                                         <div className="admin-cell-main">{enquiry.full_name}</div>
                                         <div className="admin-cell-sub">{enquiry.email}</div>
-                                    </td>
-                                    <td>{enquiry.phone}</td>
-                                    <td><span className="line-clamp-2 max-w-52">{enquiry.subject}</span></td>
-                                    <td className="whitespace-nowrap">{formatDateTime(enquiry.created_at)}</td>
-                                    <td>
+                                    </Td>
+                                    <Td>{enquiry.phone}</Td>
+                                    <Td><span className="line-clamp-2 max-w-52">{enquiry.subject}</span></Td>
+                                    <Td className="whitespace-nowrap">{formatDateTime(enquiry.created_at)}</Td>
+                                    <Td>
                                         <select
                                             value={enquiry.status}
                                             onChange={(e) => updateStatus(enquiry.id, e.target.value)}
@@ -176,19 +191,20 @@ export default function EnquiriesPage() {
                                                 <option key={status} value={status}>{status}</option>
                                             ))}
                                         </select>
-                                    </td>
-                                    <td>
+                                    </Td>
+                                    <Td>
                                         <div className="flex flex-wrap justify-center gap-2">
                                             <button onClick={() => setSelected(enquiry)} className="admin-btn-sm bg-blue-950 text-white hover:bg-blue-900">View</button>
-                                            <button onClick={() => deleteEnquiry(enquiry.id)} className="admin-btn-danger">Delete</button>
+                                            <button onClick={() => requestDelete(enquiry.id)} className="admin-btn-danger">Delete</button>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </Td>
+                                </TableRow>
                             ))
                         )}
-                    </tbody>
+                    </TableBody>
                 </table>
             </div>
+            <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
             {selected && (
                 <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Enquiry details">
                     <div className="absolute inset-0 bg-blue-950/60" onClick={() => setSelected(null)} aria-hidden="true" />
@@ -228,7 +244,7 @@ export default function EnquiriesPage() {
                         </div>
                         <div className="flex flex-col gap-2.5 border-t border-slate-200 p-5 sm:flex-row">
                             <button onClick={() => setSelected(null)} className="admin-btn-accent flex-1">Close</button>
-                            <button onClick={() => deleteEnquiry(selected.id)} className="admin-btn-danger flex-1">Delete enquiry</button>
+                            <button onClick={() => requestDelete(selected.id)} className="admin-btn-danger flex-1">Delete enquiry</button>
                         </div>
                     </div>
                 </div>

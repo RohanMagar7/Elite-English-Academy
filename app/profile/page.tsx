@@ -1,11 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 
+type Profile = {
+    full_name?: string;
+    avatar_url?: string;
+    phone?: string;
+    role?: string;
+};
+
 export default function ProfilePage() {
-    const [user, setUser] = useState<any>(null);
-    const [profile, setProfile] = useState<any>(null);
+    const [user, setUser] = useState<User | null>(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
 
     useEffect(() => {
         async function load() {

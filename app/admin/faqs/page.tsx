@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { faqSchema, idSchema } from "@/lib/validation";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
 
 async function mutate(op: "create" | "update" | "delete" | "toggle", payload: Record<string, unknown>): Promise<string | null> {
     try {
@@ -82,16 +83,19 @@ export default function FaqsAdmin() {
         load();
     }
 
-    async function remove(id: string) {
-        if (!confirm("Delete this FAQ?")) return;
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         if (!idSchema.safeParse(id).success) return alert("Invalid id.");
         const err = await mutate("delete", { id });
         if (err) return alert(err);
         load();
-    }
+        },
+        "Delete this FAQ?",
+    );
 
     return (
         <div className="admin-page">
+            {dialog}
             <h1 className="admin-page-title">FAQs</h1>
 
             <form onSubmit={submit} className="grid gap-4 rounded-xl bg-white p-6 shadow">
@@ -129,7 +133,7 @@ export default function FaqsAdmin() {
                             <button onClick={() => toggle(faq.id, !!faq.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {faq.is_active ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => remove(faq.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
+                            <button onClick={() => requestDelete(faq.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
                         </div>
                     </div>
                 ))}

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 type Feature = { id: string; section_slug: string; title: string; description: string | null; icon: string | null; sort_order: number; is_active: boolean };
 const EMPTY = { section_slug: "why-choose-us", title: "", description: "", icon: "BadgeCheck", sort_order: 0, is_active: true };
@@ -17,6 +19,10 @@ export default function FeaturesAdmin() {
         setItems((data as Feature[]) || []);
     }
     useEffect(() => { load(); }, []);
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => { await supabase.from("features").delete().eq("id", id); load(); },
+        "Delete this feature?",
+    );
     function change(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         const t = e.target as HTMLInputElement;
         setForm({ ...form, [e.target.name]: t.type === "checkbox" ? t.checked : t.value });
@@ -33,6 +39,7 @@ export default function FeaturesAdmin() {
     }
     return (
         <div className="admin-page">
+            {dialog}
             <div>
                 <h1 className="admin-page-title">Features / Why Choose Us / Services</h1>
                 <p className="text-slate-600">Manage feature cards grouped by section slug (why-choose-us, services, or any new group).</p>
@@ -60,11 +67,11 @@ export default function FeaturesAdmin() {
                         <div className="mt-3 flex flex-wrap gap-2">
                             <button onClick={() => { setEditing(f.id); setForm({ section_slug: f.section_slug || "why-choose-us", title: f.title, description: f.description || "", icon: f.icon || "BadgeCheck", sort_order: f.sort_order || 0, is_active: f.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                             <button onClick={async () => { await supabase.from("features").update({ is_active: !f.is_active }).eq("id", f.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{f.is_active ? "Hide" : "Show"}</button>
-                            <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("features").delete().eq("id", f.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={() => requestDelete(f.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}
-                {items.length === 0 && <p className="admin-empty md:col-span-2">No features yet.</p>}
+                {items.length === 0 && <EmptyState title="md:col-span-2" className="p" />}
             </div>
         </div>
     );

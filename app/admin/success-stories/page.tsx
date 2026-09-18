@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 interface Story {
     id: string;
@@ -91,14 +93,17 @@ export default function SuccessStoriesAdmin() {
         load();
     }
 
-    async function remove(id: string) {
-        if (!confirm("Delete this story?")) return;
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         await supabase.from("success_stories").delete().eq("id", id);
         load();
-    }
+        },
+        "Delete this story?",
+    );
 
     return (
         <div className="admin-page">
+            {dialog}
             <h1 className="admin-page-title">Success Stories</h1>
 
             <form onSubmit={submit} className="admin-card admin-form-grid">
@@ -144,12 +149,12 @@ export default function SuccessStoriesAdmin() {
                             <button onClick={() => toggle(story.id, !!story.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {story.is_active ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => remove(story.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
+                            <button onClick={() => requestDelete(story.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
                         </div>
                     </div>
                 ))}
                 {items.length === 0 && (
-                    <div className="admin-empty md:col-span-2">No stories yet. Add your first success story above.</div>
+                    <EmptyState title="md:col-span-2" className="div" />
                 )}
             </div>
         </div>

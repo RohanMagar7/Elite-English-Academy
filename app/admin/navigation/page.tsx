@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 type Nav = { id: string; label: string; href: string; sort_order: number; is_active: boolean };
 const EMPTY = { label: "", href: "", sort_order: 0, is_active: true };
@@ -17,6 +19,10 @@ export default function NavigationAdmin() {
         setItems((data as Nav[]) || []);
     }
     useEffect(() => { load(); }, []);
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => { await supabase.from("navigation_links").delete().eq("id", id); load(); },
+        "Delete this navigation link?",
+    );
     function change(e: React.ChangeEvent<HTMLInputElement>) {
         const t = e.target as HTMLInputElement;
         setForm({ ...form, [e.target.name]: t.type === "checkbox" ? t.checked : t.value });
@@ -33,6 +39,7 @@ export default function NavigationAdmin() {
     }
     return (
         <div className="admin-page">
+            {dialog}
             <div><h1 className="admin-page-title">Header & Navigation Menu</h1>
             <p className="text-slate-600">Add, edit, reorder, show/hide and delete menu links.</p></div>
             <form onSubmit={submit} className="admin-card admin-form-grid">
@@ -51,10 +58,10 @@ export default function NavigationAdmin() {
                     <div className="flex gap-2">
                         <button onClick={() => { setEditing(n.id); setForm({ label: n.label, href: n.href, sort_order: n.sort_order || 0, is_active: n.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                         <button onClick={async () => { await supabase.from("navigation_links").update({ is_active: !n.is_active }).eq("id", n.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{n.is_active ? "Hide" : "Show"}</button>
-                        <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("navigation_links").delete().eq("id", n.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                        <button onClick={() => requestDelete(n.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                     </div>
                 </div>))}
-                {items.length === 0 && <p className="admin-empty">No links yet.</p>}
+                {items.length === 0 && <EmptyState title="" className="p" />}
             </div>
         </div>
     );

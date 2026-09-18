@@ -4,6 +4,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { idSchema, statusSchema } from "@/lib/validation";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { TableHead, TableBody, TableRow, Th, Td } from "@/components/ui";
 
 interface Admission {
   id: string;
@@ -56,8 +58,8 @@ export default function AdmissionsPage() {
     getAdmissions();
   }
 
-  async function deleteAdmission(id: string) {
-    if (!confirm("Delete enquiry?")) return;
+  const { requestDelete, dialog } = useConfirmDelete<string>(
+      async (id) => {
     // STRICT: UUID required — rejected, never coerced.
     if (!idSchema.safeParse(id).success) {
       alert("Invalid id.");
@@ -74,10 +76,13 @@ export default function AdmissionsPage() {
     }
 
     getAdmissions();
-  }
+      },
+      "Delete this enquiry?",
+  );
 
   return (
     <div className="admin-page">
+            {dialog}
 
       <h1 className="admin-page-title mb-8">
         Admission Enquiries
@@ -86,22 +91,22 @@ export default function AdmissionsPage() {
       <div className="admin-table-wrap">
 
         <table className="admin-table">
-          <thead>
+          <TableHead>
             <tr>
-              <th >Student</th>
-              <th >Phone</th>
-              <th >Class</th>
-              <th >Course</th>
-              <th >Status</th>
-              <th >Action</th>
+              <Th >Student</Th>
+              <Th >Phone</Th>
+              <Th >Class</Th>
+              <Th >Course</Th>
+              <Th >Status</Th>
+              <Th >Action</Th>
             </tr>
-          </thead>
+          </TableHead>
 
-          <tbody>
+          <TableBody>
             {admissions.map((student) => (
-              <tr key={student.id} className="admin-tbody-row">
+              <TableRow key={student.id} className="admin-tbody-row">
 
-                <td className="p-3">
+                <Td className="p-3">
                   <div className="font-semibold">
                     {student.student_name}
                   </div>
@@ -113,15 +118,15 @@ export default function AdmissionsPage() {
                   <div className="text-sm text-slate-600">
                     {student.email}
                   </div>
-                </td>
+                </Td>
 
-                <td className="p-3">{student.phone}</td>
+                <Td className="p-3">{student.phone}</Td>
 
-                <td className="p-3">{student.class_name}</td>
+                <Td className="p-3">{student.class_name}</Td>
 
-                <td className="p-3">{student.course}</td>
+                <Td className="p-3">{student.course}</Td>
 
-                <td className="p-3">
+                <Td className="p-3">
                   <select
                     value={student.status}
                     onChange={(e) =>
@@ -133,20 +138,20 @@ export default function AdmissionsPage() {
                     <option>Contacted</option>
                     <option>Joined</option>
                   </select>
-                </td>
+                </Td>
 
-                <td className="p-3">
+                <Td className="p-3">
                   <button
-                    onClick={() => deleteAdmission(student.id)}
+                    onClick={() => requestDelete(student.id)}
                     className="admin-btn-danger"
                   >
                     Delete
                   </button>
-                </td>
+                </Td>
 
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
+          </TableBody>
         </table>
 
       </div>

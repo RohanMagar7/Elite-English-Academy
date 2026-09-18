@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { MessageCircle } from "lucide-react";
 import { useSiteSettings, whatsappLink } from "@/hooks/useSiteSettings";
 import { admissionSchema } from "@/lib/validation";
+import { apiFetch } from "@/lib/api-client";
 
 export default function AdmissionPage() {
     const { settings } = useSiteSettings();
@@ -31,8 +32,6 @@ export default function AdmissionPage() {
     async function submitForm(e: React.FormEvent) {
         e.preventDefault();
 
-        // Client-side check with the SAME strict schema the server enforces
-        // (instant feedback; the server re-validates and rejects).
         const parsed = admissionSchema.safeParse(form);
         if (!parsed.success) {
             alert(parsed.error.issues[0]?.message ?? "Please check the form fields.");
@@ -44,16 +43,10 @@ export default function AdmissionPage() {
         let ok = false;
         let errText = "Unable to submit right now. Please try again.";
         try {
-            const res = await fetch("/api/admissions", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(parsed.data),
-            });
-            const data = await res.json().catch(() => ({}));
-            if (res.ok) ok = true;
-            else errText = data.error ?? errText;
-        } catch {
-            /* network failure -> errText below */
+            await apiFetch<void>("/api/admissions", { method: "POST", body: parsed.data });
+            ok = true;
+        } catch (err) {
+            errText = err instanceof Error && err.message ? err.message : errText;
         }
 
         setLoading(false);
@@ -92,8 +85,8 @@ export default function AdmissionPage() {
                             Join Elite English Academy for practical speaking training, personalized mentoring, and confidence-building classes guided by Prof. J. M. Wagh-Dhotre.
                         </p>
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                            <a href={settings.phone_href} className="btn-ghost">Call: {settings.phone_display}</a>
-                            <a href={`mailto:${settings.email}`} className="btn-secondary">Email: {settings.email}</a>
+                            <a href={settings.phone_href} className="btn-ghost">{settings.phone_display}</a>
+                            <a href={`mailto:${settings.email}`} className="btn-secondary">{settings.email}</a>
                         </div>
                     </div>
 
@@ -196,7 +189,7 @@ export default function AdmissionPage() {
                                     className="w-full border border-gray-300 bg-white text-gray-900 placeholder-gray-400 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                                 />
 
-                                                                <button
+                                <button
                                     disabled={loading}
                                     className="btn-primary w-full"
                                 >
@@ -207,7 +200,7 @@ export default function AdmissionPage() {
                                     href={whatsappLink(settings.whatsapp_number, `Hello ${settings.academy_name}, I'd like to know more about the "${form.course || "course"}" (${form.preferred_batch || "batch"}).`)}
                                     target="_blank"
                                     rel="noreferrer"
-                                                                    className="btn-secondary w-full flex items-center justify-center"
+                                    className="btn-secondary w-full flex items-center justify-center"
                                 >
                                     <MessageCircle className="h-5 w-5" />
                                     Enquire on WhatsApp
@@ -215,21 +208,58 @@ export default function AdmissionPage() {
                             </form>
                         </div>
 
-                        <aside className="rounded-[2rem] border border-blue-100 bg-white p-8 shadow-[0_18px_40px_rgba(37,99,235,0.08)]">
-                            <h3 className="text-2xl font-black text-blue-950">Contact Details</h3>
+                        <aside className="self-start h-fit rounded-[2rem] border border-blue-100 bg-white p-8 shadow-[0_18px_40px_rgba(37,99,235,0.08)]">
+                            <h3 className="text-2xl font-black text-blue-950">
+                                Contact Details
+                            </h3>
+
                             <div className="mt-6 space-y-5 text-slate-600">
+                                {/* Phone */}
                                 <div>
-                                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Phone</p>
-                                    <a href={settings.phone_href} className="mt-2 block text-lg font-semibold text-blue-950 hover:text-blue-700">{settings.phone_display}</a>
+                                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                        Phone
+                                    </p>
+                                    <a
+                                        href={settings.phone_href}
+                                        className="mt-2 block text-lg font-semibold text-blue-950 hover:text-blue-700 transition-colors"
+                                    >
+                                        {settings.phone_display}
+                                    </a>
                                 </div>
+
+                                {/* Email */}
                                 <div>
-                                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Email</p>
-                                    <a href={`mailto:${settings.email}`} className="mt-2 block text-lg font-semibold text-blue-950 hover:text-blue-700">{settings.email}</a>
+                                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                        Email
+                                    </p>
+                                    <a
+                                        href={`mailto:${settings.email}`}
+                                        className="mt-2 block text-lg font-semibold text-blue-950 hover:text-blue-700 transition-colors"
+                                    >
+                                        {settings.email}
+                                    </a>
                                 </div>
+
+                                {/* Address */}
                                 <div>
-                                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Address</p>
-                                    <p className="mt-2 text-base leading-7 text-slate-600">{settings.address}</p>
+                                    <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                                        Address
+                                    </p>
+                                    <p className="mt-2 text-base leading-7 text-slate-600">
+                                        {settings.address}
+                                    </p>
                                 </div>
+
+                                {/* WhatsApp Button */}
+                                <a
+                                    href={whatsappLink(settings.whatsapp_number, "Hello! I want admission information.")}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white transition hover:bg-[#15803D]"
+                                >
+                                    <MessageCircle className="h-5 w-5" />
+                                    Chat on WhatsApp
+                                </a>
                             </div>
                         </aside>
                     </div>

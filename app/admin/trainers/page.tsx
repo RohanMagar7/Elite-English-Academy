@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 interface Trainer {
     id: string;
@@ -117,14 +119,17 @@ export default function TrainersAdmin() {
         load();
     }
 
-    async function remove(id: string) {
-        if (!confirm("Delete this trainer?")) return;
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         await supabase.from("trainers").delete().eq("id", id);
         load();
-    }
+        },
+        "Delete this trainer?",
+    );
 
     return (
         <div className="admin-page">
+            {dialog}
             <h1 className="admin-page-title">Trainers / Faculty</h1>
 
             <form onSubmit={submit} className="admin-card admin-form-grid">
@@ -169,12 +174,12 @@ export default function TrainersAdmin() {
                             <button onClick={() => toggle(trainer.id, !!trainer.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {trainer.is_active ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => remove(trainer.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
+                            <button onClick={() => requestDelete(trainer.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
                         </div>
                     </div>
                 ))}
                 {items.length === 0 && (
-                    <div className="admin-empty md:col-span-2">No trainers yet. Add your first trainer above.</div>
+                    <EmptyState title="md:col-span-2" className="div" />
                 )}
             </div>
         </div>

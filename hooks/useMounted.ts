@@ -20,6 +20,7 @@ export function useSafeReducedMotion(): boolean {
         if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
         const query = window.matchMedia("(prefers-reduced-motion: reduce)");
         const update = () => setReduceMotion(query.matches);
+        // Initial sync must happen synchronously on mount; later updates come from the listener.
         update();
         if (typeof query.addEventListener === "function") {
             query.addEventListener("change", update);
@@ -38,6 +39,8 @@ export function useMounted(): boolean {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // By definition this hook flips state once after mount.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
 

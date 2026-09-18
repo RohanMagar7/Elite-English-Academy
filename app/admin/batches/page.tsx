@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 interface Batch {
     id: string;
@@ -104,14 +106,17 @@ export default function BatchesAdmin() {
         load();
     }
 
-    async function remove(id: string) {
-        if (!confirm("Delete this batch?")) return;
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         await supabase.from("batches").delete().eq("id", id);
         load();
-    }
+        },
+        "Delete this batch?",
+    );
 
     return (
         <div className="admin-page">
+            {dialog}
             <h1 className="admin-page-title">Batch Timings</h1>
 
             <form onSubmit={submit} className="admin-card admin-form-grid">
@@ -164,14 +169,12 @@ export default function BatchesAdmin() {
                             <button onClick={() => toggle(batch.id, !!batch.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {batch.is_active ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => remove(batch.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
+                            <button onClick={() => requestDelete(batch.id)} className="admin-btn-sm bg-red-600 text-white hover:bg-red-700">Delete</button>
                         </div>
                     </div>
                 ))}
                 {items.length === 0 && (
-                    <div className="admin-empty md:col-span-2">
-                        No batches yet. Add your first batch above.
-                    </div>
+                    <EmptyState title="md:col-span-2" className="div" />
                 )}
             </div>
         </div>

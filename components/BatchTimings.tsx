@@ -114,7 +114,7 @@ export default function BatchTimings() {
 
                                 <div className="flex items-center justify-between gap-2">
                                     <h3 className="font-card font-bold text-primary">{batch.name}</h3>
-                                <span className="badge-sm badge-gold rounded-full bg-yellow-400 px-2.5 py-1 font-semibold uppercase tracking-wide text-blue-950">
+                                <span className="badge-gold rounded-full bg-yellow-400 px-2.5 py-1 font-semibold uppercase tracking-wide text-blue-950">
                                         {batch.mode}
                                     </span>
                                 </div>

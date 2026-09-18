@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
 
 interface GalleryImage {
     id: string;
@@ -126,37 +127,40 @@ export default function GalleryPage() {
         getImages();
     }
 
-    async function deleteImage(id: string, imageUrl: string) {
-        if (!confirm("Delete this image?")) return;
+    const { requestDelete: requestImageDelete, dialog } =
+        useConfirmDelete<{ id: string; imageUrl: string }>(
+            async ({ id, imageUrl }) => {
+                setLoading(true);
 
-        setLoading(true);
+                // try to remove storage object if we can infer the file name
+                try {
+                    const url = new URL(imageUrl);
+                    const parts = url.pathname.split("/");
+                    const fileName = parts[parts.length - 1];
 
-        // try to remove storage object if we can infer the file name
-        try {
-            const url = new URL(imageUrl);
-            const parts = url.pathname.split("/");
-            const fileName = parts[parts.length - 1];
+                    if (fileName) {
+                        await supabase.storage.from("gallery").remove([fileName]);
+                    }
+                } catch (err) {
+                    // ignore storage deletion errors
+                    console.warn("Could not parse storage file name for deletion", err);
+                }
 
-            if (fileName) {
-                await supabase.storage.from("gallery").remove([fileName]);
-            }
-        } catch (err) {
-            // ignore storage deletion errors
-            console.warn("Could not parse storage file name for deletion", err);
-        }
+                // delete DB record
+                const { error } = await supabase.from("gallery").delete().eq("id", id);
 
-        // delete DB record
-        const { error } = await supabase.from("gallery").delete().eq("id", id);
+                setLoading(false);
 
-        setLoading(false);
+                if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
 
-        if (error) return alert(safeClientMessage(error, "Save failed. Please try again."));
-
-        setImages((prev) => prev.filter((i) => i.id !== id));
-    }
+                setImages((prev) => prev.filter((i) => i.id !== id));
+            },
+            "Delete this image? This also removes the stored file.",
+        );
 
     return (
         <div className="admin-page">
+            {dialog}
             <h1 className="admin-page-title mb-6">
                 Gallery Management
             </h1>
@@ -238,7 +242,7 @@ export default function GalleryPage() {
                             <button onClick={() => toggleImage(img.id, !!img.is_active)} className={`rounded-lg px-3 py-2 text-sm font-semibold text-white ${img.is_active ? "bg-green-600" : "bg-slate-500"}`}>
                                 {img.is_active ? "Hide" : "Show"}
                             </button>
-                            <button onClick={() => deleteImage(img.id, img.image_url)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={() => requestImageDelete({ id: img.id, imageUrl: img.image_url })} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}

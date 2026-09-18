@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 type FooterLink = { id: string; group_name: string; label: string; href: string; sort_order: number; is_active: boolean };
 type Social = { id: string; platform: string; label: string | null; url: string; sort_order: number; is_active: boolean };
@@ -28,6 +30,14 @@ export default function FooterAdmin() {
         setSocials((s.data as Social[]) || []);
     }
     useEffect(() => { load(); }, []);
+    const { requestDelete: requestLinkDelete, dialog: linkDialog } = useConfirmDelete<string>(
+        async (id) => { await supabase.from("footer_links").delete().eq("id", id); load(); },
+        "Delete this footer link?",
+    );
+    const { requestDelete: requestSocialDelete, dialog: socialDialog } = useConfirmDelete<string>(
+        async (id) => { await supabase.from("social_links").delete().eq("id", id); load(); },
+        "Delete this social link?",
+    );
 
     function changeLink(e: React.ChangeEvent<HTMLInputElement>) {
         const t = e.target as HTMLInputElement;
@@ -86,11 +96,11 @@ export default function FooterAdmin() {
                             <div className="flex gap-2">
                                 <button onClick={() => { setEditingLink(l.id); setLinkForm({ group_name: l.group_name, label: l.label, href: l.href || "#", sort_order: l.sort_order || 0, is_active: l.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                                 <button onClick={async () => { await supabase.from("footer_links").update({ is_active: !l.is_active }).eq("id", l.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{l.is_active ? "Hide" : "Show"}</button>
-                                <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("footer_links").delete().eq("id", l.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                                <button onClick={() => requestLinkDelete(l.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                             </div>
                         </div>
                     ))}
-                    {links.length === 0 && <p className="admin-empty">No footer links yet.</p>}
+                    {links.length === 0 && <EmptyState title="" className="p" />}
                 </div>
             </div>
             <div>
@@ -113,11 +123,11 @@ export default function FooterAdmin() {
                             <div className="flex gap-2">
                                 <button onClick={() => { setEditingSocial(s.id); setSocialForm({ platform: s.platform, label: s.label || "", url: s.url, sort_order: s.sort_order || 0, is_active: s.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                                 <button onClick={async () => { await supabase.from("social_links").update({ is_active: !s.is_active }).eq("id", s.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{s.is_active ? "Hide" : "Show"}</button>
-                                <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("social_links").delete().eq("id", s.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                                <button onClick={() => requestSocialDelete(s.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                             </div>
                         </div>
                     ))}
-                    {socials.length === 0 && <p className="admin-empty">No social links yet.</p>}
+                    {socials.length === 0 && <EmptyState title="" className="p" />}
                 </div>
             </div>
 

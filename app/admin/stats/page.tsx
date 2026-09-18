@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 type Stat = { id: string; label: string; value: number; suffix: string | null; icon: string | null; sort_order: number; is_active: boolean };
 const EMPTY = { label: "", value: "0", suffix: "", icon: "Sparkles", sort_order: 0, is_active: true };
@@ -17,6 +19,10 @@ export default function StatsAdmin() {
         setItems((data as Stat[]) || []);
     }
     useEffect(() => { load(); }, []);
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => { await supabase.from("stats").delete().eq("id", id); load(); },
+        "Delete this stat?",
+    );
     function change(e: React.ChangeEvent<HTMLInputElement>) {
         const t = e.target as HTMLInputElement;
         setForm({ ...form, [e.target.name]: t.type === "checkbox" ? t.checked : t.value });
@@ -33,6 +39,7 @@ export default function StatsAdmin() {
     }
     return (
         <div className="admin-page">
+            {dialog}
             <div>
                 <h1 className="admin-page-title">Homepage Stats</h1>
                 <p className="text-slate-600">Manage animated number cards (icon names: GraduationCap, BookOpen, Laptop, Sparkles, BadgeCheck, Trophy).</p>
@@ -56,11 +63,11 @@ export default function StatsAdmin() {
                         <div className="flex gap-2">
                             <button onClick={() => { setEditing(s.id); setForm({ label: s.label, value: String(s.value), suffix: s.suffix || "", icon: s.icon || "Sparkles", sort_order: s.sort_order || 0, is_active: s.is_active ?? true }); }} className="admin-btn-accent w-full sm:w-auto">Edit</button>
                             <button onClick={async () => { await supabase.from("stats").update({ is_active: !s.is_active }).eq("id", s.id); load(); }} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">{s.is_active ? "Hide" : "Show"}</button>
-                            <button onClick={async () => { if (confirm("Delete?")) { await supabase.from("stats").delete().eq("id", s.id); load(); } }} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={() => requestDelete(s.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}
-                {items.length === 0 && <p className="admin-empty md:col-span-2">No stats yet.</p>}
+                {items.length === 0 && <EmptyState title="md:col-span-2" className="p" />}
             </div>
         </div>
     );

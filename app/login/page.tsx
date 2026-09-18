@@ -55,8 +55,8 @@ function LoginForm() {
 
                 if (adminErr) {
                     // ignore and proceed to attempt sign-in using provided value as email
-                } else if (adminData && (adminData as any).email) {
-                    emailToUse = (adminData as any).email;
+                } else if (adminData?.email) {
+                    emailToUse = adminData.email;
                 } else {
                     setLoading(false);
                     setError("Unknown login id");

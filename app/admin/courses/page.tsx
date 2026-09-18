@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { TableHead, TableBody, TableRow, Th, Td } from "@/components/ui";
 
 interface Course {
     id: string;
@@ -174,10 +176,8 @@ export default function CoursesPage() {
     }
 
     // Delete Course
-    async function deleteCourse(id: string) {
-        const confirmDelete = confirm("Delete this course?");
-        if (!confirmDelete) return;
-
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         const { error } = await supabase
             .from("courses")
             .delete()
@@ -189,10 +189,13 @@ export default function CoursesPage() {
         }
 
         getCourses();
-    }
+        },
+        "Delete this course?",
+    );
 
     return (
         <div className="admin-page">
+            {dialog}
             <h1 className="admin-page-title mb-6">
                 Courses Management
             </h1>
@@ -309,30 +312,30 @@ export default function CoursesPage() {
                 </h2>
 
                 <table className="admin-table">
-                    <thead>
+                    <TableHead>
                         <tr >
-                            <th className="p-3">Course</th>
-                            <th className="p-3">Duration</th>
-                            <th className="p-3">Fees</th>
-                            <th className="p-3">Description</th>
-                            <th className="admin-tcenter">Action</th>
+                            <Th className="p-3">Course</Th>
+                            <Th className="p-3">Duration</Th>
+                            <Th className="p-3">Fees</Th>
+                            <Th className="p-3">Description</Th>
+                            <Th className="admin-tcenter">Action</Th>
                         </tr>
-                    </thead>
+                    </TableHead>
 
-                    <tbody>
+                    <TableBody>
                         {courses.length === 0 ? (
-                            <tr>
-                                <td
+                            <TableRow>
+                                <Td
                                     colSpan={5}
                                     className="p-6 text-center text-slate-600"
                                 >
                                     No courses available.
-                                </td>
-                            </tr>
+                                </Td>
+                            </TableRow>
                         ) : (
                             courses.map((course) => (
-                                <tr key={course.id} className="border-b hover:bg-slate-50">
-                                    <td className="p-3">
+                                <TableRow key={course.id} className="border-b hover:bg-slate-50">
+                                    <Td className="p-3">
                                         <div className="flex items-center gap-3">
                                             {course.image_url ? (
                                                 <img
@@ -349,21 +352,21 @@ export default function CoursesPage() {
                                                 {course.title}
                                             </span>
                                         </div>
-                                    </td>
+                                    </Td>
 
-                                    <td className="p-3 text-slate-800">
+                                    <Td className="p-3 text-slate-800">
                                         {course.duration}
-                                    </td>
+                                    </Td>
 
-                                    <td className="p-3 text-green-700 font-semibold">
+                                    <Td className="p-3 text-green-700 font-semibold">
                                         ₹ {course.fees}
-                                    </td>
+                                    </Td>
 
-                                    <td className="p-3 text-slate-600">
+                                    <Td className="p-3 text-slate-600">
                                         {course.description}
-                                    </td>
+                                    </Td>
 
-                                    <td className="admin-tcenter">
+                                    <Td className="admin-tcenter">
                                         <div className="flex flex-wrap justify-center gap-2">
                                             <button
                                                 onClick={() => startEdit(course)}
@@ -378,17 +381,17 @@ export default function CoursesPage() {
                                                 {course.is_active ? "Hide" : "Show"}
                                             </button>
                                             <button
-                                                onClick={() => deleteCourse(course.id)}
+                                                onClick={() => requestDelete(course.id)}
                                                 className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
                                             >
                                                 Delete
                                             </button>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </Td>
+                                </TableRow>
                             ))
                         )}
-                    </tbody>
+                    </TableBody>
                 </table>
             </div>
         </div>

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSafeReducedMotion } from "@/hooks/useMounted";
 import { supabase } from "@/lib/supabase";
 import { testimonialSubmitSchema } from "@/lib/validation";
+import { apiFetch } from "@/lib/api-client";
 
 type Testimonial = {
     id: string;
@@ -76,10 +77,13 @@ export default function TestimonialSection() {
     }, []);
 
     function handleChange(
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) {
         const target = e.target as HTMLInputElement;
-        const value = target.type === "number" ? Number(target.value) : target.value;
+        const value =
+            target.name === "rating" || target.type === "number"
+                ? Number(target.value)
+                : target.value;
         setForm((prev) => ({ ...prev, [target.name]: value }));
     }
 
@@ -104,17 +108,12 @@ export default function TestimonialSection() {
 
         let errText: string | null = null;
         try {
-            const res = await fetch("/api/testimonials", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(parsed.data),
-            });
-            if (!res.ok) {
-                const data = await res.json().catch(() => ({}));
-                errText = data.error ?? "Unable to submit your review right now.";
-            }
-        } catch {
-            errText = "Unable to submit your review right now.";
+            await apiFetch<void>("/api/testimonials", { method: "POST", body: parsed.data });
+        } catch (err) {
+            errText =
+                err instanceof Error && err.message
+                    ? err.message
+                    : "Unable to submit your review right now.";
         }
 
         setLoading(false);
@@ -189,7 +188,7 @@ export default function TestimonialSection() {
                                 <select
                                     name="rating"
                                     value={form.rating}
-                                    onChange={handleChange as any}
+                                    onChange={handleChange}
                                     className="w-full rounded-xl border border-blue-200 bg-white px-4 py-3 outline-none transition focus:border-blue-500"
                                 >
                                     <option value={5}>5 Stars</option>

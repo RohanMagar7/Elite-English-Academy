@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { uploadSiteImage } from "@/hooks/useSiteSettings";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { EmptyState } from "@/components/ui";
 
 interface Testimonial {
     id: string;
@@ -97,13 +99,16 @@ export default function TestimonialsAdmin() {
         load();
     }
 
-    async function remove(id: string) {
-        if (!confirm("Delete this testimonial?")) return;
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         await supabase.from("testimonials").delete().eq("id", id);
         load();
-    }
+        },
+        "Delete this testimonial?",
+    );
     return (
         <div className="admin-page">
+            {dialog}
             <div>
                 <h1 className="admin-page-title">Testimonials</h1>
                 <p className="text-slate-600">Add, edit, approve, hide and delete student reviews.</p>
@@ -147,12 +152,12 @@ export default function TestimonialsAdmin() {
                             <button onClick={() => toggle(t.id, t.is_active)} className="admin-btn-sm bg-yellow-400 text-blue-950 hover:bg-yellow-300">
                                 {t.is_active ? "Deactivate" : "Activate"}
                             </button>
-                            <button onClick={() => remove(t.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
+                            <button onClick={() => requestDelete(t.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white">Delete</button>
                         </div>
                     </div>
                 ))}
                 {items.length === 0 && (
-                    <p className="admin-empty md:col-span-2">No testimonials yet.</p>
+                    <EmptyState title="md:col-span-2" className="p" />
                 )}
             </div>
         </div>

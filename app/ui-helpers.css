@@ -1,8 +1,0 @@
-
-/* Shared component helpers */
-.badge-text { @apply text-xs md:text-sm font-semibold; }
-.course-card { @apply flex h-full flex-col overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-md; }
-.course-img-placeholder { @apply absolute inset-0 flex items-center justify-center bg-blue-100 text-sm font-semibold text-blue-950; }
-.faq-question-btn { @apply flex w-full items-center justify-between gap-4 px-5 py-4 text-left; }
-.faq-answer-content { @apply px-5 pb-5 pt-1 text-base leading-6 text-slate-600; }
-.text-dark-mode { @apply text-slate-100; }

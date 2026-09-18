@@ -6,6 +6,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { enquirySchema } from "@/lib/validation";
+import { apiFetch } from "@/lib/api-client";
+import { Alert } from "@/components/ui";
 
 export default function ContactPage() {
     const { settings } = useSiteSettings();
@@ -39,16 +41,10 @@ export default function ContactPage() {
         let ok = false;
         let errText = "Unable to send your message right now. Please try again.";
         try {
-            const res = await fetch("/api/enquiries", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(parsed.data),
-            });
-            const data = await res.json().catch(() => ({}));
-            if (res.ok) ok = true;
-            else errText = data.error ?? errText;
-        } catch {
-            /* network failure -> errText below */
+            await apiFetch<void>("/api/enquiries", { method: "POST", body: parsed.data });
+            ok = true;
+        } catch (err) {
+            errText = err instanceof Error && err.message ? err.message : errText;
         }
         setLoading(false);
         if (!ok) {
@@ -237,12 +233,9 @@ export default function ContactPage() {
                                 </button>
 
                                 {toast && (
-                                    <div
-                                        role={toast.type === "error" ? "alert" : "status"}
-                                        className={`rounded-xl border px-4 py-3 text-sm font-medium ${toast.type === "error" ? "border-red-200 bg-red-50 text-red-800" : "border-blue-200 bg-blue-50 text-blue-950"}`}
-                                    >
+                                    <Alert variant={toast.type === "error" ? "error" : "success"}>
                                         {toast.text}
-                                    </div>
+                                    </Alert>
                                 )}
                             </form>
 

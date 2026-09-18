@@ -4,6 +4,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { safeClientMessage } from "@/lib/client-errors";
+import { useConfirmDelete } from "@/hooks/useConfirmDelete";
+import { TableHead, TableBody, TableRow, Th, Td } from "@/components/ui";
 
 interface Notice {
     id: string;
@@ -79,13 +81,14 @@ export default function NoticesPage() {
         setCategory("General");
     }
 
-    async function deleteNotice(id: string) {
-        if (!confirm("Delete notice?")) return;
-
+    const { requestDelete, dialog } = useConfirmDelete<string>(
+        async (id) => {
         await supabase.from("notices").delete().eq("id", id);
 
         getNotices();
-    }
+        },
+        "Delete this notice?",
+    );
 
     async function toggleNotice(id: string, active: boolean) {
         await supabase
@@ -98,6 +101,7 @@ export default function NoticesPage() {
 
     return (
         <div className="admin-page">
+            {dialog}
 
             <h1 className="admin-page-title">
                 Notice Management
@@ -154,33 +158,33 @@ export default function NoticesPage() {
 
                 <table className="admin-table">
 
-                    <thead className="admin-tbody-row">
+                    <TableHead>
                         <tr className="text-left text-slate-600">
-                            <th className="py-3">Title</th>
-                            <th>Category</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <Th className="py-3">Title</Th>
+                            <Th>Category</Th>
+                            <Th>Status</Th>
+                            <Th>Actions</Th>
                         </tr>
-                    </thead>
+                    </TableHead>
 
-                    <tbody>
+                    <TableBody>
                         {notices.map((notice) => (
-                            <tr key={notice.id} className="admin-tbody-row">
+                            <TableRow key={notice.id} className="admin-tbody-row">
 
-                                <td className="py-4">
+                                <Td className="py-4">
                                     <h3 className="font-semibold">{notice.title}</h3>
                                     <p className="text-sm text-slate-600">
                                         {notice.description}
                                     </p>
-                                </td>
+                                </Td>
 
-                                <td>
+                                <Td>
                                     <span className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700">
                                         {notice.category}
                                     </span>
-                                </td>
+                                </Td>
 
-                                <td>
+                                <Td>
                                     <button
                                         onClick={() =>
                                             toggleNotice(notice.id, notice.is_active)
@@ -192,9 +196,9 @@ export default function NoticesPage() {
                                     >
                                         {notice.is_active ? "Active" : "Hidden"}
                                     </button>
-                                </td>
+                                </Td>
 
-                                <td>
+                                <Td>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => startEdit(notice)}
@@ -203,17 +207,17 @@ export default function NoticesPage() {
                                             Edit
                                         </button>
                                         <button
-                                            onClick={() => deleteNotice(notice.id)}
+                                            onClick={() => requestDelete(notice.id)}
                                             className="admin-btn-danger"
                                         >
                                             Delete
                                         </button>
                                     </div>
-                                </td>
+                                </Td>
 
-                            </tr>
+                            </TableRow>
                         ))}
-                    </tbody>
+                    </TableBody>
 
                 </table>
             </div>
